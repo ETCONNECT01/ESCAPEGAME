@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALA 02 — El Dato que Nadie Leyó · OPERATION REWIND</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+  :root {
+    --navy:#003399;--white:#ffffff;--cyan:#00d4ff;--red:#ff3b3b;
+    --amber:#ffb800;--green:#00e676;--surface:rgba(0,51,153,0.12);
+    --border:rgba(0,212,255,0.2);--mono:'Share Tech Mono',monospace;
+    --sans:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000814;color:var(--white);font-family:var(--sans);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,51,153,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,51,153,0.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 24px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+  .room-id{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.2em}
+  .timer-live{font-family:var(--mono);font-size:20px;color:var(--white);letter-spacing:.1em}
+  .timer-live.warning{color:var(--amber)}.timer-live.danger{color:var(--red);animation:flicker .6s infinite}
+  @keyframes flicker{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35)}
+  .progress-row{display:flex;gap:6px;margin-bottom:40px}
+  .prog-step{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:2px}
+  .prog-step.done{background:var(--green)}.prog-step.active{background:var(--cyan)}
+  .room-eyebrow{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px}
+  .room-title{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:-.02em;margin-bottom:6px;line-height:1.1}
+  .room-area{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.15em;margin-bottom:36px}
+  .narrative-block{background:rgba(0,0,0,.45);border-left:3px solid var(--cyan);padding:24px 28px;margin-bottom:32px;border-radius:0 4px 4px 0}
+  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+  .narrative-block p{font-size:15px;line-height:1.8;color:rgba(255,255,255,.8);margin-bottom:10px}
+  .narrative-block p:last-child{margin-bottom:0}
+  .narrative-block strong{color:var(--white)}
+  .section-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* KPI TABLE */
+  .kpi-table-wrap{overflow-x:auto;margin-bottom:24px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead tr{border-bottom:1px solid rgba(255,255,255,.1)}
+  thead th{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.15em;text-transform:uppercase;padding:10px 14px;text-align:left}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .15s}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  tbody tr.selected-row{background:rgba(0,212,255,.08);outline:1px solid rgba(0,212,255,.3)}
+  td{padding:12px 14px;color:rgba(255,255,255,.75)}
+  td.kpi-name{color:var(--white);font-weight:600}
+  td.status-green{color:var(--green);font-family:var(--mono)}
+  td.status-red{color:var(--red);font-family:var(--mono)}
+  td.status-amber{color:var(--amber);font-family:var(--mono)}
+  .trap-label{background:rgba(255,59,59,.08);border:1px solid rgba(255,59,59,.2);border-radius:2px;font-family:var(--mono);font-size:10px;color:rgba(255,59,59,.7);padding:2px 6px;margin-left:6px}
+
+  /* Decision options */
+  .decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+  @media(max-width:540px){.decision-grid{grid-template-columns:1fr}}
+  .dec-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
+  .dec-card:hover{border-color:var(--cyan);background:rgba(0,51,153,.2)}
+  .dec-card.selected{border-color:var(--cyan);background:rgba(0,212,255,.1);box-shadow:0 0 0 1px var(--cyan)}
+  .dec-letter{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-bottom:6px}
+  .dec-text{font-size:13px;color:var(--white);line-height:1.5}
+
+  .code-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:28px}
+  .code-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+  .code-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  input[type=text].code-input{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:3px;color:var(--cyan);font-family:var(--mono);font-size:28px;padding:12px 20px;width:160px;text-align:center;letter-spacing:.3em;outline:none;transition:border-color .2s}
+  input[type=text].code-input:focus{border-color:var(--cyan)}
+  .validate-btn{background:var(--navy);border:1px solid rgba(0,212,255,.4);color:var(--white);font-family:var(--mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;padding:14px 24px;border-radius:3px;cursor:pointer;transition:all .2s;flex-shrink:0}
+  .validate-btn:hover{border-color:var(--cyan)}
+  .code-result{margin-top:14px;font-family:var(--mono);font-size:13px;display:none}
+  .code-result.error{color:var(--red)}.code-result.success{color:var(--green)}
+  .tip-toggle{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;margin-top:20px;display:inline-block;transition:color .2s;background:none;border:none;padding:0}
+  .tip-toggle:hover{color:var(--amber)}
+  .tip-content{display:none;margin-top:12px;background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.15);border-radius:3px;padding:14px 18px;font-size:13px;color:rgba(255,184,0,.85);line-height:1.6}
+  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px}
+  .success-overlay.show{display:flex}
+  .success-icon{font-size:56px;margin-bottom:24px;animation:pop .4s ease-out}
+  @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+  .success-title{font-size:32px;font-weight:900;color:var(--green);margin-bottom:12px}
+  .success-msg{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:32px;max-width:520px;line-height:1.8}
+  .next-btn{background:var(--navy);border:1px solid var(--green);color:var(--white);font-family:var(--mono);font-size:14px;letter-spacing:.15em;text-transform:uppercase;padding:16px 36px;border-radius:3px;cursor:pointer;transition:all .2s;text-decoration:none;display:inline-block}
+  .next-btn:hover{background:rgba(0,230,118,.1)}
+  .trap-reveal{display:none;background:rgba(255,59,59,.07);border:1px solid rgba(255,59,59,.2);border-radius:3px;padding:14px 18px;font-size:13px;color:rgba(255,100,100,.9);margin-bottom:16px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div class="room-id">// SALA 02 · EL DATO QUE NADIE LEYÓ</div>
+    <div class="timer-live" id="timerLive">45:00</div>
+    <div class="team-label" id="teamLabel">EQUIPO: —</div>
+  </div>
+  <div class="progress-row">
+    <div class="prog-step done"></div>
+    <div class="prog-step done"></div>
+    <div class="prog-step active"></div>
+    <div class="prog-step"></div>
+    <div class="prog-step"></div>
+  </div>
+
+  <div>
+    <div class="room-eyebrow">// PUNTO DE QUIEBRE 02 · SEPTIEMBRE 2024</div>
+    <h1 class="room-title">El Dato que<br>Nadie Leyó</h1>
+    <div class="room-area">DATA &amp; ANALYTICS</div>
+  </div>
+
+  <div class="narrative-block">
+    <div class="eyebrow">// REWIND LOG — 3 SEPTIEMBRE 2024</div>
+    <p>NexaCorp tenía un dashboard de gestión impecable. KPIs actualizados semanalmente, código de colores, tendencias. El comité de dirección lo revisaba cada lunes durante 10 minutos.</p>
+    <p>Nunca nadie tomó una decisión basada en él. El consultor de datos señaló el <strong>KPI con mayor variación porcentual</strong> como el problema urgente. Era ruido. <strong>El verdadero problema llevaba 8 meses deteriorándose en silencio.</strong></p>
+    <p>Identifica cuál es el KPI crítico que el equipo debería haber escalado, y qué acción debería haberse tomado.</p>
+  </div>
+
+  <div class="section-label">// Dashboard NexaCorp — Semana 36 · 2024</div>
+  <div class="trap-reveal" id="trapReveal">⚠ TRAMPA ACTIVADA: Ese KPI tiene alta variación pero bajo impacto estructural. Pierdes 2 minutos de análisis. Vuelve al dashboard y busca el que lleva más tiempo en deterioro sostenido.</div>
+
+  <div class="kpi-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>KPI</th>
+          <th>Objetivo</th>
+          <th>Actual</th>
+          <th>Var. vs mes ant.</th>
+          <th>Tendencia 8 meses</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr onclick="selectKPI(this,'A')">
+          <td class="kpi-name">A · NPS Clientes</td>
+          <td>&gt;50</td><td>48</td><td>−2%</td>
+          <td>↓ deterioro leve y constante</td>
+          <td class="status-amber">⚠ AMBER</td>
+        </tr>
+        <tr onclick="selectKPI(this,'B')">
+          <td class="kpi-name">B · Rotación de talento senior</td>
+          <td>&lt;12%</td><td>23%</td><td>+1%</td>
+          <td>↓ subida constante 8 meses</td>
+          <td class="status-red">✗ RED</td>
+        </tr>
+        <tr onclick="selectKPI(this,'C')">
+          <td class="kpi-name">C · Proyectos entregados a tiempo <span class="trap-label">⚡ −38% este mes</span></td>
+          <td>&gt;80%</td><td>51%</td><td>−38%</td>
+          <td>↑ variación alta, puntual</td>
+          <td class="status-red">✗ RED</td>
+        </tr>
+        <tr onclick="selectKPI(this,'D')">
+          <td class="kpi-name">D · Revenue por empleado</td>
+          <td>+5%</td><td>+3%</td><td>−1%</td>
+          <td>→ plana</td>
+          <td class="status-amber">⚠ AMBER</td>
+        </tr>
+        <tr onclick="selectKPI(this,'E')">
+          <td class="kpi-name">E · Adopción ERP nuevo</td>
+          <td>&gt;70%</td><td>31%</td><td>+2%</td>
+          <td>↑ lento pero en línea</td>
+          <td class="status-amber">⚠ AMBER</td>
+        </tr>
+        <tr onclick="selectKPI(this,'F')">
+          <td class="kpi-name">F · Satisfacción empleado (eNPS)</td>
+          <td>&gt;30</td><td>34</td><td>+1%</td>
+          <td>→ estable</td>
+          <td class="status-green">✓ GREEN</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">// ¿Qué decisión debería haberse tomado?</div>
+  <div class="decision-grid" id="decGrid">
+    <div class="dec-card" onclick="selectDec(this,'1')">
+      <div class="dec-letter">DECISIÓN 1</div>
+      <div class="dec-text">Lanzar un plan de retención urgente: revisión salarial, mentoring y programa de carrera para perfiles senior</div>
+    </div>
+    <div class="dec-card" onclick="selectDec(this,'2')">
+      <div class="dec-letter">DECISIÓN 2</div>
+      <div class="dec-text">Escalar al steering committee la caída en entregas puntuales y revisar la metodología de gestión de proyectos</div>
+    </div>
+    <div class="dec-card" onclick="selectDec(this,'3')">
+      <div class="dec-letter">DECISIÓN 3</div>
+      <div class="dec-text">Acelerar el plan de adopción del ERP con formación adicional y quick wins por departamento</div>
+    </div>
+    <div class="dec-card" onclick="selectDec(this,'4')">
+      <div class="dec-letter">DECISIÓN 4</div>
+      <div class="dec-text">Lanzar una encuesta de NPS más detallada para entender la causa raíz de la caída de satisfacción cliente</div>
+    </div>
+  </div>
+
+  <button class="tip-toggle" onclick="toggleTip()">💡 Necesito una pista</button>
+  <div class="tip-content" id="tipContent">
+    El KPI trampa tiene la mayor variación porcentual puntual (−38%) pero su tendencia de 8 meses es errática. El KPI crítico lleva 8 meses subiendo de forma constante y silenciosa, sin llamar la atención porque su variación mensual es pequeña. En consultoría, la tendencia sostenida es más peligrosa que el pico puntual. El código = letra del KPI crítico + número de la decisión correcta.
+  </div>
+
+  <div class="code-section" style="margin-top:24px">
+    <div class="code-label">// Código de sala: letra del KPI crítico + número de decisión (ej: B1)</div>
+    <div class="code-input-row">
+      <input type="text" class="code-input" id="codeInput" maxlength="2" placeholder="__" oninput="this.value=this.value.toUpperCase()">
+      <button class="validate-btn" onclick="validateCode()">VALIDAR →</button>
+    </div>
+    <div class="code-result" id="codeResult"></div>
+  </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">⏮</div>
+  <div class="success-title">PUNTO DE QUIEBRE CORREGIDO</div>
+  <div class="success-msg">
+    <strong>KPI B: Rotación de talento senior · Decisión 1.</strong><br>
+    El 23% de rotación en perfiles senior llevaba 8 meses subiendo sin que nadie escalara. La caída en entregas (KPI C) era consecuencia, no causa. Sin el talento que conoce el negocio, ninguna transformación prospera. NexaCorp recupera su segundo año.
+  </div>
+  <a href="sala-3.html" class="next-btn">▶ AVANZAR A SALA 03</a>
+</div>
+
+<script>
+  const team = sessionStorage.getItem('teamName') || '—';
+  document.getElementById('teamLabel').textContent = 'EQUIPO: ' + team.toUpperCase();
+  const start = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const TOTAL = 30*60*1000;
+  const timerEl = document.getElementById('timerLive');
+  function updateTimer(){
+    const elapsed=Date.now()-start, remaining=Math.max(0,TOTAL-elapsed);
+    const m=Math.floor(remaining/60000), s=Math.floor((remaining%60000)/1000);
+    timerEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    timerEl.className='timer-live'+(remaining<5*60000?' danger':remaining<15*60000?' warning':'');
+  }
+  setInterval(updateTimer,1000); updateTimer();
+
+  let selKPI=null, selDec=null;
+
+  function selectKPI(row,id){
+    document.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('selected-row'));
+    row.classList.add('selected-row');
+    selKPI=id;
+    const trap=document.getElementById('trapReveal');
+    trap.style.display = id==='C' ? 'block' : 'none';
+    autoFill();
+  }
+
+  function selectDec(el,id){
+    document.querySelectorAll('.dec-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    selDec=id;
+    autoFill();
+  }
+
+  function autoFill(){
+    if(selKPI&&selDec) document.getElementById('codeInput').value=selKPI+selDec;
+  }
+
+  function toggleTip(){
+    const t=document.getElementById('tipContent');
+    t.style.display=t.style.display==='block'?'none':'block';
+  }
+
+  const CORRECT='B1';
+  function validateCode(){
+    const val=document.getElementById('codeInput').value.trim().toUpperCase();
+    const res=document.getElementById('codeResult');
+    res.style.display='block';
+    if(val===CORRECT){
+      sessionStorage.setItem('code2',val);
+      sessionStorage.setItem('room2done',Date.now());
+      res.className='code-result success';
+      res.textContent='✓ CÓDIGO CORRECTO — Activando siguiente sala...';
+      setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
+    } else {
+      res.className='code-result error';
+      res.textContent='✗ CÓDIGO INCORRECTO — Revisa el KPI crítico y la decisión adecuada.';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALA 05 — El Programa sin Norte · OPERATION REWIND</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+  :root{--navy:#003399;--white:#fff;--cyan:#00d4ff;--red:#ff3b3b;--amber:#ffb800;--green:#00e676;--surface:rgba(0,51,153,.12);--border:rgba(0,212,255,.2);--mono:'Share Tech Mono',monospace;--sans:'Inter',sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000814;color:var(--white);font-family:var(--sans);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,51,153,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,51,153,.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 24px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+  .room-id{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.2em}
+  .timer-live{font-family:var(--mono);font-size:20px;color:var(--white);letter-spacing:.1em}
+  .timer-live.warning{color:var(--amber)}.timer-live.danger{color:var(--red);animation:flicker .6s infinite}
+  @keyframes flicker{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35)}
+  .progress-row{display:flex;gap:6px;margin-bottom:40px}
+  .prog-step{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:2px}
+  .prog-step.done{background:var(--green)}.prog-step.active{background:var(--cyan)}
+  .room-eyebrow{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px}
+  .room-title{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:-.02em;margin-bottom:6px;line-height:1.1}
+  .room-area{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.15em;margin-bottom:36px}
+  .narrative-block{background:rgba(0,0,0,.45);border-left:3px solid var(--cyan);padding:24px 28px;margin-bottom:32px;border-radius:0 4px 4px 0}
+  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+  .narrative-block p{font-size:15px;line-height:1.8;color:rgba(255,255,255,.8);margin-bottom:10px}
+  .narrative-block p:last-child{margin-bottom:0}
+  .narrative-block strong{color:var(--white)}
+  .section-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* Status report */
+  .status-report{background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:24px;margin-bottom:28px}
+  .report-header{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.2em;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.05);margin-bottom:18px}
+  .ws-list{display:flex;flex-direction:column;gap:8px}
+  .ws-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:3px;font-size:13px;cursor:pointer;transition:all .18s;border:1px solid transparent;user-select:none}
+  .ws-item:hover{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.06)}
+  .ws-item.cancel-selected{background:rgba(255,59,59,.07);border-color:rgba(255,59,59,.2)}
+  .ws-item.cancel-selected .ws-cancel-check{border-color:var(--red);background:var(--red)}
+  .ws-item.cancel-selected .ws-cancel-check::after{content:'✗';color:#000;font-size:10px}
+  .ws-cancel-check{width:20px;height:20px;border:1px solid rgba(255,255,255,.15);border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);transition:all .2s}
+  .ws-number{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.25);width:24px;flex-shrink:0}
+  .ws-name{flex:1;color:rgba(255,255,255,.8);font-weight:500}
+  .ws-status{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:2px}
+  .ws-status.red{background:rgba(255,59,59,.1);color:var(--red);border:1px solid rgba(255,59,59,.2)}
+  .ws-status.amber{background:rgba(255,184,0,.1);color:var(--amber);border:1px solid rgba(255,184,0,.2)}
+  .ws-status.green{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+  .ws-owner{font-size:11px;color:rgba(255,255,255,.3);width:100px;text-align:right;flex-shrink:0}
+  .ws-note{font-size:11px;color:rgba(255,255,255,.3);width:160px;text-align:right;flex-shrink:0;font-style:italic}
+
+  .cancel-counter{font-family:var(--mono);font-size:13px;color:rgba(255,255,255,.45);margin-bottom:24px}
+  .cancel-counter span{color:var(--cyan)}
+
+  /* Governance symptoms */
+  .symptoms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+  @media(max-width:540px){.symptoms-grid{grid-template-columns:1fr}}
+  .symptom-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:14px 16px;cursor:pointer;transition:all .18s;user-select:none;position:relative}
+  .symptom-card:hover{border-color:var(--cyan);background:rgba(0,51,153,.2)}
+  .symptom-card.selected{border-color:var(--cyan);background:rgba(0,212,255,.08);box-shadow:0 0 0 1px var(--cyan)}
+  .symptom-card.selected::after{content:'✓';position:absolute;top:10px;right:12px;color:var(--cyan);font-family:var(--mono);font-size:13px}
+  .symptom-text{font-size:13px;color:rgba(255,255,255,.8);line-height:1.5;padding-right:20px}
+
+  /* Governance structure */
+  .gov-options{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:28px}
+  .gov-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
+  .gov-card:hover{border-color:var(--cyan)}
+  .gov-card.selected{border-color:var(--cyan);background:rgba(0,212,255,.08);box-shadow:0 0 0 1px var(--cyan)}
+  .gov-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:6px}
+  .gov-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.5}
+  .gov-levels{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-top:8px}
+
+  .code-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:28px}
+  .code-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px}
+  .code-sublabel{font-size:12px;color:rgba(255,255,255,.35);margin-bottom:16px}
+  .code-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  input[type=text].code-input{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:3px;color:var(--cyan);font-family:var(--mono);font-size:28px;padding:12px 20px;width:180px;text-align:center;letter-spacing:.3em;outline:none;transition:border-color .2s}
+  input[type=text].code-input:focus{border-color:var(--cyan)}
+  .validate-btn{background:var(--navy);border:1px solid rgba(0,212,255,.4);color:var(--white);font-family:var(--mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;padding:14px 24px;border-radius:3px;cursor:pointer;flex-shrink:0;transition:all .2s}
+  .validate-btn:hover{border-color:var(--cyan)}
+  .code-result{margin-top:14px;font-family:var(--mono);font-size:13px;display:none}
+  .code-result.error{color:var(--red)}.code-result.success{color:var(--green)}
+  .tip-toggle{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;margin-top:20px;display:inline-block;background:none;border:none;padding:0;transition:color .2s}
+  .tip-toggle:hover{color:var(--amber)}
+  .tip-content{display:none;margin-top:12px;background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.15);border-radius:3px;padding:14px 18px;font-size:13px;color:rgba(255,184,0,.85);line-height:1.6}
+  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px}
+  .success-overlay.show{display:flex}
+  .success-icon{font-size:56px;margin-bottom:24px;animation:pop .4s ease-out}
+  @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+  .success-title{font-size:32px;font-weight:900;color:var(--green);margin-bottom:12px}
+  .success-msg{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:32px;max-width:540px;line-height:1.8}
+  .next-btn{background:var(--navy);border:1px solid var(--green);color:var(--white);font-family:var(--mono);font-size:14px;letter-spacing:.15em;text-transform:uppercase;padding:16px 36px;border-radius:3px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
+  .next-btn:hover{background:rgba(0,230,118,.1)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div class="room-id">// SALA 04 · EL PROGRAMA SIN NORTE</div>
+    <div class="timer-live" id="timerLive">45:00</div>
+    <div class="team-label" id="teamLabel">EQUIPO: —</div>
+  </div>
+  <div class="progress-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step active"></div>
+  </div>
+
+  <div>
+    <div class="room-eyebrow">// PUNTO DE QUIEBRE 04 · OCTUBRE 2025</div>
+    <h1 class="room-title">El Programa<br>sin Norte</h1>
+    <div class="room-area">PROGRAMME MANAGEMENT &amp; GOVERNANCE</div>
+  </div>
+
+  <div class="narrative-block">
+    <div class="eyebrow">// REWIND LOG — 7 OCTUBRE 2025</div>
+    <p>El Programme Manager presentó un informe al steering committee: <strong>47 workstreams activos, 3 comités de governance, 0 decisiones formalmente tomadas en 6 meses.</strong></p>
+    <p>Cada workstream tenía su propio RAG status. Cada comité revisaba los mismos riesgos sin escalarlos. Los sponsors no sabían qué aprobar. El programa consumía presupuesto sin entregar valor.</p>
+    <p>Tu equipo debe: (1) identificar los <strong>3 síntomas de governance failure</strong> en el extracto del informe, (2) cancelar los <strong>workstreams que deben cancelarse</strong>, y (3) elegir la <strong>estructura de governance correcta</strong>.</p>
+  </div>
+
+  <!-- PART 1: Symptoms -->
+  <div class="section-label">// Parte 1 — Identifica los 3 síntomas de governance failure</div>
+  <div class="symptoms-grid" id="symptomsGrid">
+    <div class="symptom-card" onclick="toggleSymptom(this,'A')"><div class="symptom-text">A · Hay más de 40 workstreams activos en paralelo para una organización de 2.000 personas</div></div>
+    <div class="symptom-card" onclick="toggleSymptom(this,'B')"><div class="symptom-text">B · El steering committee se reúne mensualmente pero no registra decisiones formales ni actas vinculantes</div></div>
+    <div class="symptom-card" onclick="toggleSymptom(this,'C')"><div class="symptom-text">C · Los mismos riesgos aparecen en 3 comités distintos sin que ninguno los escale ni cierre</div></div>
+    <div class="symptom-card" onclick="toggleSymptom(this,'D')"><div class="symptom-text">D · El programme manager envía el status report en Excel por email los viernes</div></div>
+    <div class="symptom-card" onclick="toggleSymptom(this,'E')"><div class="symptom-text">E · No existe un proceso formal de priorización de iniciativas: todo es "estratégico" para alguien</div></div>
+    <div class="symptom-card" onclick="toggleSymptom(this,'F')"><div class="symptom-text">F · El programa usa metodología Agile en algunos workstreams y Waterfall en otros</div></div>
+  </div>
+
+  <!-- PART 2: Workstreams to cancel -->
+  <div class="section-label">// Parte 2 — Marca los workstreams que deben cancelarse (selecciona los que proceda)</div>
+  <div class="cancel-counter">Workstreams seleccionados para cancelar: <span id="cancelCount">0</span></div>
+
+  <div class="status-report">
+    <div class="report-header">NEXACORP TRANSFORMATION PROGRAMME · STATUS REPORT S40 · CONFIDENCIAL</div>
+    <div class="ws-list" id="wsList">
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS01</div>
+        <div class="ws-name">Migración ERP — módulo financiero</div>
+        <div class="ws-status green">GREEN</div>
+        <div class="ws-note">Entrega en 3 sem.</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS02</div>
+        <div class="ws-name">Portal del empleado (RRHH)</div>
+        <div class="ws-status amber">AMBER</div>
+        <div class="ws-note">Sponsor no disponible</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS03</div>
+        <div class="ws-name">Dashboard de datos ejecutivo</div>
+        <div class="ws-status red">RED</div>
+        <div class="ws-note">Sin owner desde ago</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS04</div>
+        <div class="ws-name">Rediseño proceso de onboarding</div>
+        <div class="ws-status green">GREEN</div>
+        <div class="ws-note">Piloto lanzado</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS05</div>
+        <div class="ws-name">Estudio de benchmarking sectorial</div>
+        <div class="ws-status red">RED</div>
+        <div class="ws-note">Sin budget, paralizado</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS06</div>
+        <div class="ws-name">Transformación cultural — "NexaWay"</div>
+        <div class="ws-status amber">AMBER</div>
+        <div class="ws-note">Duplica WS12</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS07</div>
+        <div class="ws-name">Plataforma e-commerce B2B</div>
+        <div class="ws-status green">GREEN</div>
+        <div class="ws-note">MVP en producción</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS08</div>
+        <div class="ws-name">Iniciativa de sostenibilidad corporativa</div>
+        <div class="ws-status red">RED</div>
+        <div class="ws-note">0% avance, 8 meses</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS09</div>
+        <div class="ws-name">Integración CRM-ERP</div>
+        <div class="ws-status amber">AMBER</div>
+        <div class="ws-note">Dependencia WS01</div>
+      </div>
+      <div class="ws-item" onclick="toggleCancel(this)">
+        <div class="ws-cancel-check"></div>
+        <div class="ws-number">WS10</div>
+        <div class="ws-name">Programa de liderazgo digital</div>
+        <div class="ws-status green">GREEN</div>
+        <div class="ws-note">200 personas formadas</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART 3: Governance structure -->
+  <div class="section-label">// Parte 3 — Elige la estructura de governance correcta</div>
+  <div class="gov-options" id="govOptions">
+    <div class="gov-card" onclick="selectGov(this,'A')">
+      <div class="gov-title">Opción A · Governance plana</div>
+      <div class="gov-desc">Un único comité ejecutivo que revisa todos los workstreams mensualmente. Decisiones centralizadas.</div>
+      <div class="gov-levels">Niveles: 1 · Frecuencia: mensual</div>
+    </div>
+    <div class="gov-card" onclick="selectGov(this,'B')">
+      <div class="gov-title">Opción B · Governance de 3 niveles</div>
+      <div class="gov-desc">Nivel operativo semanal (workstream leads) → Nivel de programa quincenal (PMO + owners) → Nivel ejecutivo mensual (steering + sponsors). Escalado formal definido por criterios de riesgo.</div>
+      <div class="gov-levels">Niveles: 3 · Frecuencia: semanal / quincenal / mensual</div>
+    </div>
+    <div class="gov-card" onclick="selectGov(this,'C')">
+      <div class="gov-title">Opción C · Governance distribuida sin PMO central</div>
+      <div class="gov-desc">Cada workstream decide su propia cadencia de reporte. Board ejecutivo revisa trimestralmente por excepción.</div>
+      <div class="gov-levels">Niveles: 2 · Frecuencia: variable + trimestral</div>
+    </div>
+  </div>
+
+  <button class="tip-toggle" onclick="toggleTip()">💡 Necesito una pista</button>
+  <div class="tip-content" id="tipContent">
+    Para los síntomas: busca los que representan fallos de proceso y estructura, no de herramientas o metodología. Para cancelar workstreams: los criterios son — sin owner activo, sin budget, sin avance demostrable en más de 6 meses, o duplicidad con otro WS. Para governance: un programa de transformación complejo necesita múltiples niveles con escalado formal. El código final = nº workstreams cancelados + nº niveles del governance elegido (ej: "53" si cancelas 5 y eliges 3 niveles).
+  </div>
+
+  <div class="code-section" style="margin-top:24px">
+    <div class="code-label">// Código de sala</div>
+    <div class="code-sublabel">Número de workstreams cancelados + número de niveles de governance (ej: 43)</div>
+    <div class="code-input-row">
+      <input type="text" class="code-input" id="codeInput" maxlength="2" placeholder="__">
+      <button class="validate-btn" onclick="validateCode()">VALIDAR →</button>
+    </div>
+    <div class="code-result" id="codeResult"></div>
+  </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">⏮</div>
+  <div class="success-title">PUNTO DE QUIEBRE CORREGIDO</div>
+  <div class="success-msg">
+    <strong>4 workstreams cancelados · 3 niveles de governance.</strong><br>
+    WS03 (sin owner), WS05 (sin budget), WS06 (duplicado), WS08 (0% en 8 meses). Una estructura de 3 niveles con escalado formal transforma el steering committee en un órgano que toma decisiones, no que escucha reportes. Ahora ve a activar el Código REWIND.
+  </div>
+  <a href="final.html" class="next-btn">▶ ACTIVAR CÓDIGO REWIND</a>
+</div>
+
+<script>
+  const team=sessionStorage.getItem('teamName')||'—';
+  document.getElementById('teamLabel').textContent='EQUIPO: '+team.toUpperCase();
+  const start=parseInt(sessionStorage.getItem('startTime')||Date.now());
+  const TOTAL=30*60*1000;
+  const timerEl=document.getElementById('timerLive');
+  function updateTimer(){const e=Date.now()-start,r=Math.max(0,TOTAL-e),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);timerEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;timerEl.className='timer-live'+(r<5*60000?' danger':r<15*60000?' warning':'')}
+  setInterval(updateTimer,1000);updateTimer();
+
+  // Part 1
+  let symptoms=[];
+  function toggleSymptom(el,id){
+    if(el.classList.contains('selected')){el.classList.remove('selected');symptoms=symptoms.filter(x=>x!==id)}
+    else{if(symptoms.length>=3)return;el.classList.add('selected');symptoms.push(id)}
+  }
+
+  // Part 2
+  let cancelled=[];
+  function toggleCancel(el){
+    const idx=Array.from(document.querySelectorAll('.ws-item')).indexOf(el);
+    const key=String(idx);
+    if(el.classList.contains('cancel-selected')){el.classList.remove('cancel-selected');cancelled=cancelled.filter(x=>x!==key)}
+    else{el.classList.add('cancel-selected');cancelled.push(key)}
+    document.getElementById('cancelCount').textContent=cancelled.length;
+    autoFill();
+  }
+
+  // Part 3
+  let govLevel=null;
+  function selectGov(el,id){
+    document.querySelectorAll('.gov-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    // A=1, B=3, C=2 levels
+    govLevel=id==='A'?'1':id==='B'?'3':'2';
+    autoFill();
+  }
+
+  function autoFill(){
+    if(cancelled.length>0&&govLevel){
+      document.getElementById('codeInput').value=String(cancelled.length)+govLevel;
+    }
+  }
+
+  function toggleTip(){const t=document.getElementById('tipContent');t.style.display=t.style.display==='block'?'none':'block'}
+
+  // Correct: 4 cancelled (WS03, WS05, WS06, WS08 → indices 2,4,5,7) + 3 governance levels → "43"
+  const CORRECT='43';
+  function validateCode(){
+    const val=document.getElementById('codeInput').value.trim();
+    const res=document.getElementById('codeResult');
+    res.style.display='block';
+    if(val===CORRECT){
+      sessionStorage.setItem('code5',val);sessionStorage.setItem('room5done',Date.now());
+      res.className='code-result success';res.textContent='✓ CÓDIGO CORRECTO — Preparando activación REWIND...';
+      setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
+    } else {
+      res.className='code-result error';
+      const n=parseInt(val[0]||'0');
+      if(n<4)res.textContent='✗ Faltan workstreams por cancelar. ¿Hay alguno sin owner, sin budget o sin avance real?';
+      else if(n>4)res.textContent='✗ Demasiados cancelados. Algunos en rojo tienen justificación para continuar (WS09 depende de WS01 activo).';
+      else res.textContent='✗ Los workstreams son correctos. Revisa la estructura de governance: ¿cuántos niveles necesita un programa complejo?';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALA 01 — El Diagnóstico Roto · OPERATION REWIND</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+
+  :root {
+    --navy: #003399;
+    --navy-dark: #001f6b;
+    --white: #ffffff;
+    --cyan: #00d4ff;
+    --red: #ff3b3b;
+    --amber: #ffb800;
+    --green: #00e676;
+    --surface: rgba(0,51,153,0.12);
+    --border: rgba(0,212,255,0.2);
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000814;
+    color: var(--white);
+    font-family: var(--sans);
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,51,153,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,51,153,0.07) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .room-id {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+  }
+
+  .timer-live {
+    font-family: var(--mono);
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: 0.1em;
+  }
+
+  .timer-live.warning { color: var(--amber); }
+  .timer-live.danger  { color: var(--red); animation: flicker 0.6s infinite; }
+
+  @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  .team-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* Progress bar */
+  .progress-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 40px;
+  }
+
+  .prog-step {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+  }
+
+  .prog-step.done { background: var(--green); }
+  .prog-step.active { background: var(--cyan); }
+
+  /* Room header */
+  .room-header {
+    margin-bottom: 36px;
+  }
+
+  .room-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .room-title {
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.1;
+  }
+
+  .room-area {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--cyan);
+    letter-spacing: 0.15em;
+  }
+
+  /* Narrative */
+  .narrative-block {
+    background: rgba(0,0,0,0.45);
+    border-left: 3px solid var(--cyan);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .narrative-block .eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .narrative-block p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 10px;
+  }
+
+  .narrative-block p:last-child { margin-bottom: 0; }
+  .narrative-block strong { color: var(--white); }
+
+  /* Puzzle section */
+  .puzzle-section {
+    margin-bottom: 36px;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Framework cards */
+  .frameworks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .fw-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+    position: relative;
+  }
+
+  .fw-card:hover { border-color: var(--cyan); background: rgba(0,51,153,0.2); }
+
+  .fw-card.selected {
+    border-color: var(--cyan);
+    background: rgba(0,212,255,0.1);
+    box-shadow: 0 0 0 1px var(--cyan);
+  }
+
+  .fw-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    color: var(--cyan);
+    font-family: var(--mono);
+    font-size: 14px;
+  }
+
+  .fw-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .fw-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+  }
+
+  /* Case file */
+  .case-file {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 28px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .case-file .file-header {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.2em;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .case-file ul {
+    padding-left: 20px;
+  }
+
+  .case-file ul li {
+    margin-bottom: 6px;
+  }
+
+  .case-file strong { color: rgba(255,255,255,0.9); }
+
+  /* Hint pista */
+  .hint-box {
+    background: rgba(255,184,0,0.06);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: rgba(255,184,0,0.9);
+    font-family: var(--mono);
+    display: none;
+  }
+
+  /* Code input */
+  .code-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+  }
+
+  .code-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .code-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  input[type="text"].code-input {
+    background: rgba(0,0,0,0.6);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--cyan);
+    font-family: var(--mono);
+    font-size: 28px;
+    padding: 12px 20px;
+    width: 160px;
+    text-align: center;
+    letter-spacing: 0.3em;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"].code-input:focus { border-color: var(--cyan); }
+
+  .validate-btn {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.4);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .validate-btn:hover { border-color: var(--cyan); }
+
+  .code-result {
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    display: none;
+  }
+
+  .code-result.error { color: var(--red); }
+  .code-result.success { color: var(--green); }
+
+  /* Success overlay */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .success-overlay.show { display: flex; }
+
+  .success-icon {
+    font-size: 56px;
+    margin-bottom: 24px;
+    animation: pop 0.4s ease-out;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+
+  .success-msg {
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 32px;
+    max-width: 500px;
+    line-height: 1.7;
+  }
+
+  .next-btn {
+    background: var(--navy);
+    border: 1px solid var(--green);
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 16px 36px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .next-btn:hover { background: rgba(0,230,118,0.1); }
+
+  /* Tip block */
+  .tip-toggle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+    margin-top: 20px;
+    display: inline-block;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .tip-toggle:hover { color: var(--amber); }
+
+  .tip-content {
+    display: none;
+    margin-top: 12px;
+    background: rgba(255,184,0,0.06);
+    border: 1px solid rgba(255,184,0,0.15);
+    border-radius: 3px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: rgba(255,184,0,0.85);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="room-id">// SALA 01 · EL DIAGNÓSTICO ROTO</div>
+    <div class="timer-live" id="timerLive">45:00</div>
+    <div class="team-label" id="teamLabel">EQUIPO: —</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-row">
+    <div class="prog-step done"></div>
+    <div class="prog-step active"></div>
+    <div class="prog-step"></div>
+    <div class="prog-step"></div>
+    <div class="prog-step"></div>
+  </div>
+
+  <!-- ROOM HEADER -->
+  <div class="room-header">
+    <div class="room-eyebrow">// PUNTO DE QUIEBRE 01 · 2024</div>
+    <h1 class="room-title">El Diagnóstico<br>Roto</h1>
+    <div class="room-area">STRATEGY &amp; OPERATING MODEL</div>
+  </div>
+
+  <!-- NARRATIVE -->
+  <div class="narrative-block">
+    <div class="eyebrow">// REWIND LOG — 14 MARZO 2024</div>
+    <p>El equipo de consultoría recibió el encargo de diagnosticar NexaCorp. El cliente presentó una empresa con silos departamentales severos, un modelo operativo diseñado en 2011 y sin claridad sobre qué capacidades necesitaba desarrollar para competir en 2026.</p>
+    <p>El consultor responsable eligió hacer un <strong>análisis SWOT estándar y un PESTEL</strong>. Entregó un PowerPoint de 45 slides. NexaCorp lo archivó sin tomar ninguna decisión. <strong>Ese fue el primer fallo.</strong></p>
+    <p>Tu misión: identificar qué frameworks debería haber usado el equipo para generar un diagnóstico accionable en este contexto.</p>
+  </div>
+
+  <!-- CASE FILE -->
+  <div class="puzzle-section">
+    <div class="section-label">// Expediente del cliente</div>
+    <div class="case-file">
+      <div class="file-header">NEXACORP · DIAGNÓSTICO INICIAL · CONFIDENCIAL</div>
+      <p><strong>Síntomas identificados en las primeras entrevistas:</strong></p>
+      <ul>
+        <li>Cada división opera con objetivos propios sin alineación con la estrategia corporativa</li>
+        <li>El modelo operativo lleva 13 años sin revisión formal</li>
+        <li>No existe claridad sobre qué capacidades son diferenciadoras y cuáles son commodity</li>
+        <li>Los procesos de decisión son lentos: media de 6 semanas para aprobar iniciativas cross-funcionales</li>
+        <li>La organización no sabe priorizar: hay 47 proyectos "estratégicos" en curso simultáneamente</li>
+        <li>Cultura de reporting hacia arriba, sin cultura de actuación hacia el cliente</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FRAMEWORKS SELECTION -->
+  <div class="puzzle-section">
+    <div class="section-label">// Selecciona los 2 frameworks más adecuados para este diagnóstico</div>
+
+    <div class="frameworks-grid" id="fwGrid">
+      <div class="fw-card" onclick="toggleFW(this, 'A')">
+        <div class="fw-name">A · SWOT Analysis</div>
+        <div class="fw-desc">Fortalezas, debilidades, oportunidades y amenazas. Visión general estratégica.</div>
+      </div>
+      <div class="fw-card" onclick="toggleFW(this, 'B')">
+        <div class="fw-name">B · Operating Model Canvas</div>
+        <div class="fw-desc">Mapa estructurado del modelo operativo: capacidades, procesos, organización, datos, tecnología.</div>
+      </div>
+      <div class="fw-card" onclick="toggleFW(this, 'C')">
+        <div class="fw-name">C · PESTEL</div>
+        <div class="fw-desc">Análisis del entorno macro: político, económico, social, tecnológico, legal, ambiental.</div>
+      </div>
+      <div class="fw-card" onclick="toggleFW(this, 'D')">
+        <div class="fw-name">D · McKinsey 7S</div>
+        <div class="fw-desc">Alineación de 7 elementos organizativos: estrategia, estructura, sistemas, valores compartidos, estilo, personal y habilidades.</div>
+      </div>
+      <div class="fw-card" onclick="toggleFW(this, 'E')">
+        <div class="fw-name">E · Porter's Value Chain</div>
+        <div class="fw-desc">Análisis de actividades primarias y de soporte para identificar fuentes de valor y ventaja competitiva.</div>
+      </div>
+      <div class="fw-card" onclick="toggleFW(this, 'F')">
+        <div class="fw-name">F · Wardley Map</div>
+        <div class="fw-desc">Mapa evolutivo de capacidades: ubica cada componente según su madurez y su visibilidad para el usuario.</div>
+      </div>
+    </div>
+
+    <button class="tip-toggle" onclick="toggleTip()">💡 Necesito una pista</button>
+    <div class="tip-content" id="tipContent">
+      Los síntomas apuntan a dos problemas distintos: (1) el modelo operativo está obsoleto y nadie entiende cómo funciona la organización internamente; (2) no hay claridad sobre qué capacidades son estratégicas y cuáles deberían externalizarse. Busca el framework que mapea la organización internamente y el que diferencia capacidades por madurez y valor estratégico.
+    </div>
+  </div>
+
+  <!-- CODE INPUT -->
+  <div class="code-section">
+    <div class="code-label">// Introduce el código de sala (2 letras seleccionadas, orden alfabético)</div>
+    <div class="code-input-row">
+      <input type="text" class="code-input" id="codeInput" maxlength="2" placeholder="__" oninput="this.value=this.value.toUpperCase()">
+      <button class="validate-btn" onclick="validateCode()">VALIDAR →</button>
+    </div>
+    <div class="code-result" id="codeResult"></div>
+  </div>
+
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">⏮</div>
+  <div class="success-title">PUNTO DE QUIEBRE CORREGIDO</div>
+  <div class="success-msg">
+    <strong>Operating Model Canvas + Wardley Map.</strong><br>
+    El OMC habría mapeado la organización tal como es. El Wardley Map habría identificado qué capacidades diferenciar y cuáles externalizar. El SWOT era inútil aquí: demasiado genérico para generar acción. NexaCorp recupera su primer año.
+  </div>
+  <a href="sala-2.html" class="next-btn">▶ AVANZAR A SALA 02</a>
+</div>
+
+<script>
+  // Team label
+  const team = sessionStorage.getItem('teamName') || '—';
+  document.getElementById('teamLabel').textContent = 'EQUIPO: ' + team.toUpperCase();
+
+  // Live timer
+  const start = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const TOTAL = 30 * 60 * 1000;
+  const timerEl = document.getElementById('timerLive');
+
+  function updateTimer() {
+    const elapsed = Date.now() - start;
+    const remaining = Math.max(0, TOTAL - elapsed);
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    timerEl.className = 'timer-live' + (remaining < 5*60000 ? ' danger' : remaining < 15*60000 ? ' warning' : '');
+  }
+
+  setInterval(updateTimer, 1000);
+  updateTimer();
+
+  // Framework selection (max 2)
+  let selected = [];
+
+  function toggleFW(el, id) {
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      selected = selected.filter(x => x !== id);
+    } else {
+      if (selected.length >= 2) return;
+      el.classList.add('selected');
+      selected.push(id);
+    }
+    // Auto-fill code input
+    if (selected.length === 2) {
+      document.getElementById('codeInput').value = selected.sort().join('');
+    }
+  }
+
+  function toggleTip() {
+    const t = document.getElementById('tipContent');
+    t.style.display = t.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Correct answer: B (Operating Model Canvas) + F (Wardley Map) → "BF"
+  const CORRECT = 'BF';
+
+  function validateCode() {
+    const val = document.getElementById('codeInput').value.trim().toUpperCase();
+    const res = document.getElementById('codeResult');
+    res.style.display = 'block';
+
+    if (val === CORRECT) {
+      sessionStorage.setItem('code1', val);
+      sessionStorage.setItem('room1done', Date.now());
+      res.className = 'code-result success';
+      res.textContent = '✓ CÓDIGO CORRECTO — Activando siguiente sala...';
+      setTimeout(() => document.getElementById('successOverlay').classList.add('show'), 800);
+    } else {
+      res.className = 'code-result error';
+      res.textContent = '✗ CÓDIGO INCORRECTO — Revisa tu selección de frameworks.';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALA 03 — La Resistencia Silenciosa · OPERATION REWIND</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+  :root{--navy:#003399;--white:#fff;--cyan:#00d4ff;--red:#ff3b3b;--amber:#ffb800;--green:#00e676;--surface:rgba(0,51,153,.12);--border:rgba(0,212,255,.2);--mono:'Share Tech Mono',monospace;--sans:'Inter',sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000814;color:var(--white);font-family:var(--sans);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,51,153,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,51,153,.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 24px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+  .room-id{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.2em}
+  .timer-live{font-family:var(--mono);font-size:20px;color:var(--white);letter-spacing:.1em}
+  .timer-live.warning{color:var(--amber)}.timer-live.danger{color:var(--red);animation:flicker .6s infinite}
+  @keyframes flicker{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35)}
+  .progress-row{display:flex;gap:6px;margin-bottom:40px}
+  .prog-step{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:2px}
+  .prog-step.done{background:var(--green)}.prog-step.active{background:var(--cyan)}
+  .room-eyebrow{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px}
+  .room-title{font-size:clamp(28px,6vw,48px);font-weight:900;letter-spacing:-.02em;margin-bottom:6px;line-height:1.1}
+  .room-area{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.15em;margin-bottom:36px}
+  .narrative-block{background:rgba(0,0,0,.45);border-left:3px solid var(--cyan);padding:24px 28px;margin-bottom:32px;border-radius:0 4px 4px 0}
+  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+  .narrative-block p{font-size:15px;line-height:1.8;color:rgba(255,255,255,.8);margin-bottom:10px}
+  .narrative-block p:last-child{margin-bottom:0}
+  .narrative-block strong{color:var(--white)}
+  .section-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* ADKAR reference */
+  .adkar-ref{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+  .adkar-pill{font-family:var(--mono);font-size:11px;padding:6px 12px;border-radius:2px;border:1px solid}
+  .adkar-pill.A{background:rgba(0,212,255,.08);border-color:rgba(0,212,255,.3);color:var(--cyan)}
+  .adkar-pill.D{background:rgba(0,51,153,.15);border-color:rgba(0,100,255,.3);color:#6699ff}
+  .adkar-pill.K{background:rgba(255,184,0,.08);border-color:rgba(255,184,0,.3);color:var(--amber)}
+  .adkar-pill.Ab{background:rgba(0,230,118,.08);border-color:rgba(0,230,118,.3);color:var(--green)}
+  .adkar-pill.R{background:rgba(255,59,59,.08);border-color:rgba(255,59,59,.3);color:var(--red)}
+
+  /* Stakeholder cards */
+  .stakeholders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:28px}
+  .sh-card{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:18px;transition:all .18s}
+  .sh-name{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
+  .sh-role{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:.1em;margin-bottom:12px}
+  .sh-quote{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:14px;font-style:italic;border-left:2px solid rgba(255,255,255,.1);padding-left:10px}
+  .sh-adkar-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);margin-bottom:6px}
+  .adkar-select{width:100%;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:3px;color:var(--white);font-family:var(--mono);font-size:13px;padding:8px 10px;outline:none;cursor:pointer;transition:border-color .2s;appearance:auto}
+  .adkar-select:focus{border-color:var(--cyan)}
+
+  /* Priority checkboxes */
+  .priority-section{margin-bottom:28px}
+  .priority-note{font-size:13px;color:rgba(255,255,255,.55);margin-bottom:16px;line-height:1.6}
+  .priority-note strong{color:var(--white)}
+  .priority-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+  .prio-card{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .18s}
+  .prio-card:hover{border-color:rgba(0,212,255,.3)}
+  .prio-card.checked{border-color:var(--cyan);background:rgba(0,212,255,.07)}
+  .prio-checkbox{width:18px;height:18px;border:1px solid var(--border);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--cyan);flex-shrink:0}
+  .prio-card.checked .prio-checkbox::after{content:'✓'}
+  .prio-name{font-size:13px;color:rgba(255,255,255,.8)}
+
+  .code-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:28px}
+  .code-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+  .code-input-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  input[type=text].code-input{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:3px;color:var(--cyan);font-family:var(--mono);font-size:28px;padding:12px 20px;width:180px;text-align:center;letter-spacing:.3em;outline:none;transition:border-color .2s}
+  input[type=text].code-input:focus{border-color:var(--cyan)}
+  .validate-btn{background:var(--navy);border:1px solid rgba(0,212,255,.4);color:var(--white);font-family:var(--mono);font-size:13px;letter-spacing:.15em;text-transform:uppercase;padding:14px 24px;border-radius:3px;cursor:pointer;transition:all .2s;flex-shrink:0}
+  .validate-btn:hover{border-color:var(--cyan)}
+  .code-result{margin-top:14px;font-family:var(--mono);font-size:13px;display:none}
+  .code-result.error{color:var(--red)}.code-result.success{color:var(--green)}
+  .tip-toggle{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.3);cursor:pointer;margin-top:20px;display:inline-block;background:none;border:none;padding:0;transition:color .2s}
+  .tip-toggle:hover{color:var(--amber)}
+  .tip-content{display:none;margin-top:12px;background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.15);border-radius:3px;padding:14px 18px;font-size:13px;color:rgba(255,184,0,.85);line-height:1.6}
+  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px}
+  .success-overlay.show{display:flex}
+  .success-icon{font-size:56px;margin-bottom:24px;animation:pop .4s ease-out}
+  @keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+  .success-title{font-size:32px;font-weight:900;color:var(--green);margin-bottom:12px}
+  .success-msg{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:32px;max-width:520px;line-height:1.8}
+  .next-btn{background:var(--navy);border:1px solid var(--green);color:var(--white);font-family:var(--mono);font-size:14px;letter-spacing:.15em;text-transform:uppercase;padding:16px 36px;border-radius:3px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .2s}
+  .next-btn:hover{background:rgba(0,230,118,.1)}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div class="room-id">// SALA 03 · LA RESISTENCIA SILENCIOSA</div>
+    <div class="timer-live" id="timerLive">45:00</div>
+    <div class="team-label" id="teamLabel">EQUIPO: —</div>
+  </div>
+  <div class="progress-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+    <div class="prog-step active"></div><div class="prog-step"></div>
+  </div>
+
+  <div>
+    <div class="room-eyebrow">// PUNTO DE QUIEBRE 03 · ENERO 2025</div>
+    <h1 class="room-title">La Resistencia<br>Silenciosa</h1>
+    <div class="room-area">CHANGE MANAGEMENT &amp; STAKEHOLDERS</div>
+  </div>
+
+  <div class="narrative-block">
+    <div class="eyebrow">// REWIND LOG — 15 ENERO 2025</div>
+    <p>La encuesta de cambio de NexaCorp decía que el <strong>73% de los empleados "apoyaba la transformación"</strong>. El equipo de change management lo celebró como un éxito y redujo el plan de comunicación.</p>
+    <p>Seis meses después, la adopción real de los nuevos procesos era del 18%. Los middle managers no habían cambiado nada. El sindicato bloqueó dos iniciativas clave. Y el nuevo CHRO llegó sin briefing sobre el programa.</p>
+    <p>Usa el modelo ADKAR para diagnosticar en qué fase falló cada stakeholder. Luego identifica los <strong>3 perfiles prioritarios</strong> en los que el equipo debería haberse enfocado primero.</p>
+  </div>
+
+  <div class="section-label">// Referencia ADKAR</div>
+  <div class="adkar-ref">
+    <div class="adkar-pill A">A · Awareness — Sabe que el cambio ocurrirá</div>
+    <div class="adkar-pill D">D · Desire — Quiere participar y apoyar</div>
+    <div class="adkar-pill K">K · Knowledge — Sabe cómo cambiar</div>
+    <div class="adkar-pill Ab">Ab · Ability — Puede demostrar las nuevas habilidades</div>
+    <div class="adkar-pill R">R · Reinforcement — El cambio se sostiene</div>
+  </div>
+
+  <div class="section-label">// Perfiles de stakeholders — Diagnóstico ADKAR</div>
+  <div class="stakeholders-grid">
+
+    <div class="sh-card">
+      <div class="sh-name">Elena V.</div>
+      <div class="sh-role">CEO · PATROCINADORA DEL PROGRAMA</div>
+      <div class="sh-quote">"La transformación es nuestra prioridad número uno. Lo decimos en cada board."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde falla:</div>
+      <select class="adkar-select" id="sh1" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No falla — está alineada</option>
+      </select>
+    </div>
+
+    <div class="sh-card">
+      <div class="sh-name">Carlos M.</div>
+      <div class="sh-role">CHRO · NUEVO DESDE HACE 3 MESES</div>
+      <div class="sh-quote">"Nadie me ha explicado exactamente qué implica el programa para RRHH. Supongo que cuando tenga tiempo lo estudiaré."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde falla:</div>
+      <select class="adkar-select" id="sh2" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No falla — está alineado</option>
+      </select>
+    </div>
+
+    <div class="sh-card">
+      <div class="sh-name">Marta A. y Pedro S.</div>
+      <div class="sh-role">MIDDLE MANAGERS · OPERACIONES Y LOGÍSTICA</div>
+      <div class="sh-quote">"Entendemos qué hay que hacer pero nuestros equipos tienen carga máxima. No tenemos tiempo real para implementar los nuevos procesos."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde fallan:</div>
+      <select class="adkar-select" id="sh3" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No fallan — están alineados</option>
+      </select>
+    </div>
+
+    <div class="sh-card">
+      <div class="sh-name">Sindicato CCOO</div>
+      <div class="sh-role">REPRESENTACIÓN LABORAL · 420 EMPLEADOS</div>
+      <div class="sh-quote">"Nadie nos ha consultado. Si esto implica cambios en condiciones laborales, vamos a frenarlo."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde falla:</div>
+      <select class="adkar-select" id="sh4" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No falla — está alineado</option>
+      </select>
+    </div>
+
+    <div class="sh-card">
+      <div class="sh-name">Equipo Early Adopters</div>
+      <div class="sh-role">15 LÍDERES INFORMALES · TECH Y PRODUCTO</div>
+      <div class="sh-quote">"Nosotros ya usamos las nuevas herramientas. Pero nadie nos ha dado visibilidad ni nos usa como embajadores."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde falla:</div>
+      <select class="adkar-select" id="sh5" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No fallan — están alineados</option>
+      </select>
+    </div>
+
+    <div class="sh-card">
+      <div class="sh-name">Clientes clave (Top 3)</div>
+      <div class="sh-role">EXTERNOS · AFECTADOS POR CAMBIOS EN SERVICIO</div>
+      <div class="sh-quote">"En los últimos 3 meses los tiempos de respuesta han empeorado. No sabemos si es temporal."</div>
+      <div class="sh-adkar-label">FASE ADKAR donde falla:</div>
+      <select class="adkar-select" id="sh6" onchange="checkAll()">
+        <option value="">— Selecciona —</option>
+        <option value="A">A · Awareness</option>
+        <option value="D">D · Desire</option>
+        <option value="K">K · Knowledge</option>
+        <option value="Ab">Ab · Ability</option>
+        <option value="R">R · Reinforcement</option>
+        <option value="OK">No fallan — están alineados</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="priority-section">
+    <div class="section-label">// Selecciona los 3 stakeholders prioritarios para intervenir PRIMERO</div>
+    <div class="priority-note">El equipo de change management tenía capacidad limitada. Debían elegir <strong>3 perfiles</strong> donde el impacto de una intervención temprana habría desbloqueado el mayor efecto en cascada.</div>
+    <div class="priority-grid" id="prioGrid">
+      <div class="prio-card" onclick="togglePrio(this,'1')"><div class="prio-checkbox"></div><div class="prio-name">Elena V. (CEO)</div></div>
+      <div class="prio-card" onclick="togglePrio(this,'2')"><div class="prio-checkbox"></div><div class="prio-name">Carlos M. (CHRO)</div></div>
+      <div class="prio-card" onclick="togglePrio(this,'3')"><div class="prio-checkbox"></div><div class="prio-name">Middle Managers</div></div>
+      <div class="prio-card" onclick="togglePrio(this,'4')"><div class="prio-checkbox"></div><div class="prio-name">Sindicato CCOO</div></div>
+      <div class="prio-card" onclick="togglePrio(this,'5')"><div class="prio-checkbox"></div><div class="prio-name">Early Adopters</div></div>
+      <div class="prio-card" onclick="togglePrio(this,'6')"><div class="prio-checkbox"></div><div class="prio-name">Clientes clave</div></div>
+    </div>
+  </div>
+
+  <button class="tip-toggle" onclick="toggleTip()">💡 Necesito una pista</button>
+  <div class="tip-content" id="tipContent">
+    El código son las 3 letras de los perfiles prioritarios en orden numérico (ej: "135"). Piensa en quién bloquea activamente si no actúas, quién puede multiplicar el cambio como embajador, y quién necesita orientación urgente porque acaba de llegar y tomará decisiones de RRHH. Los clientes y el CEO no son prioridad inmediata de intervención de change management.
+  </div>
+
+  <div class="code-section" style="margin-top:24px">
+    <div class="code-label">// Código de sala: números de los 3 stakeholders prioritarios en orden (ej: 234)</div>
+    <div class="code-input-row">
+      <input type="text" class="code-input" id="codeInput" maxlength="3" placeholder="___">
+      <button class="validate-btn" onclick="validateCode()">VALIDAR →</button>
+    </div>
+    <div class="code-result" id="codeResult"></div>
+  </div>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">⏮</div>
+  <div class="success-title">PUNTO DE QUIEBRE CORREGIDO</div>
+  <div class="success-msg">
+    <strong>CHRO (2) · Middle Managers (3) · Sindicato (4).</strong><br>
+    Carlos necesitaba un briefing inmediato para no tomar decisiones de RRHH sin contexto. Los managers estaban en "Ability": sabían qué hacer pero no tenían capacidad real. El sindicato estaba bloqueado en "Desire" por falta de consulta. Intervenirlos primero habría desbloqueado al 80% de la organización. NexaCorp recupera su tercer año.
+  </div>
+  <a href="sala-5.html" class="next-btn">▶ AVANZAR A SALA 04</a>
+</div>
+
+<script>
+  const team=sessionStorage.getItem('teamName')||'—';
+  document.getElementById('teamLabel').textContent='EQUIPO: '+team.toUpperCase();
+  const start=parseInt(sessionStorage.getItem('startTime')||Date.now());
+  const TOTAL=30*60*1000;
+  const timerEl=document.getElementById('timerLive');
+  function updateTimer(){const elapsed=Date.now()-start,remaining=Math.max(0,TOTAL-elapsed),m=Math.floor(remaining/60000),s=Math.floor((remaining%60000)/1000);timerEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;timerEl.className='timer-live'+(remaining<5*60000?' danger':remaining<15*60000?' warning':'')}
+  setInterval(updateTimer,1000);updateTimer();
+
+  let prios=[];
+  function togglePrio(el,id){
+    if(el.classList.contains('checked')){el.classList.remove('checked');prios=prios.filter(x=>x!==id)}
+    else{if(prios.length>=3)return;el.classList.add('checked');prios.push(id)}
+    if(prios.length===3){const sorted=[...prios].sort();document.getElementById('codeInput').value=sorted.join('')}
+  }
+
+  function checkAll(){}
+  function toggleTip(){const t=document.getElementById('tipContent');t.style.display=t.style.display==='block'?'none':'block'}
+
+  // Correct: stakeholders 2 (CHRO), 3 (Managers), 4 (Sindicato) → "234"
+  const CORRECT='234';
+  function validateCode(){
+    const val=document.getElementById('codeInput').value.trim();
+    const res=document.getElementById('codeResult');
+    res.style.display='block';
+    if(val===CORRECT){
+      sessionStorage.setItem('code3',val);sessionStorage.setItem('room3done',Date.now());
+      res.className='code-result success';res.textContent='✓ CÓDIGO CORRECTO — Activando siguiente sala...';
+      setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
+    }else{res.className='code-result error';res.textContent='✗ CÓDIGO INCORRECTO — Revisa qué perfiles bloqueaban realmente el cambio.'}
+  }
+</script>
+</body>
+</html>

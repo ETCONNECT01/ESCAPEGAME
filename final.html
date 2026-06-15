@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CÓDIGO REWIND — OPERATION REWIND · Capgemini Invent</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+  :root{--navy:#003399;--white:#fff;--cyan:#00d4ff;--red:#ff3b3b;--amber:#ffb800;--green:#00e676;--surface:rgba(0,51,153,.12);--border:rgba(0,212,255,.2);--mono:'Share Tech Mono',monospace;--sans:'Inter',sans-serif}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#000814;color:var(--white);font-family:var(--sans);min-height:100vh}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,51,153,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,51,153,.07) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+
+  .container{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:32px 24px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px;padding-bottom:16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px}
+  .room-id{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:.2em}
+  .timer-live{font-family:var(--mono);font-size:20px;color:var(--white);letter-spacing:.1em}
+  .timer-live.warning{color:var(--amber)}.timer-live.danger{color:var(--red);animation:flicker .6s infinite}
+  @keyframes flicker{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.35)}
+  .progress-row{display:flex;gap:6px;margin-bottom:40px}
+  .prog-step{flex:1;height:3px;background:rgba(255,255,255,.1);border-radius:2px}
+  .prog-step.done{background:var(--green)}.prog-step.active{background:var(--cyan)}
+
+  .section-label{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  /* Hero */
+  .final-hero{text-align:center;margin-bottom:48px}
+  .final-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cyan);letter-spacing:.3em;text-transform:uppercase;margin-bottom:16px}
+  .final-title{font-size:clamp(36px,8vw,72px);font-weight:900;letter-spacing:-.02em;line-height:.95;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,#a8c4ff 50%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .final-desc{font-size:16px;color:rgba(255,255,255,.6);line-height:1.7;max-width:560px;margin:0 auto}
+  .final-desc strong{color:var(--white)}
+
+  /* Code summary */
+  .codes-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:32px}
+  @media(max-width:500px){.codes-summary{grid-template-columns:repeat(3,1fr)}}
+  .code-pill{background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:12px 8px;text-align:center}
+  .code-pill-label{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.15em;margin-bottom:6px}
+  .code-pill-value{font-family:var(--mono);font-size:18px;color:var(--cyan);letter-spacing:.1em}
+  .code-pill.missing .code-pill-value{color:var(--red)}
+
+  /* Final code input */
+  .rewind-input-section{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:32px;margin-bottom:32px;text-align:center}
+  .rewind-label{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
+  .rewind-sublabel{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px}
+
+  .rewind-code-display{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+  .rewind-segment{background:rgba(0,0,0,.5);border:1px solid rgba(0,212,255,.3);border-radius:3px;padding:16px 14px;min-width:64px;text-align:center}
+  .rewind-seg-label{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.25);letter-spacing:.1em;margin-bottom:6px}
+  .rewind-seg-value{font-family:var(--mono);font-size:22px;color:var(--cyan);letter-spacing:.05em}
+
+  .sep{font-family:var(--mono);font-size:24px;color:rgba(255,255,255,.2);display:flex;align-items:center;padding-top:12px}
+
+  .activate-btn{background:linear-gradient(135deg,var(--navy) 0%,#0044cc 100%);border:1px solid rgba(0,212,255,.5);color:var(--white);font-family:var(--mono);font-size:15px;letter-spacing:.2em;text-transform:uppercase;padding:20px 48px;border-radius:3px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+  .activate-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(0,212,255,.12));opacity:0;transition:opacity .2s}
+  .activate-btn:hover{border-color:var(--cyan);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,51,153,.4)}
+  .activate-btn:hover::before{opacity:1}
+  .activate-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+  /* Success state */
+  .success-section{display:none;text-align:center;padding:48px 24px}
+  .success-section.show{display:block}
+  .success-burst{font-size:64px;margin-bottom:24px;animation:pop .5s ease-out}
+  @keyframes pop{0%{transform:scale(.3);opacity:0}80%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  .success-headline{font-size:clamp(28px,5vw,48px);font-weight:900;color:var(--green);margin-bottom:16px;line-height:1.1}
+  .success-copy{font-size:16px;line-height:1.8;color:rgba(255,255,255,.7);max-width:580px;margin:0 auto 40px}
+  .success-copy strong{color:var(--white)}
+
+  /* Time result */
+  .time-result-box{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:4px;padding:24px;margin:0 auto 40px;max-width:400px}
+  .time-label{font-family:var(--mono);font-size:10px;color:rgba(0,230,118,.6);letter-spacing:.2em;margin-bottom:8px}
+  .time-value{font-family:var(--mono);font-size:42px;color:var(--green);letter-spacing:.05em}
+  .time-sublabel{font-size:13px;color:rgba(255,255,255,.35);margin-top:6px}
+
+  /* Learnings */
+  .learnings{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:28px;margin-bottom:32px;text-align:left}
+  .learnings-title{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}
+  .learning-row{display:flex;gap:14px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.05)}
+  .learning-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .learning-num{font-family:var(--mono);font-size:12px;color:var(--cyan);width:24px;flex-shrink:0;margin-top:1px}
+  .learning-text{font-size:14px;color:rgba(255,255,255,.7);line-height:1.6}
+  .learning-text strong{color:var(--white)}
+
+  /* Incomplete warning */
+  .incomplete-warning{background:rgba(255,59,59,.07);border:1px solid rgba(255,59,59,.2);border-radius:4px;padding:20px;margin-bottom:24px;font-family:var(--mono);font-size:13px;color:rgba(255,100,100,.9);display:none}
+  .incomplete-warning.show{display:block}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div class="room-id">// CÓDIGO REWIND · ACTIVACIÓN FINAL</div>
+    <div class="timer-live" id="timerLive">45:00</div>
+    <div class="team-label" id="teamLabel">EQUIPO: —</div>
+  </div>
+  <div class="progress-row">
+    <div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div><div class="prog-step done"></div>
+  </div>
+
+  <!-- Pre-success state -->
+  <div id="preSuccess">
+    <div class="final-hero">
+      <div class="final-eyebrow">// ACTIVACIÓN FINAL</div>
+      <h1 class="final-title">CÓDIGO<br>REWIND</h1>
+      <p class="final-desc">Has llegado al último paso. Combina los códigos de las 5 salas para activar el sistema REWIND y revertir el colapso de NexaCorp.</p>
+    </div>
+
+    <div class="section-label">// Tus códigos de sala</div>
+    <div class="codes-summary" id="codesSummary"></div>
+
+    <div class="incomplete-warning" id="incompleteWarn">
+      ⚠ Faltan códigos de salas anteriores. Completa todas las salas antes de activar el código REWIND.
+    </div>
+
+    <div class="rewind-input-section">
+      <div class="rewind-label">// Secuencia REWIND</div>
+      <div class="rewind-sublabel">Combinación de los 5 códigos en orden de sala</div>
+      <div class="rewind-code-display" id="rewindDisplay"></div>
+      <button class="activate-btn" id="activateBtn" onclick="activateRewind()">⏮ ACTIVAR SISTEMA REWIND</button>
+    </div>
+  </div>
+
+  <!-- Success state -->
+  <div class="success-section" id="successSection">
+    <div class="success-burst">⏮</div>
+    <h2 class="success-headline">REWIND ACTIVADO.<br>NEXACORP SALVADA.</h2>
+    <p class="success-copy">
+      La transformación de NexaCorp está salvada. No porque tuvieras todas las respuestas desde el principio. <strong>Sino porque supiste hacer las preguntas correctas en el momento correcto.</strong>
+    </p>
+
+    <div class="time-result-box">
+      <div class="time-label">// TIEMPO TOTAL EMPLEADO</div>
+      <div class="time-value" id="finalTime">--:--</div>
+      <div class="time-sublabel">Registra este tiempo para el ranking del evento</div>
+    </div>
+
+    <div class="learnings">
+      <div class="learnings-title">// 4 DECISIONES QUE SALVARON NEXACORP</div>
+      <div class="learning-row">
+        <div class="learning-num">01</div>
+        <div class="learning-text"><strong>Diagnóstico accionable:</strong> Operating Model Canvas + Wardley Map en lugar de SWOT. El diagnóstico debe generar decisiones, no slides.</div>
+      </div>
+      <div class="learning-row">
+        <div class="learning-num">02</div>
+        <div class="learning-text"><strong>Datos con interpretación:</strong> La rotación de talento senior llevaba 8 meses deteriorándose en silencio. La tendencia sostenida supera al pico puntual.</div>
+      </div>
+      <div class="learning-row">
+        <div class="learning-num">03</div>
+        <div class="learning-text"><strong>Change management estratégico:</strong> CHRO, middle managers y sindicato eran los bloqueadores reales. El 73% de aprobación en encuesta no significa adhesión real.</div>
+      </div>
+      <div class="learning-row">
+        <div class="learning-num">04</div>
+        <div class="learning-text"><strong>Governance que decide:</strong> 4 workstreams cancelados, 3 niveles con escalado formal. Un steering committee que no decide es un coste, no un activo.</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding:16px 0 32px">
+      <div style="font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.2);letter-spacing:.15em;margin-bottom:12px">// CAPGEMINI INVENT · ENTERPRISE TRANSFORMATION · 2026</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.4)">Registra tu tiempo en el formulario del evento para aparecer en el ranking</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const team=sessionStorage.getItem('teamName')||'—';
+  document.getElementById('teamLabel').textContent='EQUIPO: '+team.toUpperCase();
+  const start=parseInt(sessionStorage.getItem('startTime')||Date.now());
+  const TOTAL=30*60*1000;
+  const timerEl=document.getElementById('timerLive');
+
+  function updateTimer(){
+    const e=Date.now()-start,r=Math.max(0,TOTAL-e),m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);
+    timerEl.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    timerEl.className='timer-live'+(r<5*60000?' danger':r<15*60000?' warning':'');
+  }
+  setInterval(updateTimer,1000);updateTimer();
+
+  // Load codes
+  const codes=[
+    {sala:'SALA 01',key:'code1'},
+    {sala:'SALA 02',key:'code2'},
+    {sala:'SALA 03',key:'code3'},
+    {sala:'SALA 04',key:'code5'},
+  ];
+
+  const summary=document.getElementById('codesSummary');
+  const display=document.getElementById('rewindDisplay');
+  let allComplete=true;
+
+  codes.forEach((c,i)=>{
+    const val=sessionStorage.getItem(c.key)||null;
+    if(!val) allComplete=false;
+
+    // Summary pill
+    const pill=document.createElement('div');
+    pill.className='code-pill'+(val?'':' missing');
+    pill.innerHTML=`<div class="code-pill-label">${c.sala}</div><div class="code-pill-value">${val||'??'}</div>`;
+    summary.appendChild(pill);
+
+    // Display segment
+    const seg=document.createElement('div');
+    seg.className='rewind-segment';
+    seg.innerHTML=`<div class="rewind-seg-label">S0${i+1}</div><div class="rewind-seg-value">${val||'??'}</div>`;
+    display.appendChild(seg);
+
+    if(i<4){
+      const sep=document.createElement('div');
+      sep.className='sep';sep.textContent='·';
+      display.appendChild(sep);
+    }
+  });
+
+  if(!allComplete){
+    document.getElementById('incompleteWarn').classList.add('show');
+    document.getElementById('activateBtn').disabled=true;
+  }
+
+  function fmt(ms){
+    const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+
+  function activateRewind(){
+    // Calculate elapsed time
+    const elapsed=Date.now()-start;
+    const timeStr=fmt(elapsed);
+    sessionStorage.setItem('finalTime',timeStr);
+    sessionStorage.setItem('completedAt',Date.now());
+
+    // Show success with animation
+    document.getElementById('preSuccess').style.display='none';
+    const ss=document.getElementById('successSection');
+    ss.classList.add('show');
+    document.getElementById('finalTime').textContent=timeStr;
+
+    // Confetti-like effect with emojis (CSS only)
+    document.title='✅ REWIND ACTIVADO — Capgemini Invent';
+  }
+</script>
+</body>
+</html>
