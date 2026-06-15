@@ -3,21 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPERATION REWIND — Capgemini Invent</title>
+<title>OPERATION REWIND — ET CONNECT · Capgemini Invent</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;600;700;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
   :root {
-    --navy: #003399;
-    --navy-dark: #001f6b;
-    --navy-deeper: #00113d;
-    --white: #ffffff;
-    --cyan: #00d4ff;
-    --red: #ff3b3b;
-    --amber: #ffb800;
-    --green: #00e676;
-    --surface: rgba(0, 51, 153, 0.12);
-    --border: rgba(0, 212, 255, 0.25);
+    /* Capgemini Brand */
+    --cap-blue: #0070AD;
+    --cap-blue-dark: #004E7C;
+    --cap-blue-deeper: #002D47;
+    --cap-teal: #12ABDB;
+    --cap-teal-light: #00C4D4;
+    --bg: #001828;
+    --bg-card: #002440;
+    --bg-card-hover: #002E52;
+    --white: #FFFFFF;
+    --text: #E8F4FD;
+    --text-muted: #8BB8D4;
+    --text-dim: #5A8FAD;
+    --green: #00D68F;
+    --amber: #FFB800;
+    --red: #FF4757;
+    --border: rgba(18,171,219,0.25);
+    --border-strong: rgba(18,171,219,0.5);
+    --surface: rgba(0,112,173,0.15);
+    --surface-hover: rgba(0,112,173,0.25);
     --mono: 'Share Tech Mono', monospace;
     --sans: 'Inter', sans-serif;
   }
@@ -25,34 +35,22 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #000814;
-    color: var(--white);
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--sans);
     min-height: 100vh;
-    overflow-x: hidden;
+    line-height: 1.6;
   }
 
-  /* Animated grid background */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
-    background-image:
-      linear-gradient(rgba(0,51,153,0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,51,153,0.08) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .glow-orb {
-    position: fixed;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,51,153,0.35) 0%, transparent 70%);
-    top: -200px;
-    right: -200px;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,112,173,0.25) 0%, transparent 60%),
+      linear-gradient(rgba(0,112,173,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,112,173,0.05) 1px, transparent 1px);
+    background-size: auto, 48px 48px, 48px 48px;
     pointer-events: none;
     z-index: 0;
   }
@@ -60,400 +58,774 @@
   .container {
     position: relative;
     z-index: 1;
-    max-width: 900px;
+    max-width: 880px;
     margin: 0 auto;
-    padding: 40px 24px 80px;
+    padding: 32px 24px 80px;
   }
 
-  /* Header */
-  .header {
+  /* TOPBAR */
+  .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 60px;
+    margin-bottom: 36px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
-  .brand {
-    font-family: var(--mono);
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .brand-dot {
+    width: 8px; height: 8px;
+    background: var(--cap-teal);
+    border-radius: 50%;
+  }
+
+  .brand-text {
+    font-family: var(--sans);
     font-size: 13px;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
   }
 
-  .brand span {
-    color: var(--cyan);
+  .brand-text span { color: var(--cap-teal); }
+
+  .timer-badge {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 8px 18px;
+    border-radius: 4px;
   }
 
-  .status-badge {
+  .timer-badge.warning { color: var(--amber); border-color: rgba(255,184,0,0.4); }
+  .timer-badge.danger  { color: var(--red); border-color: rgba(255,71,87,0.4); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+
+  .team-chip {
     font-family: var(--mono);
     font-size: 11px;
-    background: rgba(0,230,118,0.12);
-    color: var(--green);
-    border: 1px solid rgba(0,230,118,0.3);
-    padding: 5px 12px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  /* PROGRESS */
+  .progress-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 40px;
+    align-items: center;
+  }
+
+  .prog-step {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
     border-radius: 2px;
-    letter-spacing: 0.1em;
-    animation: pulse-badge 2s ease-in-out infinite;
+    transition: background 0.3s;
   }
 
-  @keyframes pulse-badge {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
+  .prog-step.done { background: var(--green); }
+  .prog-step.active { background: var(--cap-teal); }
 
-  /* Hero */
-  .hero {
-    text-align: center;
-    margin-bottom: 56px;
-  }
-
-  .year-tag {
+  .prog-label {
     font-family: var(--mono);
-    font-size: 12px;
-    color: var(--cyan);
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    display: block;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-left: 10px;
+    white-space: nowrap;
   }
 
-  .title {
-    font-size: clamp(52px, 10vw, 96px);
+  /* ROOM HEADER */
+  .room-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cap-teal);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .room-title {
+    font-size: clamp(32px, 6vw, 52px);
     font-weight: 900;
     letter-spacing: -0.02em;
-    line-height: 0.9;
+    line-height: 1.05;
+    color: var(--white);
     margin-bottom: 8px;
-    background: linear-gradient(135deg, #ffffff 0%, #a8c4ff 50%, var(--cyan) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
-  .title-sub {
+  .room-area {
     font-family: var(--mono);
-    font-size: clamp(14px, 3vw, 22px);
-    color: var(--cyan);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--cap-teal);
+    letter-spacing: 0.12em;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .room-area::before {
+    content: '';
+    width: 24px;
+    height: 2px;
+    background: var(--cap-teal);
+    border-radius: 1px;
+  }
+
+  /* NARRATIVE */
+  .narrative-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cap-teal);
+    border-radius: 0 6px 6px 0;
+    padding: 24px 28px;
     margin-bottom: 32px;
   }
 
-  .hero-desc {
-    font-size: 17px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.65);
-    max-width: 620px;
-    margin: 0 auto 40px;
-  }
-
-  .hero-desc strong {
-    color: var(--white);
-  }
-
-  /* Countdown */
-  .countdown-wrapper {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 32px;
-    margin-bottom: 48px;
-    text-align: center;
-  }
-
-  .countdown-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .countdown-timer {
-    font-family: var(--mono);
-    font-size: clamp(42px, 8vw, 72px);
-    color: var(--cyan);
-    letter-spacing: 0.05em;
-    line-height: 1;
-    text-shadow: 0 0 30px rgba(0,212,255,0.5);
-  }
-
-  .countdown-timer.warning { color: var(--amber); text-shadow: 0 0 30px rgba(255,184,0,0.5); }
-  .countdown-timer.danger  { color: var(--red);   text-shadow: 0 0 30px rgba(255,59,59,0.6); animation: flicker 0.5s ease-in-out infinite; }
-
-  @keyframes flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
-  }
-
-  /* Narrative block */
-  .narrative {
-    background: rgba(0,0,0,0.4);
-    border-left: 3px solid var(--cyan);
-    border-radius: 0 4px 4px 0;
-    padding: 28px 32px;
-    margin-bottom: 48px;
-  }
-
-  .narrative-eyebrow {
+  .narrative-block .eyebrow {
     font-family: var(--mono);
     font-size: 10px;
-    color: var(--cyan);
-    letter-spacing: 0.25em;
+    color: var(--cap-teal);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-bottom: 14px;
   }
 
-  .narrative p {
+  .narrative-block p {
     font-size: 15px;
     line-height: 1.8;
-    color: rgba(255,255,255,0.8);
+    color: var(--text);
     margin-bottom: 12px;
   }
 
-  .narrative p:last-child { margin-bottom: 0; }
+  .narrative-block p:last-child { margin-bottom: 0; }
+  .narrative-block strong { color: var(--white); font-weight: 700; }
 
-  .narrative strong { color: var(--white); }
-
-  /* Team registration */
-  .reg-section {
-    margin-bottom: 48px;
-  }
-
-  .section-title {
+  /* SECTION LABEL */
+  .section-label {
     font-family: var(--mono);
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.25em;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 12px;
   }
 
-  .section-title::after {
+  .section-label::after {
     content: '';
     flex: 1;
     height: 1px;
     background: var(--border);
   }
 
-  .form-group {
-    margin-bottom: 16px;
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
   }
+
+  .sel-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+    position: relative;
+  }
+
+  .sel-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--cap-teal);
+    transform: translateY(-1px);
+  }
+
+  .sel-card.selected {
+    background: rgba(18,171,219,0.12);
+    border-color: var(--cap-teal);
+    box-shadow: 0 0 0 1px var(--cap-teal), inset 0 0 20px rgba(18,171,219,0.05);
+  }
+
+  .sel-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 12px; right: 14px;
+    color: var(--cap-teal);
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 5px;
+    padding-right: 20px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  /* CASE FILE */
+  .case-file {
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+  }
+
+  .case-file .file-header {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .case-file p { font-size: 14px; color: var(--text); margin-bottom: 12px; }
+  .case-file p strong { color: var(--white); }
+  .case-file ul { padding-left: 18px; }
+  .case-file ul li {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+
+  /* CODE SECTION */
+  .code-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 28px;
+    margin-top: 8px;
+  }
+
+  .code-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .code-sublabel {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .code-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  input[type=text].code-input {
+    background: rgba(0,0,0,0.4);
+    border: 2px solid var(--border-strong);
+    border-radius: 4px;
+    color: var(--cap-teal);
+    font-family: var(--mono);
+    font-size: 32px;
+    padding: 12px 20px;
+    width: 170px;
+    text-align: center;
+    letter-spacing: 0.25em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input[type=text].code-input:focus {
+    border-color: var(--cap-teal);
+    box-shadow: 0 0 0 3px rgba(18,171,219,0.15);
+  }
+
+  .validate-btn {
+    background: var(--cap-blue);
+    border: none;
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.18s;
+    flex-shrink: 0;
+  }
+
+  .validate-btn:hover {
+    background: var(--cap-teal);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(18,171,219,0.3);
+  }
+
+  .code-result {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    padding: 12px 16px;
+    border-radius: 4px;
+  }
+
+  .code-result.error {
+    color: var(--red);
+    background: rgba(255,71,87,0.08);
+    border: 1px solid rgba(255,71,87,0.2);
+  }
+
+  .code-result.success {
+    color: var(--green);
+    background: rgba(0,214,143,0.08);
+    border: 1px solid rgba(0,214,143,0.2);
+  }
+
+  /* TIP */
+  .tip-toggle {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    cursor: pointer;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: color 0.2s;
+  }
+
+  .tip-toggle:hover { color: var(--amber); }
+
+  .tip-content {
+    display: none;
+    margin-top: 10px;
+    background: rgba(255,184,0,0.06);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #FFD166;
+    line-height: 1.7;
+  }
+
+  /* SUCCESS OVERLAY */
+  .success-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,10,20,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 24px;
+  }
+
+  .success-overlay.show { display: flex; }
+
+  .success-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .success-title {
+    font-size: clamp(24px, 5vw, 36px);
+    font-weight: 900;
+    color: var(--green);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .success-divider {
+    width: 40px; height: 2px;
+    background: var(--cap-teal);
+    margin: 16px auto;
+    border-radius: 1px;
+  }
+
+  .success-msg {
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 36px;
+    max-width: 520px;
+    line-height: 1.8;
+  }
+
+  .success-msg strong { color: var(--white); }
+
+  .next-btn {
+    background: var(--cap-blue);
+    border: none;
+    color: var(--white);
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+
+  .next-btn:hover {
+    background: var(--cap-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(18,171,219,0.35);
+  }
+</style>
+
+<style>
+  /* INDEX SPECIFIC */
+  .hero { text-align: center; padding: 48px 0 40px; }
+
+  .event-label {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cap-teal);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    background: rgba(18,171,219,0.08);
+    border: 1px solid rgba(18,171,219,0.2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+  }
+
+  .event-title {
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 900;
+    color: var(--cap-teal);
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+    margin-bottom: 6px;
+  }
+
+  .event-title .highlight { color: var(--cap-teal); }
+
+  .event-org {
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 32px;
+    letter-spacing: 0.01em;
+  }
+
+  .op-title {
+    font-size: clamp(52px, 12vw, 96px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 0.9;
+    background: linear-gradient(135deg, #FFFFFF 0%, #8DCFED 40%, var(--cap-teal) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+  }
+
+  .op-sub {
+    font-family: var(--mono);
+    font-size: clamp(13px, 2.5vw, 18px);
+    color: var(--cap-teal);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 600px;
+    margin: 0 auto 0;
+  }
+
+  .hero-desc strong { color: var(--white); }
+
+  /* COUNTDOWN */
+  .countdown-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .countdown-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .countdown-display {
+    font-family: var(--mono);
+    font-size: clamp(40px, 8vw, 64px);
+    color: var(--cap-teal);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(18,171,219,0.4);
+  }
+
+  /* FORM */
+  .form-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 32px;
+  }
+
+  .form-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .form-group { margin-bottom: 16px; }
 
   label {
     display: block;
     font-size: 13px;
-    color: rgba(255,255,255,0.55);
+    font-weight: 600;
+    color: var(--text-muted);
     margin-bottom: 8px;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.02em;
   }
 
-  input[type="text"] {
+  input[type=text].text-input {
     width: 100%;
-    background: rgba(0,0,0,0.5);
-    border: 1px solid var(--border);
-    border-radius: 3px;
+    background: rgba(0,0,0,0.35);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
     color: var(--white);
-    font-family: var(--mono);
-    font-size: 16px;
-    padding: 14px 16px;
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 13px 16px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  input[type="text"]::placeholder { color: rgba(255,255,255,0.2); }
-  input[type="text"]:focus { border-color: var(--cyan); }
+  input[type=text].text-input::placeholder { color: var(--text-dim); }
+
+  input[type=text].text-input:focus {
+    border-color: var(--cap-teal);
+    box-shadow: 0 0 0 3px rgba(18,171,219,0.12);
+  }
 
   .start-btn {
     width: 100%;
-    background: var(--navy);
-    border: 1px solid rgba(0,212,255,0.4);
+    background: var(--cap-blue);
+    border: none;
     color: var(--white);
-    font-family: var(--mono);
+    font-family: var(--sans);
     font-size: 15px;
-    letter-spacing: 0.15em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 18px;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
     margin-top: 8px;
-    position: relative;
-    overflow: hidden;
   }
 
-  .start-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(0,212,255,0.08) 100%);
-    opacity: 0;
-    transition: opacity 0.2s;
+  .start-btn:hover {
+    background: var(--cap-teal);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(18,171,219,0.35);
   }
 
-  .start-btn:hover { border-color: var(--cyan); transform: translateY(-1px); }
-  .start-btn:hover::before { opacity: 1; }
-  .start-btn:active { transform: translateY(0); }
+  .error-msg {
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 8px;
+    display: none;
+    padding: 10px 14px;
+    background: rgba(255,71,87,0.08);
+    border: 1px solid rgba(255,71,87,0.2);
+    border-radius: 4px;
+  }
 
-  /* Rooms overview */
+  /* ROOMS GRID */
   .rooms-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
     margin-bottom: 48px;
   }
 
   .room-card {
-    background: var(--surface);
+    background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
+    border-radius: 6px;
+    padding: 18px 20px;
     display: flex;
     align-items: flex-start;
-    gap: 16px;
+    gap: 14px;
+    transition: border-color 0.2s;
   }
 
-  .room-number {
+  .room-card:hover { border-color: var(--cap-teal); }
+
+  .room-num {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--cyan);
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.2);
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
+    color: var(--cap-teal);
+    background: rgba(18,171,219,0.1);
+    border: 1px solid rgba(18,171,219,0.2);
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
     flex-shrink: 0;
   }
 
   .room-info h3 {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--white);
-    margin-bottom: 4px;
+    margin-bottom: 3px;
   }
 
-  .room-info p {
-    font-size: 12px;
-    color: rgba(255,255,255,0.45);
-  }
+  .room-info p { font-size: 12px; color: var(--text-muted); }
 
-  /* Footer */
   .footer {
     text-align: center;
     padding-top: 40px;
     border-top: 1px solid var(--border);
     font-family: var(--mono);
     font-size: 11px;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 0.1em;
-  }
-
-  .error-msg {
-    color: var(--red);
-    font-size: 13px;
-    font-family: var(--mono);
-    margin-top: 8px;
-    display: none;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
   }
 </style>
 </head>
 <body>
-<div class="glow-orb"></div>
-
 <div class="container">
-  <header class="header">
-    <div class="brand">Capgemini <span>Invent</span> · Enterprise Transformation</div>
-    <div class="status-badge">● SISTEMA ACTIVO</div>
+
+  <header class="topbar">
+    <div class="brand-mark">
+      <div class="brand-dot"></div>
+      <div class="brand-text">Capgemini <span>Invent</span> · Enterprise Transformation</div>
+    </div>
+    <div class="team-chip">España · 2026</div>
   </header>
 
   <section class="hero">
-    <span class="year-tag">// MADRID · BARCELONA · 2026</span>
-    <h1 class="title">OPERATION<br>REWIND</h1>
-    <div class="title-sub">Enterprise Escape Room</div>
+    <div class="event-label">ET CONNECT 2026</div>
+    <div class="event-title">ET <span class="highlight">CONNECT</span></div>
+    <div class="event-org">by Capgemini Invent España</div>
+    <div class="op-title">OPERATION<br>REWIND</div>
+    <div class="op-sub">Enterprise Escape Room</div>
     <p class="hero-desc">
       <strong>Año 2031. NexaCorp ha colapsado.</strong> Una cadena de decisiones erróneas tomadas entre 2024 y 2026 destruyó la transformación que tú lideraste. El sistema REWIND te da una sola oportunidad de volver atrás. <strong>30 minutos. 4 salas. 4 decisiones críticas.</strong>
     </p>
   </section>
 
-  <div class="countdown-wrapper">
+  <div class="countdown-box">
     <div class="countdown-label">// Tiempo disponible para completar la misión</div>
-    <div class="countdown-timer" id="timer">30:00</div>
+    <div class="countdown-display">30:00</div>
   </div>
 
-  <div class="narrative">
-    <div class="narrative-eyebrow">// BRIEFING DE MISIÓN</div>
-    <p>El sistema REWIND ha identificado <strong>4 puntos de quiebre</strong> en la transformación de NexaCorp. Cada sala corresponde a una decisión crítica que se tomó mal. Debes resolverla correctamente para obtener el código de acceso a la siguiente sala.</p>
-    <p>Al completar las 4 salas, tendrás los fragmentos necesarios para activar el <strong>Código REWIND</strong> y revertir el colapso. El ranking final se basará en el tiempo empleado.</p>
-    <p>Trabaja en equipo. Cada miembro puede aportar perspectiva diferente. <strong>La transformación no la salva un consultor solo.</strong></p>
+  <div class="narrative-block" style="margin-bottom:32px">
+    <div class="eyebrow">// Briefing de misión</div>
+    <p>El sistema REWIND ha identificado <strong>4 puntos de quiebre</strong> en la transformación de NexaCorp. Cada sala corresponde a una decisión crítica que se tomó mal. Resuélvela correctamente para obtener el código de acceso a la siguiente sala.</p>
+    <p>Al completar las 4 salas, activa el <strong>Código REWIND</strong> y revierte el colapso. El ranking final se basa en el tiempo empleado. <strong>La transformación no la salva un consultor solo.</strong></p>
   </div>
 
-  <section class="reg-section">
-    <div class="section-title">// Registro de equipo</div>
+  <div class="form-section">
+    <div class="form-title">Registra tu equipo para empezar</div>
     <div class="form-group">
       <label for="teamName">Nombre del equipo</label>
-      <input type="text" id="teamName" placeholder="Ej: Transformers_BCN_01" maxlength="40">
+      <input type="text" class="text-input" id="teamName" placeholder="Ej: Transformers_BCN_01" maxlength="40">
     </div>
     <div class="form-group">
-      <label for="members">Integrantes (nombres separados por coma)</label>
-      <input type="text" id="members" placeholder="Ej: Ana G., Marcos P., Sofia R." maxlength="120">
+      <label for="members">Integrantes (separados por coma)</label>
+      <input type="text" class="text-input" id="members" placeholder="Ej: Ana G., Marcos P., Sofia R." maxlength="120">
     </div>
     <div class="error-msg" id="errorMsg">⚠ Introduce el nombre del equipo para continuar.</div>
-    <button class="start-btn" onclick="startGame()">▶ INICIAR MISIÓN REWIND</button>
-  </section>
+    <button class="start-btn" onclick="startGame()">▶ Iniciar misión REWIND</button>
+  </div>
 
-  <section>
-    <div class="section-title">// Estructura de la misión</div>
-    <div class="rooms-grid">
-      <div class="room-card">
-        <div class="room-number">01</div>
-        <div class="room-info">
-          <h3>El Diagnóstico Roto</h3>
-          <p>Strategy & Operating Model · 7 min</p>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-number">02</div>
-        <div class="room-info">
-          <h3>El Dato que Nadie Leyó</h3>
-          <p>Data & Analytics · 7 min</p>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-number">03</div>
-        <div class="room-info">
-          <h3>La Resistencia Silenciosa</h3>
-          <p>Change Management · 8 min</p>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-number">04</div>
-        <div class="room-info">
-          <h3>El Programa sin Norte</h3>
-          <p>Programme Management · 8 min</p>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-number" style="color:#00e676;border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.08);">🔓</div>
-        <div class="room-info">
-          <h3>Código REWIND</h3>
-          <p>Activación final · 3 min</p>
-        </div>
-      </div>
+  <div class="section-label">// Estructura de la misión</div>
+  <div class="rooms-grid">
+    <div class="room-card">
+      <div class="room-num">01</div>
+      <div class="room-info"><h3>El Diagnóstico Roto</h3><p>Strategy &amp; Operating Model · 7 min</p></div>
     </div>
-  </section>
+    <div class="room-card">
+      <div class="room-num">02</div>
+      <div class="room-info"><h3>El Dato que Nadie Leyó</h3><p>Data &amp; Analytics · 7 min</p></div>
+    </div>
+    <div class="room-card">
+      <div class="room-num">03</div>
+      <div class="room-info"><h3>La Resistencia Silenciosa</h3><p>Workforce &amp; Change · 8 min</p></div>
+    </div>
+    <div class="room-card">
+      <div class="room-num">04</div>
+      <div class="room-info"><h3>El Programa sin Norte</h3><p>Programme Management · 8 min</p></div>
+    </div>
+    <div class="room-card" style="border-color:rgba(0,214,143,0.3)">
+      <div class="room-num" style="color:var(--green);border-color:rgba(0,214,143,0.3);background:rgba(0,214,143,0.08)">🔓</div>
+      <div class="room-info"><h3>Código REWIND</h3><p>Activación final · 3 min</p></div>
+    </div>
+  </div>
 
   <footer class="footer">
-    OPERATION REWIND · Capgemini Invent Enterprise Transformation · 2026<br>
-    Sistema diseñado para uso interno — comunidad ET Madrid &amp; Barcelona
+    OPERATION REWIND · ET CONNECT 2026 · Capgemini Invent España
   </footer>
 </div>
 
@@ -462,35 +834,13 @@
     const name = document.getElementById('teamName').value.trim();
     const members = document.getElementById('members').value.trim();
     const err = document.getElementById('errorMsg');
-
-    if (!name) {
-      err.style.display = 'block';
-      return;
-    }
+    if (!name) { err.style.display = 'block'; return; }
     err.style.display = 'none';
-
-    // Save to sessionStorage
     sessionStorage.setItem('teamName', name);
     sessionStorage.setItem('members', members);
     sessionStorage.setItem('startTime', Date.now());
-    sessionStorage.setItem('currentRoom', '1');
-
     window.location.href = 'sala-1.html';
   }
-
-  // Decorative timer (not enforced — game is self-paced with 45min total)
-  // Real timing tracked via sessionStorage startTime
-  let seconds = 30 * 60;
-  const timerEl = document.getElementById('timer');
-
-  function fmt(s) {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-  }
-
-  // Timer starts when mission begins, shown here as static preview
-  timerEl.textContent = fmt(seconds);
 </script>
 </body>
 </html>
