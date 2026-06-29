@@ -368,26 +368,7 @@
 .hint-btn:hover { background:rgba(255,184,0,.12) }
 .hint-btn:disabled { opacity:.3; cursor:default }
 
-/* VALUE track */
-.value-track {
-  display:flex; gap:8px; justify-content:center;
-  background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.15);
-  border-radius:var(--r8); padding:14px;
-}
-.value-slot {
-  width:48px; height:52px; border:1.5px solid rgba(255,184,0,.2);
-  border-radius:var(--r8); display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:2px;
-  transition:all .4s; background:rgba(255,184,0,.04);
-}
-.value-slot.lit {
-  border-color:rgba(255,184,0,.6); background:rgba(255,184,0,.14);
-  box-shadow:0 0 12px rgba(255,184,0,.25);
-}
-.vs-letter { font-family:var(--mono); font-size:20px; font-weight:900;
-  color:rgba(255,184,0,.3); transition:color .4s }
-.value-slot.lit .vs-letter { color:var(--amber) }
-.vs-src { font-size:8px; color:var(--dim); letter-spacing:.05em }
+
 
 /* grid */
 .grid-wrap {
@@ -446,22 +427,22 @@
   <!-- ── HEADER ─────────────────────────────────────── -->
   <div class="sala-badge">SALA 01 · Corporate Experience</div>
   <h1 class="page-title">El Modelo<br>Operativo Fallido</h1>
-  <div class="page-subtitle">TARGET OPERATING MODEL · VALUE REALIZATION · SOPA DE LETRAS</div>
+  <div class="page-subtitle">CÓMO OPERA UNA ORGANIZACIÓN PARA ENTREGAR VALOR · SOPA DE LETRAS</div>
 
   <!-- ── CONTEXT ────────────────────────────────────── -->
   <div class="context-card">
-    <div class="context-label">// Situación</div>
-    <p>NexaCorp lanzó una transformación de Finance con el objetivo de mejorar eficiencia, reducir costes y capturar valor. Los resultados no son los esperados:</p>
-    <p>Procesos inconsistentes entre países · Alto volumen de trabajo manual · Bajo uso de soluciones · Beneficios no capturados.</p>
-    <p><strong>❗ Diagnóstico:</strong> Fallo en el diseño del modelo operativo y en la captura de valor.<br>
-    <strong>Misión:</strong> Reconstruir los fundamentos encontrando los 11 conceptos clave.</p>
+    <div class="context-label">// Corporate Experience — Diseñar cómo opera una organización para entregar valor</div>
+    <p>NexaCorp lanzó una transformación de Finance prometiendo eficiencia, reducción de costes y captura de valor. Años después, ninguno de esos objetivos se cumplió.</p>
+    <p>El problema no fue la tecnología ni el presupuesto. Fue que nadie diseñó <strong>cómo debía operar la organización</strong> para que el cambio funcionara: qué procesos, qué estructura, qué roles, qué métricas.</p>
+    <p><strong>Sin un modelo operativo claro, ninguna transformación entrega valor.</strong><br>
+    Vuestra misión: reconstruir los conceptos que NexaCorp ignoró.</p>
   </div>
 
   <!-- ── INSTRUCTIONS ───────────────────────────────── -->
   <div class="instruction-box" style="margin-bottom:24px">
     <div class="step"><span class="step-num">01</span><span>Haz clic en la <strong>primera letra</strong> de la palabra — quedará resaltada.</span></div>
     <div class="step"><span class="step-num">02</span><span>Haz clic en la <strong>última letra</strong> — se validará automáticamente.</span></div>
-    <div class="step"><span class="step-num">03</span><span>Al encontrar las 11 palabras, <strong>las letras VALUE se iluminarán en dorado</strong>.</span></div>
+    <div class="step"><span class="step-num">03</span><span>Al encontrar las 11 palabras, introduce el <strong>código oculto</strong> que se revela en dorado.</span></div>
   </div>
 
   <!-- ── MAIN LAYOUT ────────────────────────────────── -->
@@ -485,16 +466,7 @@
       </div>
 
       <!-- VALUE TRACK -->
-      <div>
-        <div class="section-head">// Código oculto — se revela al completar</div>
-        <div class="value-track">
-          <div class="value-slot" id="vs0"><div class="vs-letter">V</div><div class="vs-src">VARIACION</div></div>
-          <div class="value-slot" id="vs1"><div class="vs-letter">A</div><div class="vs-src">REALIZACION</div></div>
-          <div class="value-slot" id="vs2"><div class="vs-letter">L</div><div class="vs-src">CENTRALIZADO</div></div>
-          <div class="value-slot" id="vs3"><div class="vs-letter">U</div><div class="vs-src">AUTOMATIZACION</div></div>
-          <div class="value-slot" id="vs4"><div class="vs-letter">E</div><div class="vs-src">EFICIENCIA</div></div>
-        </div>
-      </div>
+
 
       <!-- WORD LIST -->
       <div>
@@ -524,6 +496,34 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- VALUE CODE INPUT -->
+  <div style="background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.22);
+    border-radius:var(--r12);padding:22px 24px;margin-bottom:20px">
+    <div style="font-family:var(--mono);font-size:10px;color:var(--amber);
+      letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px">// Código final</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">
+      Cuando hayas encontrado todas las palabras, las letras resaltadas en dorado forman el código oculto. Introdúcelo para completar la prueba.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="valueInput" maxlength="5"
+        style="background:var(--card2);border:2px solid rgba(255,184,0,.4);border-radius:var(--r8);
+          color:var(--amber);font-family:var(--mono);font-size:26px;font-weight:800;
+          letter-spacing:.4em;padding:12px 18px;text-align:center;outline:none;
+          transition:border-color .2s;width:180px;text-transform:uppercase"
+        placeholder="_ _ _ _ _"
+        oninput="this.value=this.value.toUpperCase()"
+        onkeydown="if(event.key==='Enter')validateValue()">
+      <button onclick="validateValue()"
+        style="background:var(--amber);border:none;color:#1a0800;font-family:var(--sans);
+          font-size:14px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+          padding:13px 24px;border-radius:var(--r8);cursor:pointer;transition:all .2s">
+        Validar →
+      </button>
+    </div>
+    <div id="valueResult" style="display:none;margin-top:12px;font-family:var(--mono);
+      font-size:12px;padding:10px 14px;border-radius:var(--r4)"></div>
   </div>
 
   <div class="nav-row">
@@ -641,6 +641,16 @@
     }
   }
 
+  // ── RESTORE STATE ───────────────────────────────────────
+  (function() {
+    const saved = sessionStorage.getItem('s1_found');
+    if (!saved) return;
+    try {
+      const words = JSON.parse(saved);
+      words.forEach(w => { if (WP[w]) markFound(w, WP[w]); });
+    } catch(e) {}
+  })();
+
   // ── HELPERS ──────────────────────────────────────────
   function cellEl(r, c) { return cellEls[r][c]; }
 
@@ -706,6 +716,7 @@
   // ── MARK FOUND ───────────────────────────────────────
   function markFound(word, positions) {
     found.add(word);
+    sessionStorage.setItem('s1_found', JSON.stringify([...found]));
     const valueIdxs = VALUE_MAP[word] || [];
     positions.forEach(([r,c], i) => {
       cellEl(r,c).classList.remove('sel');
@@ -723,10 +734,10 @@
     document.getElementById('pctStat').textContent = pct+'%';
     document.getElementById('progFill').style.width = pct+'%';
     setStatus('✓ <strong>'+word+'</strong> encontrada ('+n+'/11).', false);
-    if (n === 11) setTimeout(() => {
-      _markDone(1, 'SALA 01 — CORPORATE EXPERIENCE');
-      document.getElementById('successOverlay').classList.add('show');
-    }, 700);
+    if (n === 11) {
+      // All words found — show VALUE input prompt
+      setStatus('✓ ¡Todas encontradas! Ahora introduce el código que ves en dorado en el tablero.', false);
+    }
   }
 
   // ── HINT ─────────────────────────────────────────────
@@ -743,6 +754,32 @@
     const sub = fl.querySelector('.penalty-sub');
     if (sub) sub.textContent = 'Pista usada — coste 5 minutos';
     fl.style.display='flex'; setTimeout(()=>fl.style.display='none',2500);
+  }
+
+  async function validateValue() {
+    const val = document.getElementById('valueInput').value.trim().toUpperCase();
+    const res = document.getElementById('valueResult');
+    res.style.display = 'block';
+    if (found.size < 11) {
+      res.style.cssText = 'display:block;background:rgba(255,68,85,.07);border:1px solid rgba(255,68,85,.25);color:var(--red);font-family:var(--mono);font-size:12px;padding:10px 14px;border-radius:4px;margin-top:12px';
+      res.textContent = '✗ Aún no has encontrado todas las palabras (' + found.size + '/11).';
+      return;
+    }
+    const h = await sha256(val);
+    if (h === '8ec121c93e4a0de65f26e1500cb501e383531efb2c2ca9ec1d457478d6d3627b') {
+      res.style.cssText = 'display:block;background:rgba(0,201,122,.08);border:1px solid rgba(0,201,122,.3);color:var(--green);font-family:var(--mono);font-size:12px;padding:10px 14px;border-radius:4px;margin-top:12px';
+      res.textContent = '✓ Correcto — código VALUE validado.';
+      _markDone(1, 'SALA 01 — CORPORATE EXPERIENCE');
+      setTimeout(() => document.getElementById('successOverlay').classList.add('show'), 700);
+    } else {
+      res.style.cssText = 'display:block;background:rgba(255,68,85,.07);border:1px solid rgba(255,68,85,.25);color:var(--red);font-family:var(--mono);font-size:12px;padding:10px 14px;border-radius:4px;margin-top:12px';
+      res.textContent = '✗ Incorrecto. Fíjate en las letras resaltadas en dorado del tablero.';
+    }
+  }
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 </script>
 </body></html>

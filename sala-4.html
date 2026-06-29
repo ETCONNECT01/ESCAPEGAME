@@ -422,21 +422,21 @@
 
   <div class="sala-badge">SALA 04 · Workforce & Organisation</div>
   <h1 class="page-title">La Adopción<br>Imposible</h1>
-  <div class="page-subtitle">COPILOT · CHANGE MANAGEMENT · PUZZLE LÓGICO</div>
+  <div class="page-subtitle">CONSEGUIR QUE LAS PERSONAS ADOPTEN EL CAMBIO · PUZZLE LÓGICO</div>
 
   <div class="alert-card">
     <div class="alert-dot"></div>
     <div class="alert-text">
-      <strong>OPERATION REWIND — Sala 4.</strong><br>
-      En 2026, NexaCorp lanzó Copilot en cinco áreas de negocio. Cada área utilizó una estrategia de adopción diferente. <strong>Solo una consiguió una adopción sostenible y evitó el colapso.</strong><br>
-      Analizad todas las pistas y descubrid la única combinación que lo logró.
+      <strong>Workforce & Organisation — Conseguir que las personas adopten el cambio.</strong><br>
+      NexaCorp lanzó Copilot en cinco áreas con el mismo mensaje, el mismo presupuesto y el mismo plazo. Cada área eligió una estrategia diferente para gestionar el cambio. Solo una entendió que <strong>el cambio no se gestiona igual en todos los contextos</strong>: hay que diagnosticar primero la barrera real.<br>
+      Analizad las pistas y descubrid qué área lo hizo bien, por qué, y con qué resultado.
     </div>
   </div>
 
   <div class="instruction-box" style="margin-bottom:24px">
     <div class="step"><span class="step-num">01</span><span>Leed todas las pistas — cada una elimina combinaciones posibles.</span></div>
-    <div class="step"><span class="step-num">02</span><span>Relacionad cada área con su palanca, problema y nivel de adopción.</span></div>
-    <div class="step"><span class="step-num">03</span><span>Los 4 números de la combinación ganadora forman el <strong>código REWIND</strong>.</span></div>
+    <div class="step"><span class="step-num">02</span><span>Relacionad cada área con su palanca de cambio, su barrera inicial y su nivel de adopción.</span></div>
+    <div class="step"><span class="step-num">03</span><span>La combinación ganadora es la que demuestra que <strong>diagnosticar la barrera correcta es lo que hace funcionar el cambio</strong>.</span></div>
   </div>
 
   <div class="s4-layout">
@@ -554,7 +554,7 @@
         💡 Pista <span style="font-size:10px;opacity:.6">(no descuenta tiempo)</span>
       </button>
       <div class="hint-content" id="hintContent">
-        Pistas 3+11+12 encadenadas: el área con mayor adopción (Marketing) usó Casos de Uso y partía de Desconocimiento con un 90%. Traduce: Marketing=3, Casos de Uso=3, Desconocimiento=3, 90%=5.
+        Tres pistas son suficientes para deducir la combinación ganadora. Una vez la tengas, la tabla de códigos hace el resto.
       </div>
     </div>
   </div>
@@ -594,6 +594,13 @@
     _timerEl.className = 'timer' + (r < 5*60000 ? ' danger' : r < 12*60000 ? ' warning' : '');
   }
   setInterval(_updT, 1000); _updT();
+
+  // ── RESTORE STATE ────────────────────────────────────────
+  const _s4code = sessionStorage.getItem('s4_code');
+  if (_s4code) {
+    const inp = document.getElementById('codeInput');
+    if (inp) { inp.value = _s4code; syncSlots(_s4code); }
+  }
   // Progress track
   ['sala1done','sala2done','sala3done','sala4done'].forEach((k,i) => {
     const el = document.getElementById('pt'+i);
@@ -628,6 +635,7 @@
 
 
   function syncSlots(val) {
+    sessionStorage.setItem('s4_code', val);
     ['0','1','2','3'].forEach((_, i) => {
       const n = document.getElementById('csn'+i);
       const s = document.getElementById('cs'+i);
@@ -637,10 +645,10 @@
     });
   }
 
-  function validate() {
+  async function validate() {
     const val = document.getElementById('codeInput').value.trim();
     const res = document.getElementById('codeResult');
-    if (val === '3335') {
+    const _h4 = await sha256(val); if (_h4 === '0457c48d8fc39719542ac36d4b3ae96327a4b84270943287de7ce07424516b32') {
       _markDone(4,'SALA 04 — WORKFORCE & ORGANISATION');
       res.className='feedback ok'; res.textContent='✓ Correcto — código REWIND desbloqueado.';
       setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
@@ -648,6 +656,11 @@
       _applyPenalty('Código incorrecto');
       res.className='feedback err'; res.textContent='✗ Incorrecto (−2 min). Relee las pistas y deduce la combinación.';
     }
+  }
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 </script>
 </body></html>

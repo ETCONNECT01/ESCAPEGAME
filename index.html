@@ -217,10 +217,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
 .sala-mechanic{font-family:var(--mono);font-size:10px;color:var(--text-dim);
   margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
 /* Penalty counter in hub */
-.penalty-info{font-family:var(--mono);font-size:12px;color:rgba(255,71,87,.8);
-  display:flex;align-items:center;gap:8px}
-.penalty-info span{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.2);
-  padding:3px 10px;border-radius:3px}
+
 /* Final CTA */
 .final-cta{background:linear-gradient(135deg,rgba(0,214,143,.08),rgba(18,171,219,.06));
   border:1px solid rgba(0,214,143,.25);border-radius:8px;padding:24px;
@@ -265,11 +262,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
       <div class="mechanic-title">Cualquier orden</div>
       <div class="mechanic-desc">Las 4 salas son independientes. Puedes saltar y volver</div>
     </div>
-    <div class="mechanic">
-      <div class="mechanic-icon">⚠️</div>
-      <div class="mechanic-title">−2 min por error</div>
-      <div class="mechanic-desc">Cada respuesta incorrecta penaliza. Gana el equipo más rápido</div>
-    </div>
+
   </div>
 
   <div class="start-form">
@@ -280,11 +273,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
         placeholder="Ej: Transformers_BCN_01" maxlength="40"
         onkeydown="if(event.key==='Enter')startGame()">
     </div>
-    <div class="form-group">
-      <label for="members">Integrantes (separados por coma)</label>
-      <input type="text" class="text-input" id="members"
-        placeholder="Ej: Ana G., Marcos P., Sofia R." maxlength="120">
-    </div>
+
     <div class="error-msg" id="errorMsg">⚠ Introduce el nombre del equipo para continuar.</div>
     <button class="start-btn" onclick="startGame()">▶ Iniciar misión REWIND</button>
   </div>
@@ -299,10 +288,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
         <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div>
       </div>
       <div class="timer-badge" id="timerBadge">30:00</div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div class="penalty-info">−2min × <span id="penaltyCount">0</span></div>
-        <div class="team-chip" id="teamLabelHub">EQUIPO</div>
-      </div>
+      <div class="team-chip" id="teamLabelHub">EQUIPO</div>
     </header>
 
     <!-- Global progress -->
@@ -368,7 +354,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
     if (!name) { document.getElementById('errorMsg').style.display='block'; return; }
     if (!sessionStorage.getItem('startTime')) sessionStorage.setItem('startTime', String(Date.now()));
     sessionStorage.setItem('teamName', name);
-    sessionStorage.setItem('members', document.getElementById('members').value.trim());
+    
     showHub();
   }
 
@@ -396,9 +382,6 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
 
     // Penalty counter
     const pen = parseInt(sessionStorage.getItem('penalty')||'0');
-    const penCount = Math.round(pen / (2*60*1000));
-    document.getElementById('penaltyCount').textContent = penCount;
-
     if (done === 4) {
       document.getElementById('finalCta').classList.remove('locked');
       document.getElementById('finalCtaTitle').textContent = '✅ Las 4 salas completadas — ¡REWIND listo!';
@@ -418,9 +401,7 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
       const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
       el.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       el.className = 'timer-badge'+(r<5*60000?' danger':r<12*60000?' warning':'');
-      // Update penalty counter on each tick
-      const penCount = Math.round(parseInt(sessionStorage.getItem('penalty')||'0')/(2*60*1000));
-      document.getElementById('penaltyCount').textContent = penCount;
+  
     }
     if(_interval) clearInterval(_interval);
     _interval = setInterval(upd,1000); upd();

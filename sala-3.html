@@ -517,21 +517,21 @@
 
   <div class="sala-badge">SALA 03 · Enterprise Data & Analytics</div>
   <h1 class="page-title">El Dashboard<br>que no Cuadra</h1>
-  <div class="page-subtitle">MIGRACIÓN ISO 20022 · INVESTIGACIÓN · PROCESS MINING</div>
+  <div class="page-subtitle">CONVERTIR DATOS EN DECISIONES FIABLES · INVESTIGACIÓN · PROCESS MINING</div>
 
   <div class="alert-card">
     <div class="alert-dot"></div>
     <div class="alert-text">
-      <strong>🚨 ALERTA CRÍTICA.</strong>
-      El Dashboard de Migración ha sido publicado para el Comité. Se ha detectado una posible inconsistencia en los datos reportados. Investigad las 3 áreas y determinad la causa raíz antes de que se tome una decisión incorrecta.
+      <strong>🚨 ALERTA CRÍTICA — Enterprise Data & Analytics.</strong>
+      El Comité de Migración está a punto de tomar una decisión basada en un dashboard incorrecto. Los datos no son fiables cuando el proceso que los genera falla.<br>
+      Investigad las 3 áreas y encontrad la causa raíz antes de que se tome una decisión incorrecta.
     </div>
   </div>
 
   <div class="context-card">
-    <div class="context-label">// Contexto</div>
-    <p>NexaCorp migró sus sistemas legacy de pagos y transacciones hacia una nueva plataforma basada en estándares ISO 20022. El Comité de Migración usa este dashboard para decidir si el proyecto avanza de fase.</p>
-    <p><strong>El dashboard dice que está listo — pero algo no cuadra.</strong><br>
-    Investigad las 3 áreas. Cada una contiene una pista. Al final, decidid dónde está la causa raíz.</p>
+    <div class="context-label">// Convertir datos en decisiones fiables</div>
+    <p>NexaCorp migró sus sistemas legacy de pagos hacia ISO 20022. Para tomar la decisión de avanzar de fase, el Comité confía en un dashboard de migración. El dashboard muestra verde. Pero <strong>un dato correcto generado en el momento equivocado es un dato incorrecto</strong>.</p>
+    <p>Vuestro trabajo es lo que hace EDA: no solo leer los números, sino entender si el proceso que los produce es fiable. Investigad las 3 áreas y decidid dónde está el fallo.</p>
   </div>
 
   <!-- LOCAL PROGRESS -->
@@ -577,7 +577,7 @@
           <tr class="clickable" onclick="flagRow(this,'C002')"><td>C002</td><td>ES</td><td>Wave 1</td><td>MT940</td><td>camt.053</td><td>Active</td><td>870</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C003')"><td>C003</td><td>PT</td><td>Wave 2</td><td class="null-val">NULL</td><td>pacs.008</td><td>Active</td><td>430</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C004')"><td>C004</td><td>FR</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>610</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>ES</td><td>Wave 3</td><td class="null-val">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>PT</td><td>Wave 2</td><td class="null-val">NULL</td><td>camt.053</td><td>Inactive</td><td>0</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C006')"><td>C006</td><td>IT</td><td>Wave 3</td><td>MT940</td><td>camt.053</td><td>Active</td><td>320</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C007')"><td>C007</td><td>ES</td><td>Wave 3</td><td class="null-val">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C008')"><td>C008</td><td>DE</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>780</td><td>Yes</td></tr>
@@ -705,7 +705,7 @@
       <div class="section-head">// Código de resolución</div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <input type="text" class="code-input" id="codeInput" maxlength="16"
-          placeholder="PROCESS-GATE-04" style="width:240px;font-size:16px"
+          placeholder="____________" style="width:240px;font-size:16px"
           oninput="this.value=this.value.toUpperCase()">
         <button class="btn-primary" onclick="validate()">Validar →</button>
       </div>
@@ -822,12 +822,42 @@
   function markVisited(n) {
     if (!visited[n]) {
       visited[n] = true;
+      sessionStorage.setItem('s3_visited', JSON.stringify(visited));
       document.getElementById('tile'+n).classList.add('visited');
       document.getElementById('ptl'+n).classList.add('done');
       const count = Object.values(visited).filter(Boolean).length;
       document.getElementById('progressHint').textContent = 'Áreas investigadas: ' + count + ' / 3';
       if (count === 3) document.getElementById('resolution').classList.add('show');
     }
+  }
+
+  // ── RESTORE STATE ──────────────────────────────────────
+  const _s3v = sessionStorage.getItem('s3_visited');
+  if (_s3v) {
+    try {
+      const _vdata = JSON.parse(_s3v);
+      Object.entries(_vdata).forEach(([n, val]) => {
+        if (!val) return;
+        visited[parseInt(n)] = true;
+        document.getElementById('tile'+n).classList.add('visited');
+        document.getElementById('ptl'+n).classList.add('done');
+      });
+      const count = Object.values(visited).filter(Boolean).length;
+      document.getElementById('progressHint').textContent = 'Áreas investigadas: ' + count + ' / 3';
+      if (count === 3) document.getElementById('resolution').classList.add('show');
+    } catch(e) {}
+  }
+  const _s3k = sessionStorage.getItem('s3_kpis');
+  if (_s3k) {
+    try {
+      const _kdata = JSON.parse(_s3k);
+      _kdata.forEach(key => {
+        kpisOpened.add(key);
+        const card = document.getElementById('kpi-'+key);
+        if (card) card.classList.add('opened');
+      });
+      if (kpisOpened.size >= 5) document.getElementById('riskBtn').style.display = 'inline-block';
+    } catch(e) {}
   }
 
   function showModal(id) { document.getElementById(id).classList.add('show') }
@@ -842,6 +872,7 @@
 
   function openKpi(card, key) {
     card.classList.add('opened'); kpisOpened.add(key);
+    sessionStorage.setItem('s3_kpis', JSON.stringify([...kpisOpened]));
     const k = KPI_DATA[key];
     document.getElementById('kpiModalTitle').textContent = k.t + ' — ' + k.r;
     let body = '<div class="rule"><strong>DEFINICIÓN</strong>' + k.def + '</div>'
@@ -877,13 +908,13 @@
   function selRes(el, q, correct) {
     document.getElementById('resQ'+q).querySelectorAll('.res-opt').forEach(o => o.classList.remove('selected'));
     el.classList.add('selected'); res[q] = correct;
-    if (res[1]===true && res[2]===true) document.getElementById('codeInput').value = 'PROCESS-GATE-04';
+    if (res[1]===true && res[2]===true) document.getElementById('codeInput').value = atob('UFJPQ0VTUy1HQVRFLTA0');
   }
 
-  function validate() {
+  async function validate() {
     const val = document.getElementById('codeInput').value.trim().toUpperCase();
     const r   = document.getElementById('codeResult');
-    if (val === 'PROCESS-GATE-04') {
+    const _hpg = await sha256(val); if (_hpg === '2a681bd516370e20dd37fdfe56b2708fd456a2dbac46b1b6c4b85912645cff77') {
       _markDone(3,'SALA 03 — ENTERPRISE DATA & ANALYTICS');
       r.className='feedback ok'; r.textContent='✓ Correcto — caso resuelto.';
       setTimeout(()=>document.getElementById('successOverlay').classList.add('show'), 800);
@@ -904,6 +935,11 @@
       pen += 5 * 60 * 1000; sessionStorage.setItem('penalty', String(pen));
     }
     el.style.display = isOpen ? 'none' : 'block';
+  }
+
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
 </script>
 </body></html>

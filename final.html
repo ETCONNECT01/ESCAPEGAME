@@ -1,417 +1,387 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>REWIND ACTIVADO — ET CONNECT 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
   :root {
-    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
-    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
-    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
-    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
-    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --blue:#0070AD; --teal:#12ABDB; --bg:#000F1A; --card:#001E30; --card2:#002440;
+    --white:#FFF; --text:#D8EEF8; --muted:#7AAEC8; --dim:#4A7A96;
+    --green:#00C97A; --amber:#FFB800; --red:#FF4455;
+    --border:rgba(18,171,219,.18); --border2:rgba(18,171,219,.32);
+    --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --r8:8px; --r12:12px; --r16:16px;
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
-  body::before{content:'';position:fixed;inset:0;background:
-    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
-    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
-    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
-  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-  .brand-mark{display:flex;align-items:center;gap:10px}
-  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-  .brand-text span{color:var(--cap-teal)}
-  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
-  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
-  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
-  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
-    border-radius:3px;letter-spacing:.05em}
-  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
-  .room-title{font-size:clamp(28px,4vw,52px);font-weight:900;color:var(--white);
-    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
-  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}.narrative-block{background:var(--surface);border:1px solid var(--border);
-    border-radius:6px;padding:14px 18px;margin-bottom:16px}
-  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
-  .narrative-block p:last-child{margin-bottom:0}
-  .narrative-block strong{color:var(--white)}
-  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
-    border-bottom:1px solid var(--border)}
-  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
-  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
-  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
-    box-shadow:0 0 0 1px var(--cap-teal)}
-  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
-  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
-    margin-bottom:24px;display:flex;align-items:center;gap:12px}
-  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
-    animation:cdot 1s ease-in-out infinite}
-  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
-  .crisis-text strong{color:var(--white)}
-  .code-section{margin-top:24px}
-  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
-  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
-  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
-  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
-    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
-    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
-  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
-  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
-  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
-  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
-    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
-  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
-  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
-  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
-    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
-    transition:all .18s;margin-top:18px;display:block}
-  .tip-toggle:hover{background:rgba(255,184,0,.12)}
-  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
-    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
-    color:var(--text-muted);line-height:1.7}
-  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
-    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
-    flex-direction:column;text-align:center}
-  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-  .success-icon{font-size:60px;margin-bottom:18px}
-  .success-title{font-size:clamp(20px,3vw,32px);font-weight:900;color:var(--white);margin-bottom:14px}
-  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
-  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
-  .success-msg strong{color:var(--white)}
-  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
-  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
-  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
-    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
-  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
-    padding:24px 44px;text-align:center}
-  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
-  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; line-height:1.6 }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(0,112,173,.2) 0%, transparent 65%),
+      linear-gradient(rgba(18,171,219,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18,171,219,.04) 1px, transparent 1px);
+    background-size:auto, 48px 48px, 48px 48px;
+  }
+  .page { position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:32px 40px 80px }
 
-  @media(min-width:900px){
-    .stat-card-val{font-size:32px}
-    .stat-card{padding:22px}
-    .learnings{padding:32px}
-    .l-row{margin-bottom:22px;padding-bottom:22px}
-    .codes-row{gap:12px}
-    .pill-code{font-size:14px}
-    .s-headline{font-size:clamp(28px,4vw,42px)}
-    .s-copy{font-size:17px}
-    .debate-box{padding:28px}
-    .debate-q{padding:12px 16px;font-size:15px}
-    .final-cta-title{font-size:18px}
-    .final-cta-desc{font-size:14px}
-  }
-</style>
-<style>
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-  .brand-mark{display:flex;align-items:center;gap:10px}
-  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-  .brand-text span{color:var(--cap-teal)}
-  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:6px 12px;border-radius:3px}
-  /* Pre-activation */
-  .codes-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
-  @media(max-width:560px){.codes-row{grid-template-columns:repeat(2,1fr)}}
-  .code-pill{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:14px 8px;text-align:center}
-  .code-pill.done{border-color:rgba(0,214,143,.3)}
-  .code-pill.missing{border-color:rgba(255,71,87,.2)}
-  .pill-area{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:.08em;margin-bottom:5px}
-  .pill-code{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cap-teal)}
-  .code-pill.missing .pill-code{color:rgba(255,71,87,.6)}
-  .activate-btn{background:var(--cap-blue);border:none;color:var(--white);
-    font-family:var(--sans);font-size:16px;font-weight:700;letter-spacing:.08em;
-    text-transform:uppercase;padding:20px 48px;border-radius:4px;cursor:pointer;
-    transition:all .2s;display:block;margin:0 auto}
-  .activate-btn:hover{background:var(--cap-teal);transform:translateY(-2px);
-    box-shadow:0 8px 28px rgba(18,171,219,.35)}
-  .activate-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
-  .incomplete-warn{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.2);
-    border-radius:4px;padding:12px 16px;font-size:13px;color:#FF8090;margin-bottom:18px;display:none}
-  /* Countdown */
-  .countdown-anim{display:none;text-align:center;padding:60px 0}
-  .countdown-anim.show{display:block}
-  .count-num{font-family:var(--mono);font-size:120px;font-weight:900;color:var(--cap-teal);
-    line-height:1;animation:cPulse .8s ease-in-out}
-  @keyframes cPulse{0%{transform:scale(1.3);opacity:0}100%{transform:scale(1);opacity:1}}
-  .count-label{font-family:var(--mono);font-size:13px;color:var(--text-dim);
-    letter-spacing:.2em;margin-top:8px}
-  /* Success section */
-  .success-section{display:none;text-align:center}
-  .success-section.show{display:block;animation:fadeIn .5s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-  .s-burst{font-size:72px;margin-bottom:20px}
-  .s-headline{font-size:clamp(26px,5vw,42px);font-weight:900;color:var(--green);
-    line-height:1.1;margin-bottom:14px}
-  .s-copy{font-size:16px;color:var(--text);line-height:1.8;max-width:580px;
-    margin:0 auto 32px}
-  .s-copy strong{color:var(--white)}
-  /* Stats grid */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);
-    gap:12px;margin-bottom:28px;text-align:left}
-  .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:18px}
-  .stat-card-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);
-    letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
-  .stat-card-val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--cap-teal);
-    margin-bottom:4px}
-  .stat-card-sub{font-size:12px;color:var(--text-muted)}
-  .stat-card.green .stat-card-val{color:var(--green)}
-  .stat-card.red .stat-card-val{color:var(--red)}
-  /* Learnings */
-  .learnings{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
-    padding:26px;margin-bottom:28px;text-align:left}
-  .learnings-title{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:22px}
-  .l-row{display:flex;gap:16px;margin-bottom:18px;padding-bottom:18px;
-    border-bottom:1px solid rgba(255,255,255,.05)}
-  .l-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-  .l-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--cap-teal);
-    flex-shrink:0;width:24px;margin-top:2px}
-  .l-domain{font-family:var(--mono);font-size:9px;color:var(--cap-teal);
-    letter-spacing:.1em;margin-bottom:4px}
-  .l-insight{font-size:15px;color:var(--text);line-height:1.75}
-  .l-insight strong{color:var(--white)}
-  /* Debate questions — waiting room content */
-  .debate-box{background:linear-gradient(135deg,rgba(18,171,219,.06),rgba(0,112,173,.04));
-    border:1px solid rgba(18,171,219,.2);border-radius:8px;padding:24px;margin-bottom:28px;text-align:left}
-  .debate-title{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;
-    display:flex;align-items:center;gap:8px}
-  .debate-q{font-size:15px;color:var(--text);line-height:1.7;padding:10px 14px;
-    background:rgba(0,0,0,.25);border-radius:4px;margin-bottom:8px;
-    border-left:3px solid var(--cap-teal)}
-  .debate-q:last-child{margin-bottom:0}
-  /* Sala breakdown */
-  .sala-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
-  @media(max-width:480px){.sala-breakdown{grid-template-columns:1fr}}
-  .sb-card{background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:14px}
-  .sb-area{font-family:var(--mono);font-size:9px;color:var(--cap-teal);letter-spacing:.1em;margin-bottom:5px}
-  .sb-status{font-size:13px;color:var(--text-muted)}
-  .sb-status.done{color:var(--green);font-weight:600}
-  .sb-status.skip{color:rgba(255,184,0,.7)}
-  .footer-note{text-align:center;padding:24px 0;font-family:var(--mono);font-size:11px;
-    color:var(--text-dim);letter-spacing:.08em}
+  /* topbar */
+  .topbar { display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:14px 22px; margin-bottom:36px;
+    background:rgba(0,30,48,.9); border:1px solid var(--border2);
+    border-radius:var(--r16); flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:8px }
+  .brand-dot { width:8px; height:8px; background:var(--teal); border-radius:50% }
+  .brand-name { font-size:12px; font-weight:600; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.15em }
+  .brand-name em { color:var(--teal); font-style:normal }
+  .team-tag { font-family:var(--mono); font-size:11px; color:var(--teal);
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.25);
+    padding:6px 14px; border-radius:999px; letter-spacing:.08em }
+
+  /* PRE-ACTIVATION */
+  .section-head { font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase;
+    padding-bottom:8px; margin-bottom:16px; border-bottom:1px solid var(--border) }
+  .codes-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px }
+  @media(max-width:640px) { .codes-row { grid-template-columns:repeat(2,1fr) } }
+  .code-pill { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r8); padding:14px 10px; text-align:center; transition:border-color .3s }
+  .code-pill.done { border-color:rgba(0,201,122,.3) }
+  .code-pill.missing { border-color:rgba(255,68,85,.2) }
+  .pill-area { font-family:var(--mono); font-size:9px; color:var(--dim);
+    letter-spacing:.1em; margin-bottom:6px }
+  .pill-code { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--teal) }
+  .code-pill.missing .pill-code { color:rgba(255,68,85,.5) }
+
+  .sala-breakdown { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px }
+  @media(max-width:640px) { .sala-breakdown { grid-template-columns:repeat(2,1fr) } }
+  .sb-card { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r8); padding:12px 14px }
+  .sb-area { font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.1em; margin-bottom:5px }
+  .sb-status { font-size:12px; color:var(--muted) }
+  .sb-status.done { color:var(--green); font-weight:600 }
+
+  .warn { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.2);
+    border-radius:var(--r8); padding:12px 16px; font-size:13px;
+    color:#FF8090; margin-bottom:18px; display:none }
+
+  .activate-btn { background:var(--blue); border:none; color:var(--white);
+    font-family:var(--sans); font-size:16px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; padding:20px 48px; border-radius:var(--r8);
+    cursor:pointer; transition:all .2s; display:block; margin:0 auto }
+  .activate-btn:hover { background:var(--teal); transform:translateY(-2px) }
+  .activate-btn:disabled { opacity:.3; cursor:not-allowed; transform:none }
+
+  /* COUNTDOWN */
+  .countdown { display:none; text-align:center; padding:80px 0 }
+  .countdown.show { display:block }
+  .count-num { font-family:var(--mono); font-size:120px; font-weight:900;
+    color:var(--teal); line-height:1; animation:cpop .8s ease-in-out }
+  @keyframes cpop { 0%{transform:scale(1.3);opacity:0} 100%{transform:scale(1);opacity:1} }
+  .count-lbl { font-family:var(--mono); font-size:11px; color:var(--dim);
+    letter-spacing:.2em; margin-top:12px }
+
+  /* SUCCESS */
+  .success-section { display:none }
+  .success-section.show { display:block; animation:sin .5s ease-out }
+  @keyframes sin { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+
+  .rewind-hero { text-align:center; margin-bottom:48px }
+  .rewind-icon { font-size:72px; margin-bottom:16px }
+  .rewind-title { font-size:clamp(32px,5vw,52px); font-weight:900; color:var(--white);
+    line-height:1.0; letter-spacing:-.02em; margin-bottom:8px }
+  .rewind-sub { font-family:var(--mono); font-size:12px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase }
+
+  /* TIME DISPLAY */
+  .time-display { text-align:center; margin-bottom:48px;
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:var(--r16); padding:32px }
+  .time-label { font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase; margin-bottom:12px }
+  .time-val { font-family:var(--mono); font-size:72px; font-weight:900;
+    color:var(--green); line-height:1; letter-spacing:.05em;
+    text-shadow:0 0 30px rgba(0,201,122,.35) }
+  .time-team { font-size:14px; color:var(--muted); margin-top:10px;
+    font-family:var(--mono); letter-spacing:.06em }
+
+  /* AREA LEARNINGS */
+  .areas-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:48px }
+  @media(max-width:720px) { .areas-grid { grid-template-columns:1fr } }
+  .area-card { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r12); padding:22px 24px;
+    border-top:3px solid var(--teal); }
+  .area-tag { font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.18em; text-transform:uppercase; margin-bottom:6px }
+  .area-name { font-size:16px; font-weight:800; color:var(--white);
+    margin-bottom:14px; line-height:1.2 }
+  .area-block { margin-bottom:12px; padding-bottom:12px;
+    border-bottom:1px solid var(--border) }
+  .area-block:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none }
+  .area-block-label { font-family:var(--mono); font-size:9px; color:var(--red);
+    letter-spacing:.12em; text-transform:uppercase; margin-bottom:4px }
+  .area-block-label.sol { color:var(--green) }
+  .area-block-text { font-size:13px; color:var(--text); line-height:1.6 }
+  .area-block-text strong { color:var(--white) }
+
+  /* LEARNINGS (what you demonstrated) */
+  .learnings { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r12); padding:28px; margin-bottom:32px }
+  .learnings-title { font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase; margin-bottom:22px }
+  .l-row { display:flex; gap:16px; margin-bottom:16px;
+    padding-bottom:16px; border-bottom:1px solid var(--border) }
+  .l-row:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none }
+  .l-num { font-family:var(--mono); font-size:13px; font-weight:700;
+    color:var(--teal); flex-shrink:0; width:24px; margin-top:2px }
+  .l-domain { font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.1em; margin-bottom:4px }
+  .l-text { font-size:13px; color:var(--text); line-height:1.7 }
+  .l-text strong { color:var(--white) }
+
+  .footer { text-align:center; font-family:var(--mono); font-size:11px;
+    color:var(--dim); letter-spacing:.08em; padding-top:24px;
+    border-top:1px solid var(--border) }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="page">
+
   <header class="topbar">
-    <div class="brand-mark"><div class="brand-dot"></div>
-      <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
-    <div class="timer-badge" id="timerBadge">--:--</div>
-    <div class="team-chip" id="teamLabel">EQUIPO</div>
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Capgemini <em>Invent</em> · ET CONNECT 2026</div>
+    </div>
+    <div class="team-tag" id="teamLabel">EQUIPO</div>
   </header>
 
   <!-- PRE-ACTIVATION -->
   <div id="preSection">
-    <div class="room-eyebrow">// Sistema REWIND — activación final</div>
-    <h1 class="room-title">Código<br>REWIND</h1>
-    <div class="room-area">LAS 4 DIMENSIONES RECONSTRUIDAS</div>
-
-    <div class="narrative-block">
-      <div class="eyebrow">// Estado del sistema</div>
-      <p>Has reconstruido las 4 dimensiones de la transformación de NexaCorp. Activa el sistema REWIND para certificar el resultado y registrar el tiempo de vuestro equipo.</p>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--teal);
+      letter-spacing:.28em;text-transform:uppercase;margin-bottom:10px">
+      // Sistema REWIND — activación final
+    </div>
+    <h1 style="font-size:clamp(34px,5vw,56px);font-weight:900;color:var(--white);
+      line-height:1.0;letter-spacing:-.02em;margin-bottom:8px">
+      Código REWIND
+    </h1>
+    <div style="font-family:var(--mono);font-size:11px;color:var(--dim);
+      letter-spacing:.2em;text-transform:uppercase;margin-bottom:28px">
+      LAS 4 DIMENSIONES RECONSTRUIDAS
     </div>
 
-    <div class="section-label">// Códigos obtenidos</div>
+    <div class="section-head">// Códigos obtenidos</div>
     <div class="codes-row" id="codesRow"></div>
 
-    <div class="section-label" style="margin-top:16px">// Desglose por sala</div>
+    <div class="section-head">// Estado por área</div>
     <div class="sala-breakdown" id="salaBreakdown"></div>
 
-    <div class="incomplete-warn" id="incompleteWarn">⚠ Hay salas sin completar. Vuelve al centro de control y termínalas.</div>
+    <div class="warn" id="incompleteWarn">⚠ Hay salas sin completar. Vuelve al centro de control y termínalas antes de activar.</div>
     <button class="activate-btn" id="activateBtn" onclick="startCountdown()">⏮ Activar sistema REWIND</button>
   </div>
 
   <!-- COUNTDOWN -->
-  <div class="countdown-anim" id="countdownAnim">
+  <div class="countdown" id="countdownAnim">
     <div class="count-num" id="countNum">5</div>
-    <div class="count-label">// ACTIVANDO SISTEMA REWIND · CALCULANDO TIEMPO FINAL</div>
+    <div class="count-lbl">// Activando sistema REWIND · Calculando tiempo final</div>
   </div>
 
   <!-- SUCCESS -->
   <div class="success-section" id="successSection">
-    <div class="s-burst">⏮</div>
-    <h2 class="s-headline">REWIND ACTIVADO.<br>NEXACORP SALVADA.</h2>
-    <p class="s-copy"><strong>Habéis reconstruido las 4 dimensiones de la Enterprise Transformation.</strong> Guardad vuestro tiempo — lo anunciamos en la sesión conjunta.</p>
 
-    <div class="stats-grid" id="statsGrid"></div>
+    <div class="rewind-hero">
+      <div class="rewind-icon">⏮</div>
+      <div class="rewind-title">REWIND ACTIVADO.<br>NEXACORP SALVADA.</div>
+      <div class="rewind-sub">ET CONNECT 2026 · Capgemini Invent España</div>
+    </div>
 
-    <!-- Learnings -->
+    <!-- TIME -->
+    <div class="time-display">
+      <div class="time-label">// Tiempo final del equipo (con penalizaciones)</div>
+      <div class="time-val" id="finalTimeDisplay">--:--</div>
+      <div class="time-team" id="finalTeamDisplay"></div>
+    </div>
+
+    <!-- AREA SUMMARIES -->
+    <div class="section-head">// Las 4 áreas — problema y solución</div>
+    <div class="areas-grid">
+
+      <div class="area-card">
+        <div class="area-tag">Sala 01 · CEx — Diseñar cómo opera una organización para entregar valor</div>
+        <div class="area-name">El Modelo Operativo Fallido</div>
+        <div class="area-block">
+          <div class="area-block-label">❗ Problema</div>
+          <div class="area-block-text">NexaCorp lanzó una transformación de Finance sin un modelo operativo sólido. El resultado: procesos inconsistentes entre países, trabajo manual, baja adopción de soluciones y beneficios no capturados.</div>
+        </div>
+        <div class="area-block">
+          <div class="area-block-label sol">✓ Solución</div>
+          <div class="area-block-text"><strong>Diseñar el Target Operating Model antes de implementar.</strong> Estandarizar procesos, automatizar el trabajo manual, centralizar en un SSC y medir el impacto con KPIs reales.</div>
+        </div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-tag">Sala 02 · BT — Elegir y gobernar la tecnología que hace funcionar el negocio</div>
+        <div class="area-name">Decisiones Fallidas en Tecnología</div>
+        <div class="area-block">
+          <div class="area-block-label">❗ Problema</div>
+          <div class="area-block-text">El stack tecnológico colapsó por decisiones incorrectas en seguridad (Zero Trust ignorado), automatización insuficiente y falta de gobierno del programa.</div>
+        </div>
+        <div class="area-block">
+          <div class="area-block-label sol">✓ Solución</div>
+          <div class="area-block-text"><strong>Tecnología con base, seguridad y gobierno.</strong> Información crítica en zona restringida, Zero Trust sin excepciones, arquitectura con 6 componentes y TMO que monitoriza todo lo crítico.</div>
+        </div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-tag">Sala 03 · EDA — Convertir datos en decisiones fiables</div>
+        <div class="area-name">El Dashboard que no Cuadra</div>
+        <div class="area-block">
+          <div class="area-block-label">❗ Problema</div>
+          <div class="area-block-text">El dashboard de migración se publicó para el comité mostrando datos no validados. El refresh del BI se ejecutó a las 08:45, antes de que los controles regulatorios (09:05) y el KPI Gate (09:20) se completaran.</div>
+        </div>
+        <div class="area-block">
+          <div class="area-block-label sol">✓ Solución</div>
+          <div class="area-block-text"><strong>El problema no estaba en los datos — estaba en el proceso.</strong> El orden temporal importa: primero validar, luego publicar. El Process Mining reveló la desviación que los KPIs no mostraban.</div>
+        </div>
+      </div>
+
+      <div class="area-card">
+        <div class="area-tag">Sala 04 · W&O — Conseguir que las personas adopten el cambio</div>
+        <div class="area-name">La Adopción Imposible</div>
+        <div class="area-block">
+          <div class="area-block-label">❗ Problema</div>
+          <div class="area-block-text">NexaCorp lanzó Copilot en 5 áreas sin diagnosticar las barreras reales. Solo Marketing alcanzó adopción sostenible porque identificó el desconocimiento como barrera y usó Casos de Uso concretos.</div>
+        </div>
+        <div class="area-block">
+          <div class="area-block-label sol">✓ Solución</div>
+          <div class="area-block-text"><strong>El cambio se adopta atacando la barrera correcta con el método adecuado.</strong> Sin diagnóstico previo, el change management no funciona, independientemente del presupuesto.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- LEARNINGS -->
     <div class="learnings">
       <div class="learnings-title">// Lo que habéis demostrado</div>
       <div class="l-row">
         <div class="l-num">01</div>
-        <div><div class="l-domain">CORPORATE EXPERIENCE · VALUE</div>
-          <div class="l-insight"><strong>Una transformación existe para capturar valor, no para implementar soluciones.</strong> Sin armonizar procesos, automatizar el trabajo manual y medir con KPIs reales, los beneficios prometidos nunca llegan. La Value Realization Office cierra ese círculo.</div></div>
+        <div>
+          <div class="l-domain">CEx — Diseñar cómo opera una organización para entregar valor al cliente</div>
+          <div class="l-text"><strong>Una transformación existe para capturar valor, no para implementar soluciones.</strong> Sin modelo operativo sólido, los beneficios prometidos nunca llegan.</div>
+        </div>
       </div>
       <div class="l-row">
         <div class="l-num">02</div>
-        <div><div class="l-domain">BUSINESS TECHNOLOGY · A066</div>
-          <div class="l-insight"><strong>La tecnología necesita base, seguridad y gobierno.</strong> Zero Trust no acepta ninguna práctica insegura. La arquitectura IT tiene componentes verticales y transversales. La TMO monitoriza todo lo que puede romper el programa — sin excepciones.</div></div>
+        <div>
+          <div class="l-domain">BT — Elegir y gobernar la tecnología que hace funcionar el negocio</div>
+          <div class="l-text"><strong>La tecnología necesita base, seguridad y gobierno.</strong> Cada decisión incorrecta en estas tres dimensiones se paga cara.</div>
+        </div>
       </div>
       <div class="l-row">
         <div class="l-num">03</div>
-        <div><div class="l-domain">ENTERPRISE DATA & ANALYTICS · PROCESS-GATE-04</div>
-          <div class="l-insight"><strong>A veces el problema no está en el dato — está en el proceso.</strong> El dashboard mentía no por mala calidad ni mala definición, sino porque se publicó antes de completar las validaciones. La causa raíz era una desviación en la ejecución, no en los datos.</div></div>
+        <div>
+          <div class="l-domain">EDA — Convertir datos en decisiones fiables</div>
+          <div class="l-text"><strong>A veces el problema no está en el dato — está en el proceso.</strong> Los datos son fiables cuando el proceso que los genera también lo es.</div>
+        </div>
       </div>
       <div class="l-row">
         <div class="l-num">04</div>
-        <div><div class="l-domain">WORKFORCE & ORGANISATION · 3335</div>
-          <div class="l-insight"><strong>El cambio se adopta con casos de uso concretos, atacando la barrera real.</strong> Marketing alcanzó el 90% porque identificó el desconocimiento como su problema y usó ejemplos tangibles. La gestión del cambio sin diagnóstico previo no funciona.</div></div>
+        <div>
+          <div class="l-domain">W&O — Conseguir que las personas adopten el cambio</div>
+          <div class="l-text"><strong>El cambio se adopta cuando atacas la barrera real.</strong> Diagnosticar antes de actuar no es opcional — es el trabajo.</div>
+        </div>
       </div>
     </div>
 
-    <!-- Debate questions — waiting room -->
-    <div class="debate-box">
-      <div class="debate-title">💬 Preguntas para la sesión conjunta</div>
-      <div class="debate-q">¿Cuál de las 4 salas os costó más y por qué?</div>
-      <div class="debate-q">¿En cuál de estas áreas creéis que NexaCorp tenía el problema más grave?</div>
-      <div class="debate-q">¿Qué patrón común veis en los 4 fallos de NexaCorp?</div>
-      <div class="debate-q">¿Hay alguna decisión con la que no estéis de acuerdo? ¿Por qué?</div>
-    </div>
-
-    <div class="footer-note">OPERATION REWIND · ET CONNECT 2026 · Capgemini Invent España</div>
+    <div class="footer">OPERATION REWIND · ET CONNECT 2026 · Capgemini Invent España</div>
   </div>
+
 </div>
 
 <script>
   const _team = sessionStorage.getItem('teamName') || '—';
   document.getElementById('teamLabel').textContent = _team.toUpperCase();
   const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
-  const _TOTAL = 30*60*1000;
-
-  // Show remaining time (frozen after activation)
-  function updTimer() {
-    const pen = parseInt(sessionStorage.getItem('penalty')||'0');
-    const r = Math.max(0, _TOTAL-(Date.now()-_start)-pen);
-    const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
-    document.getElementById('timerBadge').textContent =
-      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-  }
-  const _ti = setInterval(updTimer,1000); updTimer();
-
-  function _submitForms(sala, tiempo) {
-    const eq = sessionStorage.getItem('teamName')||'Desconocido';
-    const url = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1='+encodeURIComponent(eq)+'&r2='+encodeURIComponent(sala)+'&r3='+encodeURIComponent(tiempo);
-    const ifr = document.createElement('iframe'); ifr.style.display='none'; ifr.src=url;
-    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),5000);
-  }
+  const _TOTAL = 30 * 60 * 1000;
 
   const CODES = [
-    {key:'sala1done', label:'CEx', code:'VALUE',     area:'Corporate Experience'},
-    {key:'sala2done', label:'BT',  code:'A066',      area:'Business Technology'},
-    {key:'sala3done', label:'EDA', code:'PROCESS-GATE-04', area:'Enterprise Data & Analytics'},
-    {key:'sala4done', label:'W&O', code:'3335',      area:'Workforce & Org'},
+    {key:'sala1done', label:'CEx',  code:'VALUE',          area:'Corporate Experience'},
+    {key:'sala2done', label:'BT',   code:'A066',           area:'Business Technology'},
+    {key:'sala3done', label:'EDA',  code:'PROCESS-GATE-04',area:'Enterprise Data & Analytics'},
+    {key:'sala4done', label:'W&O',  code:'3335',           area:'Workforce & Org'},
   ];
 
-  // Build codes row & breakdown
+  // Build pre-activation UI
   const cr = document.getElementById('codesRow');
   const sb = document.getElementById('salaBreakdown');
   let allDone = true;
   CODES.forEach(c => {
     const done = !!sessionStorage.getItem(c.key);
-    if(!done) allDone = false;
+    if (!done) allDone = false;
     const pill = document.createElement('div');
-    pill.className = 'code-pill '+(done?'done':'missing');
-    pill.innerHTML = '<div class="pill-area">'+c.label+'</div><div class="pill-code">'+(done?c.code:'??')+'</div>';
+    pill.className = 'code-pill ' + (done ? 'done' : 'missing');
+    pill.innerHTML = '<div class="pill-area">' + c.label + '</div>'
+      + '<div class="pill-code">' + (done ? c.code : '??') + '</div>';
     cr.appendChild(pill);
-    const sbCard = document.createElement('div');
-    sbCard.className = 'sb-card';
-    sbCard.innerHTML = '<div class="sb-area">'+c.area+'</div>'
-      + '<div class="sb-status '+(done?'done':'skip')+'">'+(done?'✅ Completada':'⏭ No completada')+'</div>';
-    sb.appendChild(sbCard);
+    const card = document.createElement('div');
+    card.className = 'sb-card';
+    card.innerHTML = '<div class="sb-area">' + c.area + '</div>'
+      + '<div class="sb-status ' + (done?'done':'') + '">' + (done?'✅ Completada':'⬜ Pendiente') + '</div>';
+    sb.appendChild(card);
   });
 
-  if(!allDone) {
-    document.getElementById('incompleteWarn').style.display='block';
+  if (!allDone) {
+    document.getElementById('incompleteWarn').style.display = 'block';
     document.getElementById('activateBtn').disabled = true;
   }
 
   function fmt(ms) {
-    const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);
-    return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    const m = Math.floor(ms/60000), s = Math.floor((ms%60000)/1000);
+    return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
   }
 
   function startCountdown() {
-    document.getElementById('preSection').style.display='none';
-    const anim = document.getElementById('countdownAnim');
-    anim.classList.add('show');
-    let count=5;
-    const numEl=document.getElementById('countNum');
-    numEl.textContent=count;
-    const iv=setInterval(()=>{
+    document.getElementById('preSection').style.display = 'none';
+    const cd = document.getElementById('countdownAnim');
+    cd.classList.add('show');
+    let count = 5;
+    document.getElementById('countNum').textContent = count;
+    const iv = setInterval(() => {
       count--;
-      if(count>0){
-        numEl.style.animation='none'; numEl.offsetHeight;
-        numEl.style.animation='cPulse .8s ease-in-out';
-        numEl.textContent=count;
+      if (count > 0) {
+        const el = document.getElementById('countNum');
+        el.style.animation = 'none'; el.offsetHeight;
+        el.style.animation = 'cpop .8s ease-in-out';
+        el.textContent = count;
       } else {
         clearInterval(iv);
-        anim.classList.remove('show');
+        cd.classList.remove('show');
         activate();
       }
-    },1000);
+    }, 1000);
   }
 
   function activate() {
-    clearInterval(_ti);
-    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    const elapsed=Date.now()-_start+pen;
-    const timeStr=fmt(elapsed);
-    const penErrors=Math.round(pen/(2*60*1000));
-    const rawElapsed=Date.now()-_start;
-    const rawStr=fmt(rawElapsed);
+    const pen     = parseInt(sessionStorage.getItem('penalty') || '0');
+    const elapsed = Date.now() - _start + pen;
+    const timeStr = fmt(elapsed);
+    sessionStorage.setItem('finalTime', timeStr);
 
-    sessionStorage.setItem('finalTime',timeStr);
-    _submitForms('✅ REWIND COMPLETO',timeStr);
+    // Submit to Forms
+    const eq  = sessionStorage.getItem('teamName') || '?';
+    const url = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1=' + encodeURIComponent(eq)
+              + '&r2=REWIND COMPLETO&r3=' + encodeURIComponent(timeStr);
+    const ifr = document.createElement('iframe');
+    ifr.style.display = 'none'; ifr.src = url;
+    document.body.appendChild(ifr); setTimeout(() => ifr.remove(), 5000);
 
-    // Build stats
-    const sg=document.getElementById('statsGrid');
-    const stats=[
-      {label:'Tiempo total (con penalizaciones)',val:timeStr,sub:'Tiempo real registrado',cls:'green'},
-      {label:'Tiempo sin penalizaciones',val:rawStr,sub:'Tiempo en el reloj',cls:''},
-      {label:'Errores cometidos',val:String(penErrors),sub:penErrors===0?'¡Sin errores!':penErrors+' × −2 min = −'+(penErrors*2)+' min',cls:penErrors>0?'red':'green'},
-      {label:'Penalización total',val:'−'+(penErrors*2)+' min',sub:'Sumada al tiempo final',cls:penErrors>0?'red':'green'},
-    ];
-    stats.forEach(s=>{
-      const d=document.createElement('div');
-      d.className='stat-card '+(s.cls||'');
-      d.innerHTML='<div class="stat-card-label">'+s.label+'</div>'
-        +'<div class="stat-card-val">'+s.val+'</div>'
-        +'<div class="stat-card-sub">'+s.sub+'</div>';
-      sg.appendChild(d);
-    });
-
-    document.getElementById('timerBadge').textContent=timeStr;
+    // Show success
+    document.getElementById('finalTimeDisplay').textContent = timeStr;
+    document.getElementById('finalTeamDisplay').textContent = eq.toUpperCase();
     document.getElementById('successSection').classList.add('show');
-    document.title='✅ REWIND ACTIVADO — '+timeStr+' — ET CONNECT 2026';
+    document.title = '✅ ' + timeStr + ' — ' + eq + ' — ET CONNECT 2026';
   }
 </script>
 </body></html>
