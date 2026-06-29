@@ -1,626 +1,549 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SALA 03 — EDA · OPERATION REWIND</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SALA 03 — Enterprise Data & Analytics · OPERATION REWIND</title>
 <style>
+
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
+  /* ── TOKENS ─────────────────────────────────────────── */
   :root {
-    /* Capgemini Brand */
-    --cap-blue: #0070AD;
-    --cap-blue-dark: #004E7C;
-    --cap-blue-deeper: #002D47;
-    --cap-teal: #12ABDB;
-    --cap-teal-light: #00C4D4;
-    --bg: #001828;
-    --bg-card: #002440;
-    --bg-card-hover: #002E52;
-    --white: #FFFFFF;
-    --text: #E8F4FD;
-    --text-muted: #8BB8D4;
-    --text-dim: #5A8FAD;
-    --green: #00D68F;
-    --amber: #FFB800;
-    --red: #FF4757;
-    --border: rgba(18,171,219,0.25);
-    --border-strong: rgba(18,171,219,0.5);
-    --surface: rgba(0,112,173,0.15);
-    --surface-hover: rgba(0,112,173,0.25);
-    --mono: 'Share Tech Mono', monospace;
-    --sans: 'Inter', sans-serif;
+    --blue:#0070AD; --teal:#12ABDB; --bg:#000F1A; --card:#001E30;
+    --card2:#002440; --white:#FFFFFF; --text:#D8EEF8; --muted:#7AAEC8;
+    --dim:#4A7A96; --green:#00C97A; --amber:#FFB800; --red:#FF4455;
+    --border:rgba(18,171,219,.18); --border2:rgba(18,171,219,.32);
+    --surface:rgba(0,112,173,.1);
+    --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --r4:4px; --r8:8px; --r12:12px; --r16:16px;
+    --shadow:0 4px 24px rgba(0,0,0,.4);
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  /* ── RESET ──────────────────────────────────────────── */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    line-height: 1.6;
+    background:var(--bg); color:var(--text);
+    font-family:var(--sans); line-height:1.6;
+    min-height:100vh;
   }
-
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
     background:
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,112,173,0.25) 0%, transparent 60%),
-      linear-gradient(rgba(0,112,173,0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,112,173,0.05) 1px, transparent 1px);
-    background-size: auto, 48px 48px, 48px 48px;
-    pointer-events: none;
-    z-index: 0;
+      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(0,112,173,.2) 0%, transparent 65%),
+      linear-gradient(rgba(18,171,219,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18,171,219,.04) 1px, transparent 1px);
+    background-size:auto, 48px 48px, 48px 48px;
   }
 
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 32px 24px 80px;
-  }
+  /* ── LAYOUT ─────────────────────────────────────────── */
+  .page { position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:28px 40px 72px }
 
-  /* TOPBAR */
+  /* ── TOPBAR ─────────────────────────────────────────── */
   .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 36px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 12px;
+    display:grid; grid-template-columns:1fr auto auto;
+    align-items:center; gap:20px;
+    padding:16px 24px; margin-bottom:32px;
+    background:rgba(0,30,48,.9); border:1px solid var(--border2);
+    border-radius:var(--r16); backdrop-filter:blur(8px);
+  }
+  .brand { display:flex; align-items:center; gap:10px }
+  .brand-dot { width:8px; height:8px; background:var(--teal); border-radius:50% }
+  .brand-name { font-size:12px; font-weight:600; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.15em }
+  .brand-name em { color:var(--teal); font-style:normal }
+
+  /* ── PROGRESS TRACK ─────────────────────────────────── */
+  .progress-track {
+    display:flex; gap:8px; align-items:center;
+    background:rgba(0,20,36,.8); border:1px solid var(--border);
+    border-radius:var(--r8); padding:8px 14px;
+  }
+  .pt-item {
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+    padding:4px 10px; border-radius:var(--r4);
+    color:var(--dim); background:rgba(255,255,255,.04);
+    border:1px solid transparent; white-space:nowrap;
+  }
+  .pt-item.done { color:var(--green); background:rgba(0,201,122,.08);
+    border-color:rgba(0,201,122,.2) }
+  .pt-item.active { color:var(--teal); background:rgba(18,171,219,.12);
+    border-color:rgba(18,171,219,.3); font-weight:700 }
+
+  /* ── TIMER ──────────────────────────────────────────── */
+  .timer {
+    font-family:var(--mono); font-size:28px; font-weight:800;
+    color:var(--white); background:var(--card2);
+    border:1px solid var(--border2); padding:10px 20px;
+    border-radius:var(--r8); text-align:center; min-width:120px;
+    letter-spacing:.04em;
+  }
+  .timer.warning { color:var(--amber); border-color:rgba(255,184,0,.35) }
+  .timer.danger { color:var(--red); border-color:rgba(255,68,85,.4);
+    animation:tpulse 1.4s ease-in-out infinite }
+  @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+  .team-tag {
+    font-family:var(--mono); font-size:11px; color:var(--teal);
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.25);
+    padding:6px 14px; border-radius:999px; letter-spacing:.08em;
   }
 
-  .brand-mark {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  /* ── PAGE HEADER ────────────────────────────────────── */
+  .sala-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:10px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:12px;
+  }
+  .sala-badge::before { content:''; width:20px; height:1px; background:var(--teal) }
+  .page-title {
+    font-size:clamp(32px,4.5vw,52px); font-weight:900; color:var(--white);
+    line-height:1.0; letter-spacing:-.02em; margin-bottom:8px;
+  }
+  .page-subtitle {
+    font-family:var(--mono); font-size:11px; color:var(--dim);
+    letter-spacing:.18em; text-transform:uppercase; margin-bottom:28px;
   }
 
-  .brand-dot {
-    width: 8px; height: 8px;
-    background: var(--cap-teal);
-    border-radius: 50%;
+  /* ── CONTEXT CARD ───────────────────────────────────── */
+  .context-card {
+    background:rgba(0,112,173,.08); border:1px solid rgba(18,171,219,.2);
+    border-left:3px solid var(--teal); border-radius:var(--r8);
+    padding:18px 20px; margin-bottom:24px;
+  }
+  .context-label {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:10px;
+  }
+  .context-card p { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:8px }
+  .context-card p:last-child { margin-bottom:0 }
+  .context-card strong { color:var(--white) }
+
+  /* ── ALERT CARD ─────────────────────────────────────── */
+  .alert-card {
+    background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    border-left:3px solid var(--red); border-radius:var(--r8);
+    padding:14px 18px; margin-bottom:24px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .alert-dot { width:8px; height:8px; background:var(--red); border-radius:50%;
+    flex-shrink:0; margin-top:5px; animation:adot 1.2s ease-in-out infinite }
+  @keyframes adot { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .alert-text { font-size:13px; color:rgba(255,255,255,.88); line-height:1.65 }
+  .alert-text strong { color:var(--white) }
+
+  /* ── SECTION HEADER ─────────────────────────────────── */
+  .section-head {
+    font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase;
+    padding-bottom:8px; margin-bottom:14px;
+    border-bottom:1px solid var(--border);
   }
 
-  .brand-text {
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
+  /* ── INSTRUCTION BOX ────────────────────────────────── */
+  .instruction-box {
+    background:rgba(18,171,219,.05); border:1px solid rgba(18,171,219,.14);
+    border-radius:var(--r8); padding:12px 16px;
+    font-size:13px; color:var(--muted); line-height:1.6;
   }
-
-  .brand-text span { color: var(--cap-teal); }
-
-  .timer-badge {
-    font-family: var(--mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: 0.05em;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 8px 18px;
-    border-radius: 4px;
+  .instruction-box strong { color:var(--white) }
+  .instruction-box .step {
+    display:flex; align-items:baseline; gap:10px;
+    padding:5px 0; border-bottom:1px solid rgba(255,255,255,.04);
   }
+  .instruction-box .step:last-child { border-bottom:none }
+  .step-num { font-family:var(--mono); font-size:11px; color:var(--teal);
+    flex-shrink:0; min-width:18px }
 
-  .timer-badge.warning { color: var(--amber); border-color: rgba(255,184,0,0.4); }
-  .timer-badge.danger  { color: var(--red); border-color: rgba(255,71,87,0.4); animation: pulse 1s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-
-  .team-chip {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 6px 12px;
-    border-radius: 3px;
-    letter-spacing: 0.05em;
+  /* ── CARDS ──────────────────────────────────────────── */
+  .card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r12); padding:20px 22px;
   }
-
-  /* PROGRESS */
-  .progress-row {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 40px;
-    align-items: center;
+  .card + .card { margin-top:14px }
+  .card-head {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px; padding-bottom:10px;
+    border-bottom:1px solid var(--border);
   }
-
-  .prog-step {
-    flex: 1;
-    height: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 2px;
-    transition: background 0.3s;
+  .card-tag {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.12em; text-transform:uppercase;
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.2);
+    padding:3px 10px; border-radius:var(--r4);
   }
+  .card-title { font-size:14px; font-weight:700; color:var(--white) }
+  .card-status { margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--dim) }
+  .card-status.done { color:var(--green) }
 
-  .prog-step.done { background: var(--green); }
-  .prog-step.active { background: var(--cap-teal); }
-
-  .prog-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    margin-left: 10px;
-    white-space: nowrap;
+  /* ── BUTTONS ────────────────────────────────────────── */
+  .btn-primary {
+    background:var(--blue); border:none; color:var(--white);
+    font-family:var(--sans); font-size:14px; font-weight:700;
+    letter-spacing:.05em; text-transform:uppercase;
+    padding:13px 28px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s, transform .15s;
   }
+  .btn-primary:hover { background:var(--teal); transform:translateY(-1px) }
 
-  /* ROOM HEADER */
-  .room-eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--cap-teal);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+  .btn-ghost {
+    background:rgba(18,171,219,.06); border:1px solid rgba(18,171,219,.2);
+    color:var(--teal); font-family:var(--mono); font-size:10px;
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:10px 18px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s;
   }
+  .btn-ghost:hover { background:rgba(18,171,219,.14) }
 
-  .room-title {
-    font-size: clamp(32px, 6vw, 52px);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    color: var(--white);
-    margin-bottom: 8px;
+  .btn-hint {
+    background:rgba(255,184,0,.07); border:1px solid rgba(255,184,0,.22);
+    color:var(--amber); font-family:var(--sans); font-size:13px;
+    padding:10px 16px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s; text-align:left; width:100%;
   }
+  .btn-hint:hover { background:rgba(255,184,0,.13) }
 
-  .room-area {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--cap-teal);
-    letter-spacing: 0.12em;
-    margin-bottom: 32px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  /* ── INPUT ──────────────────────────────────────────── */
+  .code-input {
+    background:var(--card2); border:2px solid var(--border2);
+    border-radius:var(--r8); color:var(--white);
+    font-family:var(--mono); font-size:22px; font-weight:700;
+    letter-spacing:.15em; padding:12px 18px; text-align:center; outline:none;
+    transition:border-color .2s;
   }
+  .code-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(18,171,219,.12) }
 
-  .room-area::before {
-    content: '';
-    width: 24px;
-    height: 2px;
-    background: var(--cap-teal);
-    border-radius: 1px;
+  /* ── FEEDBACK ───────────────────────────────────────── */
+  .feedback { display:none; margin-top:10px; padding:10px 14px; border-radius:var(--r8);
+    font-family:var(--mono); font-size:12px; letter-spacing:.03em }
+  .feedback.ok { background:rgba(0,201,122,.09); border:1px solid rgba(0,201,122,.3);
+    color:var(--green); display:block }
+  .feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.25);
+    color:var(--red); display:block }
+
+  /* ── PROGRESS BAR ───────────────────────────────────── */
+  .prog-bar { height:6px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden }
+  .prog-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal));
+    border-radius:999px; transition:width .5s ease; width:0% }
+
+  /* ── STATS ROW ──────────────────────────────────────── */
+  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px }
+  .stat-box { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r8); padding:12px 14px; text-align:center }
+  .stat-val { font-family:var(--mono); font-size:22px; font-weight:700; color:var(--teal) }
+  .stat-lbl { font-size:10px; color:var(--dim); margin-top:2px; letter-spacing:.05em }
+
+  /* ── PENALTY FLASH ──────────────────────────────────── */
+  .penalty-flash {
+    display:none; position:fixed; inset:0; z-index:300;
+    background:rgba(255,68,85,.14); backdrop-filter:blur(4px);
+    align-items:center; justify-content:center; pointer-events:none;
   }
-
-  /* NARRATIVE */
-  .narrative-block {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--cap-teal);
-    border-radius: 0 6px 6px 0;
-    padding: 24px 28px;
-    margin-bottom: 32px;
+  .penalty-box {
+    background:#160008; border:2px solid var(--red); border-radius:var(--r12);
+    padding:24px 40px; text-align:center;
+    animation:pbox .25s cubic-bezier(.175,.885,.32,1.275);
   }
+  @keyframes pbox { from{transform:scale(.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .penalty-num { font-family:var(--mono); font-size:20px; color:var(--red);
+    font-weight:700; letter-spacing:.05em }
+  .penalty-sub { font-size:12px; color:var(--muted); margin-top:6px }
 
-  .narrative-block .eyebrow {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--cap-teal);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-
-  .narrative-block p {
-    font-size: 15px;
-    line-height: 1.8;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-
-  .narrative-block p:last-child { margin-bottom: 0; }
-  .narrative-block strong { color: var(--white); font-weight: 700; }
-
-  /* SECTION LABEL */
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* CARDS */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .sel-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 18px;
-    cursor: pointer;
-    transition: all 0.18s;
-    user-select: none;
-    position: relative;
-  }
-
-  .sel-card:hover {
-    background: var(--bg-card-hover);
-    border-color: var(--cap-teal);
-    transform: translateY(-1px);
-  }
-
-  .sel-card.selected {
-    background: rgba(18,171,219,0.12);
-    border-color: var(--cap-teal);
-    box-shadow: 0 0 0 1px var(--cap-teal), inset 0 0 20px rgba(18,171,219,0.05);
-  }
-
-  .sel-card.selected::after {
-    content: '✓';
-    position: absolute;
-    top: 12px; right: 14px;
-    color: var(--cap-teal);
-    font-weight: 700;
-    font-size: 14px;
-  }
-
-  .card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 5px;
-    padding-right: 20px;
-  }
-
-  .card-desc {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.55;
-  }
-
-  /* CASE FILE */
-  .case-file {
-    background: var(--bg-card);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 6px;
-    padding: 22px 24px;
-    margin-bottom: 28px;
-  }
-
-  .case-file .file-header {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 0.15em;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .case-file p { font-size: 14px; color: var(--text); margin-bottom: 12px; }
-  .case-file p strong { color: var(--white); }
-  .case-file ul { padding-left: 18px; }
-  .case-file ul li {
-    font-size: 14px;
-    color: var(--text);
-    margin-bottom: 8px;
-    line-height: 1.6;
-  }
-
-  /* CODE SECTION */
-  .code-section {
-    background: var(--bg-card);
-    border: 1px solid var(--border-strong);
-    border-radius: 6px;
-    padding: 28px;
-    margin-top: 8px;
-  }
-
-  .code-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .code-sublabel {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-  }
-
-  .code-input-row {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
-  input[type=text].code-input {
-    background: rgba(0,0,0,0.4);
-    border: 2px solid var(--border-strong);
-    border-radius: 4px;
-    color: var(--cap-teal);
-    font-family: var(--mono);
-    font-size: 32px;
-    padding: 12px 20px;
-    width: 170px;
-    text-align: center;
-    letter-spacing: 0.25em;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-
-  input[type=text].code-input:focus {
-    border-color: var(--cap-teal);
-    box-shadow: 0 0 0 3px rgba(18,171,219,0.15);
-  }
-
-  .validate-btn {
-    background: var(--cap-blue);
-    border: none;
-    color: var(--white);
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 16px 28px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.18s;
-    flex-shrink: 0;
-  }
-
-  .validate-btn:hover {
-    background: var(--cap-teal);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(18,171,219,0.3);
-  }
-
-  .code-result {
-    margin-top: 14px;
-    font-size: 14px;
-    font-weight: 600;
-    display: none;
-    padding: 12px 16px;
-    border-radius: 4px;
-  }
-
-  .code-result.error {
-    color: var(--red);
-    background: rgba(255,71,87,0.08);
-    border: 1px solid rgba(255,71,87,0.2);
-  }
-
-  .code-result.success {
-    color: var(--green);
-    background: rgba(0,214,143,0.08);
-    border: 1px solid rgba(0,214,143,0.2);
-  }
-
-  /* TIP */
-  .tip-toggle {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-dim);
-    cursor: pointer;
-    margin-top: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: none;
-    border: none;
-    padding: 0;
-    transition: color 0.2s;
-  }
-
-  .tip-toggle:hover { color: var(--amber); }
-
-  .tip-content {
-    display: none;
-    margin-top: 10px;
-    background: rgba(255,184,0,0.06);
-    border: 1px solid rgba(255,184,0,0.2);
-    border-radius: 4px;
-    padding: 14px 18px;
-    font-size: 13px;
-    color: #FFD166;
-    line-height: 1.7;
-  }
-
-  /* SUCCESS OVERLAY */
+  /* ── SUCCESS OVERLAY ────────────────────────────────── */
   .success-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,10,20,0.92);
-    backdrop-filter: blur(8px);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 40px 24px;
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(0,6,14,.96); backdrop-filter:blur(10px);
+    align-items:center; justify-content:center;
+    padding:40px 24px; flex-direction:column; text-align:center;
   }
-
-  .success-overlay.show { display: flex; }
-
-  .success-icon {
-    font-size: 64px;
-    margin-bottom: 24px;
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-
-  @keyframes popIn {
-    0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  }
-
-  .success-title {
-    font-size: clamp(24px, 5vw, 36px);
-    font-weight: 900;
-    color: var(--green);
-    margin-bottom: 8px;
-    letter-spacing: -0.01em;
-  }
-
-  .success-divider {
-    width: 40px; height: 2px;
-    background: var(--cap-teal);
-    margin: 16px auto;
-    border-radius: 1px;
-  }
-
-  .success-msg {
-    font-size: 15px;
-    color: var(--text);
-    margin-bottom: 36px;
-    max-width: 520px;
-    line-height: 1.8;
-  }
-
-  .success-msg strong { color: var(--white); }
-
+  .success-overlay.show { display:flex; animation:sovl .4s ease-out }
+  @keyframes sovl { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+  .success-icon { font-size:64px; margin-bottom:20px }
+  .success-title { font-size:clamp(24px,4vw,38px); font-weight:900; color:var(--white);
+    margin-bottom:14px; letter-spacing:-.01em }
+  .success-divider { width:40px; height:2px; background:var(--teal); margin:0 auto 18px }
+  .success-msg { font-size:14px; color:var(--text); line-height:1.75;
+    max-width:520px; margin-bottom:28px }
+  .success-msg strong { color:var(--white) }
   .next-btn {
-    background: var(--cap-blue);
-    border: none;
-    color: var(--white);
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 18px 40px;
-    border-radius: 4px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    transition: all 0.2s;
+    background:var(--blue); color:var(--white); font-family:var(--sans);
+    font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:14px 32px; border-radius:var(--r8); text-decoration:none;
+    transition:background .18s, transform .15s; display:inline-block;
+  }
+  .next-btn:hover { background:var(--teal); transform:translateY(-2px) }
+
+  /* ── NAV ACTIONS ────────────────────────────────────── */
+  .nav-row { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap }
+  .nav-hub {
+    flex:1; min-width:150px; text-align:center;
+    background:var(--card); border:1px solid var(--border); color:var(--muted);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:border-color .18s;
+  }
+  .nav-hub:hover { border-color:var(--teal) }
+  .nav-skip {
+    flex:1; min-width:150px; text-align:center;
+    background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.22); color:var(--amber);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:background .18s;
+  }
+  .nav-skip:hover { background:rgba(255,184,0,.12) }
+
+  /* ── HINT CONTENT ───────────────────────────────────── */
+  .hint-content {
+    display:none; background:rgba(255,184,0,.05);
+    border:1px solid rgba(255,184,0,.14); border-radius:var(--r8);
+    padding:12px 16px; margin-top:8px;
+    font-size:13px; color:var(--muted); line-height:1.7;
   }
 
-  .next-btn:hover {
-    background: var(--cap-teal);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(18,171,219,0.35);
+  /* ── OPTION BUTTONS ─────────────────────────────────── */
+  .opts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px }
+  .opt {
+    flex:1; min-width:140px; background:rgba(0,0,0,.25);
+    border:1px solid var(--border); border-radius:var(--r8);
+    padding:12px 14px; cursor:pointer; text-align:center;
+    font-size:13px; color:var(--text); transition:border-color .15s, background .15s;
+    user-select:none;
   }
-</style>
+  .opt:hover { border-color:var(--teal); background:rgba(18,171,219,.08) }
+  .opt.correct { background:rgba(0,201,122,.1); border-color:var(--green); color:var(--green); font-weight:700 }
+  .opt.wrong { background:rgba(255,68,85,.08); border-color:var(--red); color:var(--red) }
+  .opt-feedback { display:none; margin-top:8px; font-family:var(--mono);
+    font-size:11px; padding:7px 12px; border-radius:var(--r4) }
+  .opt-feedback.ok { background:rgba(0,201,122,.07); border:1px solid rgba(0,201,122,.22);
+    color:var(--green); display:block }
+  .opt-feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    color:var(--red); display:block }
 
-<style>
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px}
-  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;animation:pulse 1s ease-in-out infinite}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
-  .crisis-text strong{color:var(--white)}
-  .control-room{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
-  @media(max-width:680px){.control-room{grid-template-columns:1fr}}
-  .area-tile{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:20px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
-  .area-tile:hover{border-color:var(--cap-teal);transform:translateY(-2px)}
-  .area-tile.active{border-color:var(--cap-teal);box-shadow:0 0 0 1px var(--cap-teal)}
-  .area-tile.visited::after{content:'✓';position:absolute;top:10px;right:12px;color:var(--green);font-weight:700}
-  .area-icon{font-size:30px;margin-bottom:10px}
-  .area-name{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px}
-  .area-sub{font-size:11px;color:var(--text-muted)}
-  .panel{display:none;background:var(--bg-card);border:1px solid var(--cap-teal);border-radius:8px;padding:22px;margin-bottom:24px;animation:slideIn .3s ease-out}
-  .panel.show{display:block}
-  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1}}
-  .panel-title{font-size:16px;font-weight:800;color:var(--white);margin-bottom:4px;display:flex;align-items:center;gap:10px}
-  .panel-desc{font-size:12px;color:var(--text-muted);margin-bottom:18px}
-  .btn-secondary{background:rgba(18,171,219,.1);border:1px solid var(--cap-teal);color:var(--cap-teal);font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border-radius:4px;cursor:pointer;transition:all .18s;margin-bottom:16px}
-  .btn-secondary:hover{background:rgba(18,171,219,.2)}
-  table.data-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px}
-  table.data-table th{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:.05em;text-transform:uppercase;padding:7px 6px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
-  table.data-table td{padding:8px 6px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04);white-space:nowrap}
-  table.data-table tr.clickable{cursor:pointer;transition:background .15s}
-  table.data-table tr.clickable:hover{background:rgba(18,171,219,.06)}
-  table.data-table tr.flagged{background:rgba(255,184,0,.1);outline:1px solid var(--amber)}
-  .table-scroll{overflow-x:auto;margin-bottom:8px}
-  .instruction{font-size:13px;color:var(--white);font-weight:600;margin:14px 0 10px}
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.85);z-index:300;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
-  .modal-overlay.show{display:flex}
-  .modal{background:#001A2E;border:1px solid var(--cap-teal);border-radius:8px;padding:28px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto}
-  .modal-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:16px}
-  .modal-close{float:right;cursor:pointer;color:var(--text-dim);font-size:20px;line-height:1}
-  .rule{font-size:13px;color:var(--text);line-height:1.7;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-  .rule strong{color:var(--cap-teal);font-family:var(--mono);font-size:11px}
-  .kpi-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:8px}
-  .kpi-card{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;transition:all .18s;text-align:center}
-  .kpi-card:hover{border-color:var(--cap-teal);transform:translateY(-2px)}
-  .kpi-card.opened{border-color:rgba(18,171,219,.4)}
-  .kpi-name{font-size:11px;color:var(--text-muted);margin-bottom:8px;line-height:1.3;min-height:28px}
-  .kpi-result{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--green)}
-  .kpi-card.score .kpi-result{color:var(--cap-teal)}
-  .meta-table,.control-table,.timeline-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:18px}
-  .meta-table td,.control-table td,.timeline-table td{padding:9px 12px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.05)}
-  .meta-table td:first-child,.control-table td:first-child{font-family:var(--mono);font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em}
-  .timeline-table th{font-family:var(--mono);font-size:9px;color:var(--text-dim);letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
-  .timeline-table tr.clickable{cursor:pointer;transition:background .15s}
-  .timeline-table tr.clickable:hover{background:rgba(18,171,219,.06)}
-  .timeline-table tr.flagged{background:rgba(255,184,0,.1);outline:1px solid var(--amber)}
-  .timeline-table .t-time{font-family:var(--mono);color:var(--cap-teal);font-weight:700}
-  .block-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);letter-spacing:.12em;text-transform:uppercase;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
-  .feedback{display:none;font-family:var(--mono);font-size:12px;color:var(--green);margin-top:12px;padding:12px 16px;background:rgba(0,214,143,.06);border:1px solid rgba(0,214,143,.2);border-radius:4px;line-height:1.5}
-  .feedback.show{display:block}
-  .feedback strong{color:var(--white)}
-  .resolution{display:none;background:var(--bg-card);border:2px solid var(--cap-teal);border-radius:8px;padding:24px;margin-top:24px}
-  .resolution.show{display:block;animation:slideIn .4s ease-out}
-  .res-q{font-size:14px;font-weight:700;color:var(--white);margin:18px 0 12px}
-  .res-opt{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:4px;padding:12px 16px;cursor:pointer;transition:all .18s;font-size:13px;color:var(--text);user-select:none;margin-bottom:8px}
-  .res-opt:hover{border-color:var(--cap-teal)}
-  .res-opt.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);color:var(--white);font-weight:600}
-  .penalty-note{font-family:var(--mono);font-size:11px;color:rgba(255,71,87,.7);background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.15);border-radius:3px;padding:8px 14px;margin:12px 0;display:inline-block}
-  .progress-hint{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:16px}
+  /* ── TOOLTIP INLINE ─────────────────────────────────── */
+  .inline-hint {
+    font-size:12px; color:var(--amber);
+    background:rgba(255,184,0,.06); border-left:2px solid rgba(255,184,0,.35);
+    padding:7px 12px; margin-bottom:12px; border-radius:0 var(--r4) var(--r4) 0;
+  }
+
+
+/* ── SALA-3 SPECIFIC ─────────────────────────────────── */
+
+/* Control room tiles */
+.control-room {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+  margin-bottom:24px;
+}
+@media(max-width:760px) { .control-room { grid-template-columns:1fr } }
+
+.area-tile {
+  background:var(--card); border:1.5px solid var(--border);
+  border-radius:var(--r12); padding:22px 18px; text-align:center;
+  cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
+}
+.area-tile::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(18,171,219,.05),transparent);
+  opacity:0; transition:opacity .2s;
+}
+.area-tile:hover { border-color:var(--teal); transform:translateY(-2px); }
+.area-tile:hover::before { opacity:1 }
+.area-tile.active { border-color:var(--teal); background:rgba(18,171,219,.07) }
+.area-tile.visited { border-color:rgba(0,201,122,.3) }
+.area-tile.visited::after {
+  content:'✓'; position:absolute; top:10px; right:12px;
+  font-size:12px; color:var(--green); font-weight:700;
+}
+.area-icon { font-size:32px; margin-bottom:10px }
+.area-name { font-size:15px; font-weight:700; color:var(--white); margin-bottom:4px }
+.area-sub { font-size:11px; color:var(--muted) }
+
+/* Panel */
+.panel {
+  display:none; background:var(--card); border:1px solid var(--border2);
+  border-radius:var(--r12); padding:24px; margin-bottom:20px;
+  animation:panelIn .25s ease-out;
+}
+.panel.show { display:block }
+@keyframes panelIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.panel-title {
+  font-size:16px; font-weight:800; color:var(--white);
+  margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.panel-tag { font-family:var(--mono); font-size:9px; color:var(--teal);
+  letter-spacing:.12em; text-transform:uppercase;
+  background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.2);
+  padding:3px 10px; border-radius:var(--r4); }
+
+/* Data table */
+.table-wrap { overflow-x:auto; border-radius:var(--r8); border:1px solid var(--border) }
+.data-table { width:100%; border-collapse:collapse; font-size:13px }
+.data-table thead tr { background:rgba(0,0,0,.35) }
+.data-table th {
+  font-family:var(--mono); font-size:9px; color:var(--dim);
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:10px 12px; text-align:left; white-space:nowrap;
+  border-bottom:1px solid var(--border2);
+}
+.data-table td { padding:9px 12px; color:var(--text); white-space:nowrap }
+.data-table tbody tr { border-bottom:1px solid rgba(255,255,255,.04); transition:background .12s }
+.data-table tbody tr:nth-child(even) { background:rgba(255,255,255,.025) }
+.data-table tbody tr:hover { background:rgba(18,171,219,.08); cursor:pointer }
+.data-table tbody tr.flagged { background:rgba(18,171,219,.12); }
+.data-table .null-val { color:var(--muted) }
+
+/* DQ rules */
+.dq-rules { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px }
+@media(max-width:640px) { .dq-rules { grid-template-columns:1fr } }
+.rule-item {
+  background:rgba(0,0,0,.25); border:1px solid var(--border);
+  border-radius:var(--r8); padding:10px 12px;
+  font-size:12px; color:var(--muted); line-height:1.5;
+}
+.rule-item strong { color:var(--teal); font-family:var(--mono); font-size:10px }
+
+/* KPI cards */
+.kpi-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:14px }
+@media(max-width:860px) { .kpi-grid { grid-template-columns:repeat(3,1fr) } }
+.kpi-card {
+  background:rgba(0,0,0,.3); border:1px solid var(--border);
+  border-radius:var(--r8); padding:12px 10px; text-align:center;
+  cursor:pointer; transition:all .2s;
+}
+.kpi-card:hover { border-color:var(--teal); background:rgba(18,171,219,.07) }
+.kpi-card.opened { border-color:rgba(0,201,122,.3); background:rgba(0,201,122,.06) }
+.kpi-name { font-size:10px; color:var(--muted); margin-bottom:6px; line-height:1.3; min-height:28px }
+.kpi-result { font-family:var(--mono); font-size:20px; font-weight:800; color:var(--teal) }
+
+/* Timeline table */
+.timeline-table { width:100%; border-collapse:collapse; font-size:13px }
+.timeline-table th {
+  font-family:var(--mono); font-size:9px; color:var(--dim);
+  letter-spacing:.12em; text-transform:uppercase;
+  padding:8px 12px; text-align:left; border-bottom:1px solid var(--border2);
+}
+.timeline-table td { padding:8px 12px; color:var(--text); border-bottom:1px solid rgba(255,255,255,.04) }
+.timeline-table tbody tr { cursor:pointer; transition:background .12s }
+.timeline-table tbody tr:hover { background:rgba(18,171,219,.07) }
+.timeline-table tbody tr.flagged { background:rgba(18,171,219,.1) }
+.tl-time { font-family:var(--mono); font-size:12px; color:var(--teal); white-space:nowrap }
+.tl-event { color:var(--text) }
+
+/* Metadata / controls tables */
+.meta-table, .control-table {
+  width:100%; border-collapse:collapse; font-size:12px; margin-bottom:14px;
+}
+.meta-table td, .control-table td {
+  padding:8px 12px; border-bottom:1px solid rgba(255,255,255,.04);
+}
+.meta-table td:first-child, .control-table td:first-child {
+  font-family:var(--mono); font-size:10px; color:var(--dim);
+  letter-spacing:.08em; width:40%;
+}
+
+/* Feedback chips */
+.feedback-chip {
+  display:none; margin-top:12px; padding:10px 14px;
+  background:rgba(0,201,122,.08); border:1px solid rgba(0,201,122,.25);
+  border-radius:var(--r8); font-size:13px; color:var(--green); line-height:1.5;
+}
+.feedback-chip.show { display:block; animation:panelIn .3s ease-out }
+
+/* Modal */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:150;
+  background:rgba(0,6,14,.88); backdrop-filter:blur(8px);
+  align-items:center; justify-content:center; padding:24px;
+}
+.modal-overlay.show { display:flex }
+.modal {
+  background:var(--card); border:1px solid var(--border2);
+  border-radius:var(--r16); padding:28px; max-width:520px; width:100%;
+  max-height:85vh; overflow-y:auto;
+}
+.modal-title { font-size:16px; font-weight:800; color:var(--white); margin-bottom:16px }
+.rule {
+  padding:10px 0; border-bottom:1px solid var(--border);
+  font-size:13px; color:var(--muted); line-height:1.6;
+}
+.rule strong { color:var(--teal); font-family:var(--mono); font-size:10px;
+  letter-spacing:.1em; display:block; margin-bottom:4px }
+
+/* Resolution */
+.resolution-section {
+  display:none; background:var(--card); border:1px solid var(--border2);
+  border-radius:var(--r12); padding:24px; margin-top:20px;
+}
+.resolution-section.show { display:block; animation:panelIn .35s ease-out }
+.res-q { font-size:14px; font-weight:700; color:var(--white); margin-bottom:12px }
+.res-opts { display:flex; flex-direction:column; gap:7px; margin-bottom:20px }
+.res-opt {
+  background:rgba(0,0,0,.25); border:1.5px solid var(--border);
+  border-radius:var(--r8); padding:11px 14px; cursor:pointer;
+  font-size:13px; color:var(--text); transition:all .15s;
+}
+.res-opt:hover { border-color:var(--teal); background:rgba(18,171,219,.07) }
+.res-opt.selected { border-color:var(--teal); background:rgba(18,171,219,.12); color:var(--white) }
+
+/* Progress indicator */
+.progress-track-local {
+  display:flex; gap:8px; align-items:center;
+  margin-bottom:16px; font-family:var(--mono); font-size:11px;
+}
+.ptl-item {
+  padding:4px 12px; border-radius:999px; border:1px solid var(--border);
+  color:var(--dim); background:rgba(255,255,255,.03);
+}
+.ptl-item.done { color:var(--green); border-color:rgba(0,201,122,.3) }
 </style>
 </head>
 <body>
-<div class="container">
-  
+<div class="page">
+
   <header class="topbar">
-    <div class="brand-mark"><div class="brand-dot"></div><div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
-    <div class="timer-badge" id="timerBadge">30:00</div>
-    <div class="team-chip" id="teamLabel">EQUIPO</div>
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Capgemini <em>Invent</em> · ET CONNECT 2026</div>
+    </div>
+    <div class="progress-track"><span class="pt-item" id="pt0" data-key="sala1done" data-label="CEx">CEx</span><span class="pt-item" id="pt1" data-key="sala2done" data-label="BT">BT</span><span class="pt-item" id="pt2" data-key="sala3done" data-label="EDA">EDA</span><span class="pt-item" id="pt3" data-key="sala4done" data-label="W&O">W&O</span></div>
+    <div class="timer" id="timerBadge">30:00</div>
+    <div class="team-tag" id="teamLabel">EQUIPO</div>
   </header>
   <div id="penaltyFlash" class="penalty-flash">
     <div class="penalty-box">
       <div style="font-size:28px;margin-bottom:8px">⚠️</div>
       <div class="penalty-num">−2 MINUTOS</div>
-      <div class="penalty-sub" id="penaltySub">Error detectado — el sistema REWIND pierde ventaja</div>
-      <div id="penaltyAccum" style="font-family:var(--mono);font-size:10px;color:rgba(255,71,87,.5);margin-top:6px"></div>
-    </div></div></div>
-
-  <div class="room-eyebrow">// Prueba · Enterprise Data &amp; Analytics</div>
-  <h1 class="room-title">Sala de Control:<br>El Dashboard<br>que no Cuadra</h1>
-  <div class="room-area">DASHBOARD DE MIGRACIÓN BANCARIA · ISO 20022</div>
-
-  <div class="crisis-banner">
-    <div class="crisis-dot"></div>
-    <div class="crisis-text"><strong>🚨 ALERTA CRÍTICA.</strong> El Dashboard de Migración ha sido publicado para el Comité. Se ha detectado una posible inconsistencia en los datos reportados. Investigad la información disponible y determinad la causa raíz antes de que se tome una decisión incorrecta.</div>
+      <div class="penalty-sub">Respuesta incorrecta</div>
+    </div>
   </div>
 
-  <div class="narrative-block">
-    <div class="eyebrow">// Contexto</div>
-    <p>Una entidad financiera migra sus sistemas legacy de pagos hacia ISO 20022. El Comité de Migración usa este dashboard de Power BI para decidir si el proyecto avanza de fase. El dashboard dice que está listo — pero algo no cuadra.</p>
-    <p><strong>Investiga las 3 áreas. Cada una guarda una pista. Tú decides al final dónde está la causa raíz.</strong></p>
+  <div class="sala-badge">SALA 03 · Enterprise Data & Analytics</div>
+  <h1 class="page-title">El Dashboard<br>que no Cuadra</h1>
+  <div class="page-subtitle">MIGRACIÓN ISO 20022 · INVESTIGACIÓN · PROCESS MINING</div>
+
+  <div class="alert-card">
+    <div class="alert-dot"></div>
+    <div class="alert-text">
+      <strong>🚨 ALERTA CRÍTICA.</strong>
+      El Dashboard de Migración ha sido publicado para el Comité. Se ha detectado una posible inconsistencia en los datos reportados. Investigad las 3 áreas y determinad la causa raíz antes de que se tome una decisión incorrecta.
+    </div>
   </div>
 
-  <div class="progress-hint" id="progressHint">Áreas investigadas: 0 / 3</div>
+  <div class="context-card">
+    <div class="context-label">// Contexto</div>
+    <p>NexaCorp migró sus sistemas legacy de pagos y transacciones hacia una nueva plataforma basada en estándares ISO 20022. El Comité de Migración usa este dashboard para decidir si el proyecto avanza de fase.</p>
+    <p><strong>El dashboard dice que está listo — pero algo no cuadra.</strong><br>
+    Investigad las 3 áreas. Cada una contiene una pista. Al final, decidid dónde está la causa raíz.</p>
+  </div>
 
-  <div class="section-label">// Sala de control — 3 áreas investigables</div>
+  <!-- LOCAL PROGRESS -->
+  <div class="progress-track-local">
+    <div class="ptl-item" id="ptl1">📁 Data Team</div>
+    <div class="ptl-item" id="ptl2">📊 Risk & Regulation</div>
+    <div class="ptl-item" id="ptl3">⚙️ Process Mining</div>
+    <div style="margin-left:auto;color:var(--dim)" id="progressHint">Áreas investigadas: 0 / 3</div>
+  </div>
+
+  <!-- CONTROL ROOM -->
+  <div class="section-head">// Sala de control — 3 áreas investigables</div>
   <div class="control-room">
     <div class="area-tile" id="tile1" onclick="openPanel(1)">
       <div class="area-icon">🗄️</div>
@@ -628,217 +551,266 @@
       <div class="area-sub">Gobierno y Calidad del Dato</div>
     </div>
     <div class="area-tile" id="tile2" onclick="openPanel(2)">
-      <div class="area-icon">⚖️</div>
-      <div class="area-name">Risk &amp; Regulation</div>
-      <div class="area-sub">Product Control &amp; Reporting</div>
+      <div class="area-icon">📊</div>
+      <div class="area-name">Risk & Regulation</div>
+      <div class="area-sub">KPIs y Validación Regulatoria</div>
     </div>
     <div class="area-tile" id="tile3" onclick="openPanel(3)">
-      <div class="area-icon">🔄</div>
+      <div class="area-icon">⚙️</div>
       <div class="area-name">Process Mining / IPP</div>
-      <div class="area-sub">Análisis de proceso</div>
+      <div class="area-sub">Logs y Trazabilidad</div>
     </div>
   </div>
 
-  <!-- ===== ÁREA 1: DATA TEAM ===== -->
+  <!-- ── PANEL 1: DATA TEAM ─────────────────────────── -->
   <div class="panel" id="panel1">
-    <div class="panel-title">🗄️ Data Team — Gobierno y Calidad del Dato</div>
-    <div class="panel-desc">Revisa el dataset de migración. ¿Hay algún registro sospechoso?</div>
-    <button class="btn-secondary" onclick="showModal('rulesModal')">📋 Ver reglas de calidad</button>
-    <div class="table-scroll">
+    <div class="panel-title">
+      <span class="panel-tag">ÁREA 1</span> Data Team — Tabla de Clientes
+    </div>
+    <div class="table-wrap">
       <table class="data-table">
-        <thead><tr><th>Client_ID</th><th>Country</th><th>Wave</th><th>Legacy</th><th>Target</th><th>Status</th><th>Tx</th><th>Scope</th></tr></thead>
+        <thead>
+          <tr><th>Client_ID</th><th>Country</th><th>Wave</th><th>Legacy</th><th>Target</th><th>Status</th><th>Tx</th><th>Scope</th></tr>
+        </thead>
         <tbody>
           <tr class="clickable" onclick="flagRow(this,'C001')"><td>C001</td><td>ES</td><td>Wave 1</td><td>MT103</td><td>pacs.008</td><td>Active</td><td>1240</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C002')"><td>C002</td><td>ES</td><td>Wave 1</td><td>MT940</td><td>camt.053</td><td>Active</td><td>870</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C003')"><td>C003</td><td>PT</td><td>Wave 2</td><td>MT103</td><td>pacs.008</td><td>Active</td><td>430</td><td>Yes</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C003')"><td>C003</td><td>PT</td><td>Wave 2</td><td class="null-val">NULL</td><td>pacs.008</td><td>Active</td><td>430</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C004')"><td>C004</td><td>FR</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>610</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>ES</td><td>Wave 3</td><td>MT103</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>ES</td><td>Wave 3</td><td class="null-val">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C006')"><td>C006</td><td>IT</td><td>Wave 3</td><td>MT940</td><td>camt.053</td><td>Active</td><td>320</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C007')"><td>C007</td><td>ES</td><td>Wave 3</td><td style="color:var(--amber)">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C007')"><td>C007</td><td>ES</td><td>Wave 3</td><td class="null-val">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C008')"><td>C008</td><td>DE</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>780</td><td>Yes</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="instruction">Selecciona el registro que consideras sospechoso.</div>
-    <div class="feedback" id="fbData">✅ <strong>Anomalía detectada.</strong> Se ha identificado una posible incidencia relacionada con calidad del dato. Conserva esta pista y sigue investigando las otras áreas.</div>
-  </div>
-
-  <!-- ===== ÁREA 2: RISK & REGULATION ===== -->
-  <div class="panel" id="panel2">
-    <div class="panel-title">⚖️ Risk &amp; Regulation — Product Control &amp; Reporting</div>
-    <div class="panel-desc">Revisa los KPIs y la fórmula del Migration Readiness Score. Haz clic en cada tarjeta para ver su definición.</div>
-    <div class="kpi-cards">
-      <div class="kpi-card" onclick="openKpi(this,'fu')"><div class="kpi-name">Format Unification Rate</div><div class="kpi-result">92%</div></div>
-      <div class="kpi-card" onclick="openKpi(this,'rv')"><div class="kpi-name">Regulatory Validation Rate</div><div class="kpi-result">96%</div></div>
-      <div class="kpi-card" onclick="openKpi(this,'mc')"><div class="kpi-name">Migration Completion Rate</div><div class="kpi-result">87%</div></div>
-      <div class="kpi-card" onclick="openKpi(this,'ec')"><div class="kpi-name">Exception Closure Rate</div><div class="kpi-result">82%</div></div>
-      <div class="kpi-card score" onclick="openKpi(this,'score')"><div class="kpi-name">Migration Readiness Score</div><div class="kpi-result">90,5%</div></div>
-    </div>
-    <button class="btn-secondary" id="riskBtn" style="display:none;margin-top:16px" onclick="completeRisk()">Marcar revisión como completada</button>
-    <div class="feedback" id="fbRisk">✅ <strong>Revisión completada.</strong> La información de KPIs y reporting ha sido revisada.</div>
-  </div>
-
-  <!-- ===== ÁREA 3: PROCESS MINING ===== -->
-  <div class="panel" id="panel3">
-    <div class="panel-title">🔄 Process Mining / IPP — Análisis de proceso</div>
-    <div class="panel-desc">Revisa la secuencia de eventos y localiza si existe alguna actividad que pueda haber generado la inconsistencia.</div>
-
-    <div class="block-label">Dashboard Metadata</div>
-    <table class="meta-table">
-      <tr><td>Dashboard Version</td><td>dashboard_v2</td></tr>
-      <tr><td>Refresh Time</td><td style="color:var(--amber);font-family:var(--mono)">08:45</td></tr>
-      <tr><td>Source File</td><td>kpi_snapshot_prevalidation</td></tr>
-      <tr><td>Status</td><td>Published</td></tr>
-    </table>
-
-    <div class="block-label">Estado de controles</div>
-    <table class="control-table">
-      <tr><td>Regulatory Validation</td><td style="font-family:var(--mono);color:var(--text)">09:05</td></tr>
-      <tr><td>KPI Control Gate</td><td style="font-family:var(--mono);color:var(--text)">09:20</td></tr>
-    </table>
-
-    <div class="block-label">Event Timeline</div>
-    <table class="timeline-table">
-      <thead><tr><th>Hora</th><th>Evento</th></tr></thead>
-      <tbody>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">08:00</td><td>Extract Migration Data</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">08:10</td><td>Run Data Quality Checks</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">08:22</td><td>Apply Format Mapping</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">08:35</td><td>Generate KPI Snapshot</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,true)"><td class="t-time">08:45</td><td>Refresh Power BI Dashboard</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">09:05</td><td>Run Regulatory Validation</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">09:20</td><td>Approve KPI Control Gate</td></tr>
-        <tr class="clickable" onclick="flagEvent(this,false)"><td class="t-time">09:30</td><td>Publish Dashboard</td></tr>
-      </tbody>
-    </table>
-    <div class="feedback" id="fbProcess">✅ <strong>Evento relevante identificado.</strong> El evento ha sido registrado como posible evidencia del caso.</div>
-  </div>
-
-  <!-- ===== RESOLUCIÓN ===== -->
-  <div class="resolution" id="resolution">
-    <div class="section-label">// Pantalla de resolución</div>
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Has investigado las 3 áreas. Ahora resuelve el caso.</p>
-    <div class="penalty-note">⚠ Cada respuesta incorrecta descuenta 2 minutos</div>
-
-    <div class="res-q">1 · ¿Dónde se encuentra la causa raíz del problema?</div>
-    <div id="resQ1">
-      <div class="res-opt" onclick="selRes(this,1,false)">Data Team</div>
-      <div class="res-opt" onclick="selRes(this,1,false)">Risk &amp; Regulation</div>
-      <div class="res-opt" onclick="selRes(this,1,true)">Process Mining / IPP</div>
-    </div>
-
-    <div class="res-q">2 · ¿Qué evidencia demuestra la desviación?</div>
-    <div id="resQ2">
-      <div class="res-opt" onclick="selRes(this,2,false)">Existe un valor NULL en el dataset</div>
-      <div class="res-opt" onclick="selRes(this,2,false)">La fórmula del Migration Readiness Score es incorrecta</div>
-      <div class="res-opt" onclick="selRes(this,2,true)">El dashboard se refrescó antes de completarse las validaciones y aprobaciones necesarias</div>
-      <div class="res-opt" onclick="selRes(this,2,false)">El dashboard fue publicado demasiado tarde</div>
-    </div>
-
-    <div class="code-section">
-      <div class="code-label">// Código de salida</div>
-      <div class="code-sublabel">Aparece al responder correctamente ambas preguntas</div>
-      <div class="code-input-row">
-        <input type="text" class="code-input" id="codeInput" maxlength="16" placeholder="PROCESS-GATE-04" style="width:280px;font-size:17px" oninput="this.value=this.value.toUpperCase()">
-        <button class="validate-btn" onclick="validate()">Validar →</button>
+    <div style="margin-top:14px">
+      <div class="section-head">// Reglas de calidad de datos</div>
+      <div class="dq-rules">
+        <div class="rule-item"><strong>DQ01</strong> Client_ID no puede estar vacío</div>
+        <div class="rule-item"><strong>DQ02</strong> Legacy no puede ser NULL si Scope = Yes</div>
+        <div class="rule-item"><strong>DQ03</strong> Tx debe ser &gt; 0 si Status = Active</div>
+        <div class="rule-item"><strong>DQ04</strong> Fuera de Scope (Scope = No) no entra en KPIs</div>
       </div>
-      <div class="code-result" id="codeResult"></div>
+    </div>
+    <div class="feedback-chip" id="fbData">
+      ✅ Anomalía detectada en C007 — Legacy NULL, fuera de scope. Continúa investigando otras áreas.
     </div>
   </div>
 
-  <button class="tip-toggle" onclick="_toggleTip()" style="margin-top:20px">💡 Necesito una pista <span style="font-size:10px;color:var(--text-dim)">(no descuenta tiempo)</span></button>
-  <div class="tip-content" id="tipContent">El NULL del Data Team (C007) es real, pero ese cliente está fuera de scope (Scope=No), así que no afecta a los KPIs — regla DQ04. Los KPIs de Risk & Regulation están bien calculados (el Readiness Score da 90,45% ≈ 90,5%). La clave está en el ORDEN temporal del Process Mining: el dashboard se refrescó a las 08:45, pero la Validación Regulatoria terminó a las 09:05 y el KPI Control Gate a las 09:20. El dashboard mostró datos antes de validarlos. El código combina el área (PROCESS), el control que se saltó (GATE) y la fase (04).</div>
+  <!-- ── PANEL 2: RISK & REGULATION ────────────────── -->
+  <div class="panel" id="panel2">
+    <div class="panel-title">
+      <span class="panel-tag">ÁREA 2</span> Risk & Regulation — KPIs del Dashboard
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card" id="kpi-fu" onclick="openKpi(this,'fu')">
+        <div class="kpi-name">Format Unification Rate</div>
+        <div class="kpi-result">92%</div>
+      </div>
+      <div class="kpi-card" id="kpi-rv" onclick="openKpi(this,'rv')">
+        <div class="kpi-name">Regulatory Validation Rate</div>
+        <div class="kpi-result">96%</div>
+      </div>
+      <div class="kpi-card" id="kpi-mc" onclick="openKpi(this,'mc')">
+        <div class="kpi-name">Migration Completion Rate</div>
+        <div class="kpi-result">87%</div>
+      </div>
+      <div class="kpi-card" id="kpi-ec" onclick="openKpi(this,'ec')">
+        <div class="kpi-name">Exception Closure Rate</div>
+        <div class="kpi-result">82%</div>
+      </div>
+      <div class="kpi-card" id="kpi-score" onclick="openKpi(this,'score')">
+        <div class="kpi-name">Migration Readiness Score</div>
+        <div class="kpi-result">90,5%</div>
+      </div>
+    </div>
+    <div id="riskBtn" style="display:none;margin-bottom:12px">
+      <button class="btn-primary" onclick="completeRisk()">✓ Marcar revisión como completada</button>
+    </div>
+    <div class="feedback-chip" id="fbRisk">
+      ✅ Revisión completada — KPIs revisados. Continúa investigando otras áreas.
+    </div>
+  </div>
 
-  
-  <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
-    <a href="index.html" style="flex:1;min-width:180px;text-align:center;background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:14px;border-radius:4px;text-decoration:none;transition:all .2s">← Volver al centro de control</a>
-    <a href="index.html" style="flex:1;min-width:180px;text-align:center;background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.25);color:var(--amber);font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:14px;border-radius:4px;text-decoration:none;transition:all .2s">⏭ Saltar esta prueba</a>
+  <!-- ── PANEL 3: PROCESS MINING ────────────────────── -->
+  <div class="panel" id="panel3">
+    <div class="panel-title">
+      <span class="panel-tag">ÁREA 3</span> Process Mining / IPP — Trazabilidad
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div>
+        <div class="section-head">// Metadata del dashboard</div>
+        <table class="meta-table">
+          <tr><td>dashboard_id</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">dashboard_v2</td></tr>
+          <tr><td>Último refresh</td><td style="font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700">08:45</td></tr>
+          <tr><td>Snapshot origen</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">kpi_snapshot_prevalidation</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="section-head">// Estado de controles</div>
+        <table class="control-table">
+          <tr><td>Regulatory Control</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">09:05 ✓</td></tr>
+          <tr><td>KPI Gate Control</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">09:20 ✓</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="section-head">// Timeline de eventos</div>
+    <div class="table-wrap">
+      <table class="timeline-table">
+        <thead><tr><th>Timestamp</th><th>Evento</th><th>Sistema</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">08:00</td><td class="tl-event">Extract Data</td><td>ETL</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">08:10</td><td class="tl-event">DQ Checks</td><td>DQ Engine</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">08:22</td><td class="tl-event">Mapping</td><td>Transform</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">08:35</td><td class="tl-event">KPI Snapshot</td><td>Analytics</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,true)" style="border-left:3px solid var(--amber)">
+            <td class="tl-time" style="color:var(--amber)">08:45</td>
+            <td class="tl-event"><strong>Refresh Dashboard</strong></td><td>BI Layer</td>
+            <td style="color:var(--amber)">⚠ —</td>
+          </tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">09:05</td><td class="tl-event">Validation Regulatory</td><td>Compliance</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">09:20</td><td class="tl-event">KPI Gate Approval</td><td>Governance</td><td>✓ OK</td></tr>
+          <tr onclick="flagEvent(this,false)"><td class="tl-time">09:30</td><td class="tl-event">Publish to Committee</td><td>Portal</td><td>✓ OK</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="feedback-chip" id="fbProcess">
+      ✅ Evento relevante identificado — el dashboard se refrescó antes de completar los controles. Continúa para confirmar la causa raíz.
+    </div>
+  </div>
+
+  <!-- ── RESOLUTION ─────────────────────────────────── -->
+  <div class="resolution-section" id="resolution">
+    <div class="panel-title" style="margin-bottom:20px">
+      <span class="panel-tag">Resolución</span> Determinad la causa raíz
+    </div>
+
+    <div class="res-q">1. ¿En qué área se origina la causa raíz?</div>
+    <div class="res-opts" id="resQ1">
+      <div class="res-opt" onclick="selRes(this,1,false)">📁 Data Team — anomalía en datos de origen</div>
+      <div class="res-opt" onclick="selRes(this,1,false)">📊 Risk & Regulation — error en cálculo de KPIs</div>
+      <div class="res-opt" onclick="selRes(this,1,true)">⚙️ Process Mining / IPP — desviación en el proceso</div>
+    </div>
+
+    <div class="res-q">2. ¿Qué evidencia lo confirma?</div>
+    <div class="res-opts" id="resQ2">
+      <div class="res-opt" onclick="selRes(this,2,false)">El campo Legacy es NULL en C007</div>
+      <div class="res-opt" onclick="selRes(this,2,false)">Error en la fórmula del Readiness Score</div>
+      <div class="res-opt" onclick="selRes(this,2,true)">El dashboard se refrescó (08:45) antes de completar las validaciones (09:05–09:20)</div>
+      <div class="res-opt" onclick="selRes(this,2,false)">El dashboard se publicó demasiado tarde</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div class="section-head">// Código de resolución</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <input type="text" class="code-input" id="codeInput" maxlength="16"
+          placeholder="PROCESS-GATE-04" style="width:240px;font-size:16px"
+          oninput="this.value=this.value.toUpperCase()">
+        <button class="btn-primary" onclick="validate()">Validar →</button>
+      </div>
+      <div class="feedback" id="codeResult"></div>
+    </div>
+
+    <button class="btn-hint" onclick="openHint3()">
+      💡 Pista urgente <span style="font-size:10px;opacity:.6">(coste: −5 minutos)</span>
+    </button>
+    <div class="hint-content" id="tipContent">El tiempo todo lo cura.</div>
+  </div>
+
+  <div class="nav-row">
+    <a href="index.html" class="nav-hub">← Centro de control</a>
+    <a href="index.html" class="nav-skip">⏭ Saltar prueba</a>
   </div>
 </div>
 
-<!-- MODAL: Reglas de calidad -->
-<div class="modal-overlay" id="rulesModal">
+<!-- KPI MODAL -->
+<div class="modal-overlay" id="kpiModal" onclick="if(event.target===this)hideModal('kpiModal')">
   <div class="modal">
-    <span class="modal-close" onclick="hideModal('rulesModal')">✕</span>
-    <div class="modal-title">📋 Reglas de calidad del dato</div>
-    <div class="rule"><strong>DQ01</strong> → No puede existir un Client_ID vacío.</div>
-    <div class="rule"><strong>DQ02</strong> → Legacy_Format no puede ser NULL si Dashboard_Scope = Yes.</div>
-    <div class="rule"><strong>DQ03</strong> → Transactions debe ser mayor que 0 para clientes activos.</div>
-    <div class="rule" style="border-bottom:none"><strong>DQ04</strong> → Los clientes fuera de scope no participan en KPIs.</div>
-  </div>
-</div>
-
-<!-- MODAL: KPI detail -->
-<div class="modal-overlay" id="kpiModal">
-  <div class="modal">
-    <span class="modal-close" onclick="hideModal('kpiModal')">✕</span>
-    <div class="modal-title" id="kpiModalTitle">KPI</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="modal-title" id="kpiModalTitle">KPI</div>
+      <button onclick="hideModal('kpiModal')" style="background:none;border:none;color:var(--muted);
+        font-size:20px;cursor:pointer;line-height:1">✕</button>
+    </div>
     <div id="kpiModalBody"></div>
   </div>
 </div>
 
+<!-- SUCCESS -->
 <div class="success-overlay" id="successOverlay">
-  <div class="success-icon">📊</div>
-  <div class="success-title">PROCESS-GATE-04<br>Caso resuelto</div>
+  <div class="success-icon">✅</div>
+  <div style="font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.2em;
+    text-transform:uppercase;margin-bottom:10px">// CASO RESUELTO</div>
+  <div class="success-title">Investigación completada</div>
+  <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green);
+    letter-spacing:.12em;margin:14px 0;text-shadow:0 0 20px rgba(0,201,122,.4)">PROCESS-GATE-04</div>
   <div class="success-divider"></div>
-  <div class="success-msg">
-    <strong>El problema no estaba en los datos ni en los KPIs.</strong><br><br>
-    El dashboard se actualizó a las 08:45, antes de completarse la Validación Regulatoria (09:05) y la aprobación del KPI Control Gate (09:20). Mostró información todavía no validada. La causa raíz es una desviación en la ejecución del proceso. El NULL del Data Team era una pista falsa (cliente fuera de scope) y los KPIs estaban bien calculados.
-  </div>
   <a href="index.html" class="next-btn">▶ Volver al centro de control</a>
 </div>
 
 <script>
   
-  const _team = sessionStorage.getItem('teamName') || '—';
+  // ── SESSION / TIMER ──────────────────────────────────
+  const _team = sessionStorage.getItem('teamName') || 'EQUIPO';
   document.getElementById('teamLabel').textContent = _team.toUpperCase();
-  const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
-  const _TOTAL = 30 * 60 * 1000;
+  const _start  = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const _TOTAL  = 30 * 60 * 1000;
   const _timerEl = document.getElementById('timerBadge');
-  function _updateTimer() {
+  function _updT() {
     const pen = parseInt(sessionStorage.getItem('penalty') || '0');
-    const r = Math.max(0, _TOTAL - (Date.now() - _start) - pen);
-    const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
+    const r   = Math.max(0, _TOTAL - (Date.now() - _start) - pen);
+    const m   = Math.floor(r / 60000), s = Math.floor((r % 60000) / 1000);
     _timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-    _timerEl.className = 'timer-badge' + (r < 5*60000 ? ' danger' : r < 12*60000 ? ' warning' : '');
+    _timerEl.className = 'timer' + (r < 5*60000 ? ' danger' : r < 12*60000 ? ' warning' : '');
   }
-  setInterval(_updateTimer, 1000); _updateTimer();
-  function _applyPenalty() {
+  setInterval(_updT, 1000); _updT();
+  // Progress track
+  ['sala1done','sala2done','sala3done','sala4done'].forEach((k,i) => {
+    const el = document.getElementById('pt'+i);
+    if (!el) return;
+    if (sessionStorage.getItem(k)) {
+      el.classList.add('done');
+      el.textContent = '✅ ' + el.dataset.label;
+    }
+  });
+  function _applyPenalty(msg) {
     let pen = parseInt(sessionStorage.getItem('penalty') || '0');
     pen += 2 * 60 * 1000; sessionStorage.setItem('penalty', String(pen));
-    const el = document.getElementById('penaltyFlash');
-    if (el) { el.style.display='flex'; setTimeout(()=>el.style.display='none', 2200); }
+    const fl = document.getElementById('penaltyFlash');
+    if (fl) { fl.style.display = 'flex'; setTimeout(() => fl.style.display = 'none', 2200); }
   }
-  function _submitForms() {
-    const eq = sessionStorage.getItem('teamName') || 'Desconocido';
+  function _markDone(salaNum, salaName) {
+    sessionStorage.setItem('sala' + salaNum + 'done', Date.now());
+    const eq  = sessionStorage.getItem('teamName') || '?';
     const pen = parseInt(sessionStorage.getItem('penalty') || '0');
-    const el = Date.now() - _start + pen;
-    const mm = Math.floor(el/60000), ss = Math.floor((el%60000)/1000);
-    const t = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
-    const url = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1=' + encodeURIComponent(eq) + '&r2=' + encodeURIComponent('SALA 03 — ENTERPRISE DATA & ANALYTICS') + '&r3=' + encodeURIComponent(t);
+    const el  = Date.now() - _start + pen;
+    const mm  = Math.floor(el/60000), ss = Math.floor((el%60000)/1000);
+    const t   = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+    const FORMS = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u';
+    const url = FORMS + '&r1=' + encodeURIComponent(eq) + '&r2=' + encodeURIComponent(salaName) + '&r3=' + encodeURIComponent(t);
     const ifr = document.createElement('iframe'); ifr.style.display='none'; ifr.src=url;
-    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(), 5000);
+    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),5000);
   }
-  function _markDone() {
-    sessionStorage.setItem('sala3done', Date.now());
-    _submitForms();
+  function _toggleHint(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
   }
-  function _toggleTip() { const t=document.getElementById('tipContent'); t.style.display=t.style.display==='block'?'none':'block'; }
 
 
   const KPI_DATA = {
-    fu: {t:'Format Unification Rate', def:'Clientes en scope con formato migrado a estándar objetivo', f:'Clientes con Target_Format válido / Clientes en scope', u:'≥ 90%', r:'92%'},
-    rv: {t:'Regulatory Validation Rate', def:'Clientes en scope que han superado controles regulatorios', f:'Validaciones Passed / Clientes en scope', u:'≥ 95%', r:'96%'},
-    mc: {t:'Migration Completion Rate', def:'Clientes migrados técnicamente', f:'Clientes migrados / Clientes planificados', u:'≥ 85%', r:'87%'},
-    ec: {t:'Exception Closure Rate', def:'Excepciones cerradas antes del comité', f:'Excepciones cerradas / Excepciones totales', u:'≥ 80%', r:'82%'},
-    score: {t:'Migration Readiness Score', def:'Media ponderada de KPIs críticos', f:'(92×30%)+(96×30%)+(87×25%)+(82×15%) = 90,45%', u:'≥ 90%', r:'90,5%', weighted:true}
+    fu:    {t:'Format Unification Rate',    def:'Clientes en scope con formato migrado al estándar objetivo', f:'Clientes con Target_Format válido / Clientes en scope', u:'≥ 90%', r:'92%'},
+    rv:    {t:'Regulatory Validation Rate', def:'Clientes en scope que han superado controles regulatorios',  f:'Validaciones Passed / Clientes en scope',               u:'≥ 95%', r:'96%'},
+    mc:    {t:'Migration Completion Rate',  def:'Clientes migrados técnicamente',                             f:'Clientes migrados / Clientes planificados',              u:'≥ 85%', r:'87%'},
+    ec:    {t:'Exception Closure Rate',     def:'Excepciones cerradas antes del comité',                      f:'Excepciones cerradas / Excepciones totales',            u:'≥ 80%', r:'82%'},
+    score: {t:'Migration Readiness Score',  def:'Media ponderada de KPIs críticos',
+             f:'(92×30%)+(96×30%)+(87×25%)+(82×15%) = 90,45%',                                               u:'≥ 90%', r:'90,5%', weighted:true}
   };
 
-  let visited = {1:false, 2:false, 3:false};
+  let visited   = {1:false, 2:false, 3:false};
   let kpisOpened = new Set();
 
   function openPanel(n) {
-    for(let i=1;i<=3;i++) {
+    for (let i=1; i<=3; i++) {
       document.getElementById('panel'+i).classList.remove('show');
       document.getElementById('tile'+i).classList.remove('active');
     }
@@ -848,90 +820,90 @@
   }
 
   function markVisited(n) {
-    if(!visited[n]) {
+    if (!visited[n]) {
       visited[n] = true;
       document.getElementById('tile'+n).classList.add('visited');
+      document.getElementById('ptl'+n).classList.add('done');
       const count = Object.values(visited).filter(Boolean).length;
       document.getElementById('progressHint').textContent = 'Áreas investigadas: ' + count + ' / 3';
-      if(count === 3) document.getElementById('resolution').classList.add('show');
+      if (count === 3) document.getElementById('resolution').classList.add('show');
     }
   }
 
-  function showModal(id) { document.getElementById(id).classList.add('show'); }
-  function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+  function showModal(id) { document.getElementById(id).classList.add('show') }
+  function hideModal(id)  { document.getElementById(id).classList.remove('show') }
 
-  // Area 1: flag row — any row marks visited; C007 shows the anomaly feedback
   function flagRow(row, id) {
-    row.closest('tbody').querySelectorAll('tr').forEach(r=>r.classList.remove('flagged'));
+    row.closest('tbody').querySelectorAll('tr').forEach(r => r.classList.remove('flagged'));
     row.classList.add('flagged');
-    if(id === 'C007') {
-      document.getElementById('fbData').classList.add('show');
-    }
+    if (id === 'C007') document.getElementById('fbData').classList.add('show');
     markVisited(1);
   }
 
-  // Area 2: open KPI detail
   function openKpi(card, key) {
-    card.classList.add('opened');
-    kpisOpened.add(key);
+    card.classList.add('opened'); kpisOpened.add(key);
     const k = KPI_DATA[key];
     document.getElementById('kpiModalTitle').textContent = k.t + ' — ' + k.r;
-    let body = '<div class="rule"><strong>DEFINICIÓN</strong><br>'+k.def+'</div>'
-             + '<div class="rule"><strong>FÓRMULA</strong><br>'+k.f+'</div>'
-             + '<div class="rule" style="border-bottom:none"><strong>UMBRAL</strong><br>'+k.u+'</div>';
-    if(k.weighted) {
-      body += '<div style="margin-top:14px;padding:12px;background:rgba(18,171,219,.06);border:1px solid rgba(18,171,219,.2);border-radius:4px;font-size:12px;color:var(--text-muted);line-height:1.7">'
-            + '<strong style="color:var(--cap-teal);font-family:var(--mono);font-size:10px">CÁLCULO PONDERADO</strong><br>'
+    let body = '<div class="rule"><strong>DEFINICIÓN</strong>' + k.def + '</div>'
+             + '<div class="rule"><strong>FÓRMULA</strong>' + k.f + '</div>'
+             + '<div class="rule" style="border-bottom:none"><strong>UMBRAL</strong>' + k.u + '</div>';
+    if (k.weighted) {
+      body += '<div style="margin-top:14px;padding:12px;background:rgba(18,171,219,.06);'
+            + 'border:1px solid rgba(18,171,219,.2);border-radius:8px;font-size:12px;color:var(--muted)">'
+            + '<strong style="color:var(--teal);font-family:var(--mono);font-size:9px;letter-spacing:.1em">CÁLCULO PONDERADO</strong><br>'
             + 'FU 30% · RV 30% · MC 25% · EC 15%<br>'
             + '(92×30%)+(96×30%)+(87×25%)+(82×15%)<br>'
-            + '= 27,6 + 28,8 + 21,75 + 12,3 = <strong style="color:var(--text)">90,45%</strong><br>'
-            + 'Dashboard muestra: <strong style="color:var(--text)">90,5%</strong></div>';
+            + '= 27,6 + 28,8 + 21,75 + 12,3 = <strong>90,45%</strong></div>';
     }
     document.getElementById('kpiModalBody').innerHTML = body;
     showModal('kpiModal');
-    // After opening all 5 KPIs, show the "complete review" button
-    if(kpisOpened.size >= 5) {
-      document.getElementById('riskBtn').style.display = 'inline-block';
-    }
+    if (kpisOpened.size >= 5) document.getElementById('riskBtn').style.display = 'inline-block';
   }
+
   function completeRisk() {
     document.getElementById('fbRisk').classList.add('show');
     document.getElementById('riskBtn').style.display = 'none';
     markVisited(2);
   }
 
-  // Area 3: flag event — any click marks visited; 08:45 shows key feedback
   function flagEvent(row, isKey) {
-    row.closest('tbody').querySelectorAll('tr').forEach(r=>r.classList.remove('flagged'));
+    row.closest('tbody').querySelectorAll('tr').forEach(r => r.classList.remove('flagged'));
     row.classList.add('flagged');
-    if(isKey) {
-      document.getElementById('fbProcess').classList.add('show');
-    }
+    if (isKey) document.getElementById('fbProcess').classList.add('show');
     markVisited(3);
   }
 
-  // Resolution
   let res = {1:null, 2:null};
   function selRes(el, q, correct) {
-    document.getElementById('resQ'+q).querySelectorAll('.res-opt').forEach(o=>o.classList.remove('selected'));
-    el.classList.add('selected');
-    res[q] = correct;
-    if(res[1]===true && res[2]===true) {
-      document.getElementById('codeInput').value = 'PROCESS-GATE-04';
-    }
+    document.getElementById('resQ'+q).querySelectorAll('.res-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected'); res[q] = correct;
+    if (res[1]===true && res[2]===true) document.getElementById('codeInput').value = 'PROCESS-GATE-04';
   }
 
   function validate() {
     const val = document.getElementById('codeInput').value.trim().toUpperCase();
-    const r = document.getElementById('codeResult'); r.style.display='block';
+    const r   = document.getElementById('codeResult');
     if (val === 'PROCESS-GATE-04') {
-      _markDone();
-      r.className='code-result success'; r.textContent='✓ Correcto — caso resuelto.';
+      _markDone(3,'SALA 03 — ENTERPRISE DATA & ANALYTICS');
+      r.className='feedback ok'; r.textContent='✓ Correcto — caso resuelto.';
       setTimeout(()=>document.getElementById('successOverlay').classList.add('show'), 800);
     } else {
-      _applyPenalty('Causa raíz incorrecta — sigue investigando');
-      r.className='code-result error'; r.textContent='✗ Incorrecto (−2 min). Revisa el orden temporal de los eventos vs. los controles.';
+      _applyPenalty('Causa raíz incorrecta');
+      r.className='feedback err'; r.textContent='✗ Incorrecto (−2 min). Revisa el orden temporal de los eventos vs. los controles.';
     }
+  }
+
+  let _hint3Used = false;
+  function openHint3() {
+    const el = document.getElementById('tipContent');
+    const isOpen = el.style.display === 'block';
+    if (!isOpen && !_hint3Used) {
+      if (!confirm('Usar la pista oculta costará 5 minutos del tiempo global. ¿Continuar?')) return;
+      _hint3Used = true;
+      let pen = parseInt(sessionStorage.getItem('penalty') || '0');
+      pen += 5 * 60 * 1000; sessionStorage.setItem('penalty', String(pen));
+    }
+    el.style.display = isOpen ? 'none' : 'block';
   }
 </script>
 </body></html>

@@ -1,394 +1,652 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SALA 04 — Workforce & Organisation · OPERATION REWIND</title>
 <style>
+
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  /* ── TOKENS ─────────────────────────────────────────── */
   :root {
-    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
-    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
-    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
-    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
-    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --blue:#0070AD; --teal:#12ABDB; --bg:#000F1A; --card:#001E30;
+    --card2:#002440; --white:#FFFFFF; --text:#D8EEF8; --muted:#7AAEC8;
+    --dim:#4A7A96; --green:#00C97A; --amber:#FFB800; --red:#FF4455;
+    --border:rgba(18,171,219,.18); --border2:rgba(18,171,219,.32);
+    --surface:rgba(0,112,173,.1);
+    --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --r4:4px; --r8:8px; --r12:12px; --r16:16px;
+    --shadow:0 4px 24px rgba(0,0,0,.4);
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
-  body::before{content:'';position:fixed;inset:0;background:
-    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
-    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
-    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
-  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-  .brand-mark{display:flex;align-items:center;gap:10px}
-  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-  .brand-text span{color:var(--cap-teal)}
-  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
-  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
-  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
-  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
-    border-radius:3px;letter-spacing:.05em}
-  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
-  .room-title{font-size:clamp(32px,7vw,60px);font-weight:900;color:var(--white);
-    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
-  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:32px}
-  .narrative-block{background:var(--surface);border:1px solid var(--border);
-    border-radius:6px;padding:20px 22px;margin-bottom:24px}
-  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
-  .narrative-block p:last-child{margin-bottom:0}
-  .narrative-block strong{color:var(--white)}
-  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
-    border-bottom:1px solid var(--border)}
-  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
-  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
-  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
-    box-shadow:0 0 0 1px var(--cap-teal)}
-  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
-  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
-    margin-bottom:24px;display:flex;align-items:center;gap:12px}
-  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
-    animation:cdot 1s ease-in-out infinite}
-  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
-  .crisis-text strong{color:var(--white)}
-  .code-section{margin-top:24px}
-  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
-  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
-  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
-  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
-    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
-    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
-  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
-  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
-  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
-  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
-    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
-  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
-  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
-  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
-    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
-    transition:all .18s;margin-top:18px;display:block}
-  .tip-toggle:hover{background:rgba(255,184,0,.12)}
-  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
-    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
-    color:var(--text-muted);line-height:1.7}
-  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
-    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
-    flex-direction:column;text-align:center}
-  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-  .success-icon{font-size:60px;margin-bottom:18px}
-  .success-title{font-size:clamp(22px,5vw,38px);font-weight:900;color:var(--white);margin-bottom:14px}
-  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
-  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
-  .success-msg strong{color:var(--white)}
-  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
-  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
-  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
-    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
-  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
-    padding:24px 44px;text-align:center}
-  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
-  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
-</style>
-<style>
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;margin-bottom:24px;
-    display:flex;align-items:center;gap:12px}
-  .pistas-wrap{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
-  .pista-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    overflow:hidden;transition:all .3s}
-  .pista-locked{padding:16px 20px;display:flex;align-items:center;gap:12px;cursor:pointer}
-  .pista-locked:hover{background:var(--bg-card-hover)}
-  .pista-num{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text-dim);
-    width:32px;flex-shrink:0;text-align:center}
-  .pista-label{font-size:13px;color:var(--text-muted)}
-  .pista-btn{margin-left:auto;background:rgba(18,171,219,.1);border:1px solid rgba(18,171,219,.3);
-    color:var(--cap-teal);font-family:var(--mono);font-size:11px;padding:6px 14px;
-    border-radius:3px;cursor:pointer;transition:all .18s;flex-shrink:0}
-  .pista-btn:hover{background:rgba(18,171,219,.2)}
-  .pista-content{display:none;padding:0 20px 18px;border-top:1px solid var(--border)}
-  .pista-content.show{display:block;animation:slideIn .3s ease-out}
-  @keyframes slideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
-  .pista-text{font-size:14px;color:var(--white);line-height:1.7;padding-top:14px}
-  .pista-text strong{color:var(--cap-teal)}
-  .pista-card.revealed{border-color:rgba(18,171,219,.4)}
-  .pista-card.revealed .pista-num{color:var(--cap-teal)}
-  .deduction-table{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:13px}
-  .deduction-table th{font-family:var(--mono);font-size:9px;color:var(--text-dim);
-    letter-spacing:.1em;text-transform:uppercase;padding:10px 14px;text-align:left;
-    border-bottom:1px solid var(--border)}
-  .deduction-table td{padding:10px 14px;color:var(--text);border-bottom:1px solid rgba(255,255,255,.04)}
-  .deduction-table .highlight{color:var(--white);font-weight:700}
-  .code-table{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:18px 20px;margin-bottom:24px}
-  .code-table-title{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
-  .code-table table{width:100%;border-collapse:collapse}
-  .code-table td{padding:7px 12px;font-size:13px;color:var(--text);
-    border-bottom:1px solid rgba(255,255,255,.05)}
-  .code-table td:last-child{font-family:var(--mono);color:var(--cap-teal);font-weight:700;
-    text-align:right;font-size:16px}
-  .code-build{display:flex;gap:8px;justify-content:center;margin:20px 0}
-  .cb-slot{width:54px;height:64px;border:2px solid var(--border);border-radius:6px;
-    display:flex;align-items:center;justify-content:center;font-family:var(--mono);
-    font-size:28px;font-weight:700;color:var(--cap-teal);background:rgba(0,0,0,.3);transition:all .3s}
-  .cb-slot.filled{border-color:var(--cap-teal);animation:popIn .4s cubic-bezier(.175,.885,.32,1.275)}
-  @keyframes popIn{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
-  .penalty-note{font-family:var(--mono);font-size:11px;color:rgba(255,71,87,.7);
-    background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.15);border-radius:3px;
-    padding:7px 12px;margin-bottom:14px;display:inline-block}
-  .deduce-steps{display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-  .deduce-step{background:var(--bg-card);border:1px solid var(--border);border-radius:5px;
-    padding:14px 18px;display:flex;align-items:center;gap:12px}
-  .step-icon{font-size:20px;flex-shrink:0}
-  .step-text{font-size:13px;color:var(--text-muted);line-height:1.6}
-  .step-text strong{color:var(--white)}
-  .step-text.active{color:var(--text)}
-  .step-arrow{font-family:var(--mono);font-size:14px;color:var(--cap-teal);flex-shrink:0;margin-left:auto}
+
+  /* ── RESET ──────────────────────────────────────────── */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:var(--sans); line-height:1.6;
+    min-height:100vh;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(0,112,173,.2) 0%, transparent 65%),
+      linear-gradient(rgba(18,171,219,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18,171,219,.04) 1px, transparent 1px);
+    background-size:auto, 48px 48px, 48px 48px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────── */
+  .page { position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:28px 40px 72px }
+
+  /* ── TOPBAR ─────────────────────────────────────────── */
+  .topbar {
+    display:grid; grid-template-columns:1fr auto auto;
+    align-items:center; gap:20px;
+    padding:16px 24px; margin-bottom:32px;
+    background:rgba(0,30,48,.9); border:1px solid var(--border2);
+    border-radius:var(--r16); backdrop-filter:blur(8px);
+  }
+  .brand { display:flex; align-items:center; gap:10px }
+  .brand-dot { width:8px; height:8px; background:var(--teal); border-radius:50% }
+  .brand-name { font-size:12px; font-weight:600; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.15em }
+  .brand-name em { color:var(--teal); font-style:normal }
+
+  /* ── PROGRESS TRACK ─────────────────────────────────── */
+  .progress-track {
+    display:flex; gap:8px; align-items:center;
+    background:rgba(0,20,36,.8); border:1px solid var(--border);
+    border-radius:var(--r8); padding:8px 14px;
+  }
+  .pt-item {
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+    padding:4px 10px; border-radius:var(--r4);
+    color:var(--dim); background:rgba(255,255,255,.04);
+    border:1px solid transparent; white-space:nowrap;
+  }
+  .pt-item.done { color:var(--green); background:rgba(0,201,122,.08);
+    border-color:rgba(0,201,122,.2) }
+  .pt-item.active { color:var(--teal); background:rgba(18,171,219,.12);
+    border-color:rgba(18,171,219,.3); font-weight:700 }
+
+  /* ── TIMER ──────────────────────────────────────────── */
+  .timer {
+    font-family:var(--mono); font-size:28px; font-weight:800;
+    color:var(--white); background:var(--card2);
+    border:1px solid var(--border2); padding:10px 20px;
+    border-radius:var(--r8); text-align:center; min-width:120px;
+    letter-spacing:.04em;
+  }
+  .timer.warning { color:var(--amber); border-color:rgba(255,184,0,.35) }
+  .timer.danger { color:var(--red); border-color:rgba(255,68,85,.4);
+    animation:tpulse 1.4s ease-in-out infinite }
+  @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+  .team-tag {
+    font-family:var(--mono); font-size:11px; color:var(--teal);
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.25);
+    padding:6px 14px; border-radius:999px; letter-spacing:.08em;
+  }
+
+  /* ── PAGE HEADER ────────────────────────────────────── */
+  .sala-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:10px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:12px;
+  }
+  .sala-badge::before { content:''; width:20px; height:1px; background:var(--teal) }
+  .page-title {
+    font-size:clamp(32px,4.5vw,52px); font-weight:900; color:var(--white);
+    line-height:1.0; letter-spacing:-.02em; margin-bottom:8px;
+  }
+  .page-subtitle {
+    font-family:var(--mono); font-size:11px; color:var(--dim);
+    letter-spacing:.18em; text-transform:uppercase; margin-bottom:28px;
+  }
+
+  /* ── CONTEXT CARD ───────────────────────────────────── */
+  .context-card {
+    background:rgba(0,112,173,.08); border:1px solid rgba(18,171,219,.2);
+    border-left:3px solid var(--teal); border-radius:var(--r8);
+    padding:18px 20px; margin-bottom:24px;
+  }
+  .context-label {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:10px;
+  }
+  .context-card p { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:8px }
+  .context-card p:last-child { margin-bottom:0 }
+  .context-card strong { color:var(--white) }
+
+  /* ── ALERT CARD ─────────────────────────────────────── */
+  .alert-card {
+    background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    border-left:3px solid var(--red); border-radius:var(--r8);
+    padding:14px 18px; margin-bottom:24px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .alert-dot { width:8px; height:8px; background:var(--red); border-radius:50%;
+    flex-shrink:0; margin-top:5px; animation:adot 1.2s ease-in-out infinite }
+  @keyframes adot { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .alert-text { font-size:13px; color:rgba(255,255,255,.88); line-height:1.65 }
+  .alert-text strong { color:var(--white) }
+
+  /* ── SECTION HEADER ─────────────────────────────────── */
+  .section-head {
+    font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase;
+    padding-bottom:8px; margin-bottom:14px;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* ── INSTRUCTION BOX ────────────────────────────────── */
+  .instruction-box {
+    background:rgba(18,171,219,.05); border:1px solid rgba(18,171,219,.14);
+    border-radius:var(--r8); padding:12px 16px;
+    font-size:13px; color:var(--muted); line-height:1.6;
+  }
+  .instruction-box strong { color:var(--white) }
+  .instruction-box .step {
+    display:flex; align-items:baseline; gap:10px;
+    padding:5px 0; border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .instruction-box .step:last-child { border-bottom:none }
+  .step-num { font-family:var(--mono); font-size:11px; color:var(--teal);
+    flex-shrink:0; min-width:18px }
+
+  /* ── CARDS ──────────────────────────────────────────── */
+  .card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r12); padding:20px 22px;
+  }
+  .card + .card { margin-top:14px }
+  .card-head {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px; padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .card-tag {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.12em; text-transform:uppercase;
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.2);
+    padding:3px 10px; border-radius:var(--r4);
+  }
+  .card-title { font-size:14px; font-weight:700; color:var(--white) }
+  .card-status { margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--dim) }
+  .card-status.done { color:var(--green) }
+
+  /* ── BUTTONS ────────────────────────────────────────── */
+  .btn-primary {
+    background:var(--blue); border:none; color:var(--white);
+    font-family:var(--sans); font-size:14px; font-weight:700;
+    letter-spacing:.05em; text-transform:uppercase;
+    padding:13px 28px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s, transform .15s;
+  }
+  .btn-primary:hover { background:var(--teal); transform:translateY(-1px) }
+
+  .btn-ghost {
+    background:rgba(18,171,219,.06); border:1px solid rgba(18,171,219,.2);
+    color:var(--teal); font-family:var(--mono); font-size:10px;
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:10px 18px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s;
+  }
+  .btn-ghost:hover { background:rgba(18,171,219,.14) }
+
+  .btn-hint {
+    background:rgba(255,184,0,.07); border:1px solid rgba(255,184,0,.22);
+    color:var(--amber); font-family:var(--sans); font-size:13px;
+    padding:10px 16px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s; text-align:left; width:100%;
+  }
+  .btn-hint:hover { background:rgba(255,184,0,.13) }
+
+  /* ── INPUT ──────────────────────────────────────────── */
+  .code-input {
+    background:var(--card2); border:2px solid var(--border2);
+    border-radius:var(--r8); color:var(--white);
+    font-family:var(--mono); font-size:22px; font-weight:700;
+    letter-spacing:.15em; padding:12px 18px; text-align:center; outline:none;
+    transition:border-color .2s;
+  }
+  .code-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(18,171,219,.12) }
+
+  /* ── FEEDBACK ───────────────────────────────────────── */
+  .feedback { display:none; margin-top:10px; padding:10px 14px; border-radius:var(--r8);
+    font-family:var(--mono); font-size:12px; letter-spacing:.03em }
+  .feedback.ok { background:rgba(0,201,122,.09); border:1px solid rgba(0,201,122,.3);
+    color:var(--green); display:block }
+  .feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.25);
+    color:var(--red); display:block }
+
+  /* ── PROGRESS BAR ───────────────────────────────────── */
+  .prog-bar { height:6px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden }
+  .prog-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal));
+    border-radius:999px; transition:width .5s ease; width:0% }
+
+  /* ── STATS ROW ──────────────────────────────────────── */
+  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px }
+  .stat-box { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r8); padding:12px 14px; text-align:center }
+  .stat-val { font-family:var(--mono); font-size:22px; font-weight:700; color:var(--teal) }
+  .stat-lbl { font-size:10px; color:var(--dim); margin-top:2px; letter-spacing:.05em }
+
+  /* ── PENALTY FLASH ──────────────────────────────────── */
+  .penalty-flash {
+    display:none; position:fixed; inset:0; z-index:300;
+    background:rgba(255,68,85,.14); backdrop-filter:blur(4px);
+    align-items:center; justify-content:center; pointer-events:none;
+  }
+  .penalty-box {
+    background:#160008; border:2px solid var(--red); border-radius:var(--r12);
+    padding:24px 40px; text-align:center;
+    animation:pbox .25s cubic-bezier(.175,.885,.32,1.275);
+  }
+  @keyframes pbox { from{transform:scale(.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .penalty-num { font-family:var(--mono); font-size:20px; color:var(--red);
+    font-weight:700; letter-spacing:.05em }
+  .penalty-sub { font-size:12px; color:var(--muted); margin-top:6px }
+
+  /* ── SUCCESS OVERLAY ────────────────────────────────── */
+  .success-overlay {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(0,6,14,.96); backdrop-filter:blur(10px);
+    align-items:center; justify-content:center;
+    padding:40px 24px; flex-direction:column; text-align:center;
+  }
+  .success-overlay.show { display:flex; animation:sovl .4s ease-out }
+  @keyframes sovl { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+  .success-icon { font-size:64px; margin-bottom:20px }
+  .success-title { font-size:clamp(24px,4vw,38px); font-weight:900; color:var(--white);
+    margin-bottom:14px; letter-spacing:-.01em }
+  .success-divider { width:40px; height:2px; background:var(--teal); margin:0 auto 18px }
+  .success-msg { font-size:14px; color:var(--text); line-height:1.75;
+    max-width:520px; margin-bottom:28px }
+  .success-msg strong { color:var(--white) }
+  .next-btn {
+    background:var(--blue); color:var(--white); font-family:var(--sans);
+    font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:14px 32px; border-radius:var(--r8); text-decoration:none;
+    transition:background .18s, transform .15s; display:inline-block;
+  }
+  .next-btn:hover { background:var(--teal); transform:translateY(-2px) }
+
+  /* ── NAV ACTIONS ────────────────────────────────────── */
+  .nav-row { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap }
+  .nav-hub {
+    flex:1; min-width:150px; text-align:center;
+    background:var(--card); border:1px solid var(--border); color:var(--muted);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:border-color .18s;
+  }
+  .nav-hub:hover { border-color:var(--teal) }
+  .nav-skip {
+    flex:1; min-width:150px; text-align:center;
+    background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.22); color:var(--amber);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:background .18s;
+  }
+  .nav-skip:hover { background:rgba(255,184,0,.12) }
+
+  /* ── HINT CONTENT ───────────────────────────────────── */
+  .hint-content {
+    display:none; background:rgba(255,184,0,.05);
+    border:1px solid rgba(255,184,0,.14); border-radius:var(--r8);
+    padding:12px 16px; margin-top:8px;
+    font-size:13px; color:var(--muted); line-height:1.7;
+  }
+
+  /* ── OPTION BUTTONS ─────────────────────────────────── */
+  .opts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px }
+  .opt {
+    flex:1; min-width:140px; background:rgba(0,0,0,.25);
+    border:1px solid var(--border); border-radius:var(--r8);
+    padding:12px 14px; cursor:pointer; text-align:center;
+    font-size:13px; color:var(--text); transition:border-color .15s, background .15s;
+    user-select:none;
+  }
+  .opt:hover { border-color:var(--teal); background:rgba(18,171,219,.08) }
+  .opt.correct { background:rgba(0,201,122,.1); border-color:var(--green); color:var(--green); font-weight:700 }
+  .opt.wrong { background:rgba(255,68,85,.08); border-color:var(--red); color:var(--red) }
+  .opt-feedback { display:none; margin-top:8px; font-family:var(--mono);
+    font-size:11px; padding:7px 12px; border-radius:var(--r4) }
+  .opt-feedback.ok { background:rgba(0,201,122,.07); border:1px solid rgba(0,201,122,.22);
+    color:var(--green); display:block }
+  .opt-feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    color:var(--red); display:block }
+
+  /* ── TOOLTIP INLINE ─────────────────────────────────── */
+  .inline-hint {
+    font-size:12px; color:var(--amber);
+    background:rgba(255,184,0,.06); border-left:2px solid rgba(255,184,0,.35);
+    padding:7px 12px; margin-bottom:12px; border-radius:0 var(--r4) var(--r4) 0;
+  }
+
+
+/* ── SALA-4 SPECIFIC ─────────────────────────────────── */
+.s4-layout {
+  display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;
+  margin-bottom:24px;
+}
+@media(max-width:960px) { .s4-layout { grid-template-columns:1fr } }
+
+.pistas-block {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r12); padding:0; overflow:hidden;
+}
+.pistas-block + .pistas-block { margin-top:14px }
+.pb-header {
+  display:flex; align-items:center; gap:10px;
+  padding:12px 18px; background:rgba(0,0,0,.2);
+  border-bottom:1px solid var(--border);
+}
+.pb-tag { font-family:var(--mono); font-size:9px; color:var(--teal);
+  letter-spacing:.12em; text-transform:uppercase;
+  background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.2);
+  padding:3px 10px; border-radius:var(--r4) }
+.pb-title { font-size:13px; font-weight:700; color:var(--white) }
+.pb-body { padding:14px 18px; display:flex; flex-direction:column; gap:6px }
+
+.pista {
+  display:flex; gap:10px; align-items:baseline;
+  font-size:13px; color:var(--text); line-height:1.6;
+  padding:8px 10px; border-radius:var(--r4);
+  background:rgba(255,255,255,.03); border:1px solid transparent;
+  transition:background .15s;
+}
+.pista:hover { background:rgba(18,171,219,.05); border-color:var(--border) }
+.pista strong { color:var(--white) }
+.p-num { font-family:var(--mono); font-size:10px; color:var(--teal);
+  flex-shrink:0; min-width:22px; font-weight:700 }
+
+.cat-block {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r12); overflow:hidden; margin-bottom:12px;
+}
+.cat-head {
+  padding:10px 16px; background:rgba(0,0,0,.2);
+  border-bottom:1px solid var(--border);
+  font-family:var(--mono); font-size:9px; color:var(--teal);
+  letter-spacing:.15em; text-transform:uppercase;
+}
+.cat-rows { padding:8px 0 }
+.cat-row {
+  display:flex; align-items:center; gap:0;
+  padding:7px 16px; border-bottom:1px solid rgba(255,255,255,.04);
+  transition:background .12s;
+}
+.cat-row:last-child { border-bottom:none }
+.cat-row:hover { background:rgba(18,171,219,.05) }
+.cat-num {
+  font-family:var(--mono); font-size:13px; font-weight:700;
+  color:var(--teal); width:28px; flex-shrink:0;
+}
+.cat-val { font-size:13px; color:var(--text) }
+
+/* Code slots */
+.code-slots {
+  display:flex; gap:8px; margin:14px 0 16px;
+}
+.cslot {
+  flex:1; min-width:60px; height:72px;
+  border:2px solid var(--border); border-radius:var(--r8);
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:4px;
+  background:rgba(0,0,0,.3); transition:all .3s;
+}
+.cslot.filled { border-color:var(--teal); background:rgba(18,171,219,.09) }
+.cslot-num { font-family:var(--mono); font-size:26px; font-weight:800; color:var(--teal) }
+.cslot-lbl { font-size:8px; color:var(--dim); letter-spacing:.04em; text-align:center; padding:0 4px }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="page">
+
   <header class="topbar">
-    <div class="brand-mark"><div class="brand-dot"></div>
-      <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
-    <div class="timer-badge" id="timerBadge">30:00</div>
-    <div class="team-chip" id="teamLabel">EQUIPO</div>
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Capgemini <em>Invent</em> · ET CONNECT 2026</div>
+    </div>
+    <div class="progress-track"><span class="pt-item" id="pt0" data-key="sala1done" data-label="CEx">CEx</span><span class="pt-item" id="pt1" data-key="sala2done" data-label="BT">BT</span><span class="pt-item" id="pt2" data-key="sala3done" data-label="EDA">EDA</span><span class="pt-item" id="pt3" data-key="sala4done" data-label="W&O">W&O</span></div>
+    <div class="timer" id="timerBadge">30:00</div>
+    <div class="team-tag" id="teamLabel">EQUIPO</div>
   </header>
   <div id="penaltyFlash" class="penalty-flash">
     <div class="penalty-box">
       <div style="font-size:28px;margin-bottom:8px">⚠️</div>
       <div class="penalty-num">−2 MINUTOS</div>
-      <div class="penalty-sub" id="penaltySub">Error detectado — el sistema REWIND pierde ventaja</div>
-      <div id="penaltyAccum" style="font-family:var(--mono);font-size:10px;color:rgba(255,71,87,.5);margin-top:6px"></div>
-    </div></div></div>
-
-  <div class="room-eyebrow">// SALA 04 · Workforce & Organisation · Lógica de adopción</div>
-  <h1 class="room-title">La Adopción<br>que no Llegó</h1>
-  <div class="room-area">CHANGE MANAGEMENT · GESTIÓN DEL CAMBIO · PUZZLE LÓGICO</div>
-
-  <div class="crisis-banner">
-    <div class="crisis-dot"></div>
-    <div class="crisis-text"><strong>Sistema REWIND — Sala 4 activa.</strong>
-    La transformación de NexaCorp fracasó porque el cambio no fue adoptado. Usa las pistas para reconstruir qué área tuvo más éxito, qué método usó y de qué problema partía. La lógica encadenada te dará el código.</div>
-  </div>
-
-  <div class="narrative-block">
-    <div class="eyebrow">// Situación</div>
-    <p>Tres áreas de NexaCorp — Marketing, Ventas y Operaciones — adoptaron el cambio con resultados muy distintos. Solo una alcanzó el nivel de adopción que salvó su departamento. Descubre cuál fue, qué método de change management usó y qué barrera inicial tenía.</p>
-    <p><strong>Usa las 4 pistas progresivas para deducir la combinación ganadora.</strong></p>
-  </div>
-
-  <div class="section-label">// Las 4 pistas — desbloquéalas en orden</div>
-  <div class="pistas-wrap">
-    <div class="pista-card" id="pc0">
-      <div class="pista-locked">
-        <div class="pista-num">1</div>
-        <div class="pista-label">Primera pista del caso</div>
-        <button class="pista-btn" onclick="revealPista(0)">Ver pista →</button>
-      </div>
-      <div class="pista-content" id="p0">
-        <div class="pista-text">El área con <strong>mayor adopción</strong> fue <strong>Marketing</strong>. El resto de áreas no alcanzó su nivel.</div>
-      </div>
-    </div>
-    <div class="pista-card" id="pc1">
-      <div class="pista-locked">
-        <div class="pista-num">2</div>
-        <div class="pista-label">Segunda pista</div>
-        <button class="pista-btn" onclick="revealPista(1)">Ver pista →</button>
-      </div>
-      <div class="pista-content" id="p1">
-        <div class="pista-text">El nivel de adopción más alto registrado fue del <strong>90%</strong>. Ningún otro departamento lo superó.</div>
-      </div>
-    </div>
-    <div class="pista-card" id="pc2">
-      <div class="pista-locked">
-        <div class="pista-num">3</div>
-        <div class="pista-label">Tercera pista</div>
-        <button class="pista-btn" onclick="revealPista(2)">Ver pista →</button>
-      </div>
-      <div class="pista-content" id="p2">
-        <div class="pista-text">Quien usó el método de <strong>Casos de Uso</strong> concretos logró el mayor nivel de adopción del programa.</div>
-      </div>
-    </div>
-    <div class="pista-card" id="pc3">
-      <div class="pista-locked">
-        <div class="pista-num">4</div>
-        <div class="pista-label">Cuarta pista — clave final</div>
-        <button class="pista-btn" onclick="revealPista(3)">Ver pista →</button>
-      </div>
-      <div class="pista-content" id="p3">
-        <div class="pista-text">Quien usó Casos de Uso partía de una barrera de <strong>Desconocimiento</strong> del nuevo modelo — no de resistencia activa.</div>
-      </div>
+      <div class="penalty-sub">Respuesta incorrecta</div>
     </div>
   </div>
 
-  <div class="section-label">// Deducciones encadenadas</div>
-  <div class="deduce-steps">
-    <div class="deduce-step">
-      <div class="step-icon">🧩</div>
-      <div class="step-text"><strong>Pista 1 + 2:</strong> Marketing = 90% de adopción</div>
-      <div class="step-arrow">→</div>
-    </div>
-    <div class="deduce-step">
-      <div class="step-icon">🧩</div>
-      <div class="step-text"><strong>Pista 3:</strong> Quien usó Casos de Uso logró el mayor nivel → Marketing usó Casos de Uso</div>
-      <div class="step-arrow">→</div>
-    </div>
-    <div class="deduce-step">
-      <div class="step-icon">🧩</div>
-      <div class="step-text"><strong>Pista 4:</strong> Casos de Uso partía de Desconocimiento → Marketing partía de Desconocimiento</div>
-      <div class="step-arrow">→</div>
-    </div>
-    <div class="deduce-step" style="border-color:var(--cap-teal)">
-      <div class="step-icon">✅</div>
-      <div class="step-text" style="color:var(--white)"><strong>Resultado:</strong> Marketing · Casos de Uso · Desconocimiento · 90%</div>
+  <div class="sala-badge">SALA 04 · Workforce & Organisation</div>
+  <h1 class="page-title">La Adopción<br>Imposible</h1>
+  <div class="page-subtitle">COPILOT · CHANGE MANAGEMENT · PUZZLE LÓGICO</div>
+
+  <div class="alert-card">
+    <div class="alert-dot"></div>
+    <div class="alert-text">
+      <strong>OPERATION REWIND — Sala 4.</strong><br>
+      En 2026, NexaCorp lanzó Copilot en cinco áreas de negocio. Cada área utilizó una estrategia de adopción diferente. <strong>Solo una consiguió una adopción sostenible y evitó el colapso.</strong><br>
+      Analizad todas las pistas y descubrid la única combinación que lo logró.
     </div>
   </div>
 
-  <div class="code-table">
-    <div class="code-table-title">// Tabla de códigos</div>
-    <table>
-      <tr><td>Marketing</td><td>3</td></tr>
-      <tr><td>Casos de Uso</td><td>3</td></tr>
-      <tr><td>Desconocimiento</td><td>3</td></tr>
-      <tr><td>90%</td><td>5</td></tr>
-    </table>
+  <div class="instruction-box" style="margin-bottom:24px">
+    <div class="step"><span class="step-num">01</span><span>Leed todas las pistas — cada una elimina combinaciones posibles.</span></div>
+    <div class="step"><span class="step-num">02</span><span>Relacionad cada área con su palanca, problema y nivel de adopción.</span></div>
+    <div class="step"><span class="step-num">03</span><span>Los 4 números de la combinación ganadora forman el <strong>código REWIND</strong>.</span></div>
   </div>
 
-  <div class="section-label">// Código construido</div>
-  <div class="code-build">
-    <div class="cb-slot" id="cb0"></div>
-    <div class="cb-slot" id="cb1"></div>
-    <div class="cb-slot" id="cb2"></div>
-    <div class="cb-slot" id="cb3"></div>
-  </div>
+  <div class="s4-layout">
 
-  <div class="penalty-note">⚠ Código incorrecto descuenta 2 minutos</div>
+    <!-- LEFT: Pistas -->
+    <div>
+      <div class="section-head">// Pistas</div>
 
-  <div class="code-section">
-    <div class="code-label">// Código de la prueba</div>
-    <div class="code-sublabel">Traduce con la tabla: Marketing · Casos de Uso · Desconocimiento · 90%</div>
-    <div class="code-input-row">
-      <input type="text" class="code-input" id="codeInput" maxlength="4" placeholder="____">
-      <button class="validate-btn" onclick="validate()">Validar →</button>
+      <div class="pistas-block">
+        <div class="pb-header">
+          <div class="pb-tag">Bloque A</div>
+          <div class="pb-title">Pistas 1 – 10</div>
+        </div>
+        <div class="pb-body">
+          <div class="pista"><span class="p-num">1.</span>El área que utilizó <strong>Champions</strong> obtuvo mejor nivel de adopción que la que utilizó <strong>Formación</strong>.</div>
+          <div class="pista"><span class="p-num">2.</span><strong>Marketing</strong> no usó la resistencia de managers.</div>
+          <div class="pista"><span class="p-num">3.</span>El área que utilizó <strong>Casos de Uso</strong> consiguió el mayor nivel de adopción: <strong>90%</strong>.</div>
+          <div class="pista"><span class="p-num">4.</span><strong>RRHH</strong> no tenía miedo a la IA.</div>
+          <div class="pista"><span class="p-num">5.</span>El área con <strong>Patrocinio Directivo</strong> obtuvo más adopción que la que usó <strong>Comunidad</strong>.</div>
+          <div class="pista"><span class="p-num">6.</span>El área con <strong>falta de utilidad percibida</strong> no utilizó Casos de Uso.</div>
+          <div class="pista"><span class="p-num">7.</span><strong>Compras</strong> tuvo una adopción inferior a <strong>Operaciones</strong>.</div>
+          <div class="pista"><span class="p-num">8.</span>El área con <strong>miedo a la IA</strong> obtuvo exactamente un <strong>30%</strong> de adopción.</div>
+          <div class="pista"><span class="p-num">9.</span>El área que usó <strong>Champions</strong> no era <strong>Finanzas</strong>.</div>
+          <div class="pista"><span class="p-num">10.</span>El área que usó <strong>Comunidad</strong> no fue la peor clasificada.</div>
+        </div>
+      </div>
+
+      <div class="pistas-block" style="margin-top:12px">
+        <div class="pb-header">
+          <div class="pb-tag">Bloque B</div>
+          <div class="pb-title">Pistas 11 – 14</div>
+        </div>
+        <div class="pb-body">
+          <div class="pista"><span class="p-num">11.</span>El área con <strong>mayor adopción</strong> era <strong>Marketing</strong>.</div>
+          <div class="pista"><span class="p-num">12.</span>El área que utilizó <strong>Casos de Uso</strong> partía de un problema de <strong>desconocimiento</strong>.</div>
+          <div class="pista"><span class="p-num">13.</span><strong>Finanzas</strong> obtuvo el nivel de adopción más <strong>bajo</strong>.</div>
+          <div class="pista"><span class="p-num">14.</span><strong>Operaciones</strong> no utilizó <strong>Patrocinio Directivo</strong> ni <strong>Comunidad</strong>.</div>
+        </div>
+      </div>
     </div>
-    <div class="code-result" id="codeResult"></div>
+
+    <!-- RIGHT: Categorías + código -->
+    <div>
+      <div class="section-head">// Categorías y códigos</div>
+
+      <div class="cat-block">
+        <div class="cat-head">Área de negocio</div>
+        <div class="cat-rows">
+          <div class="cat-row"><div class="cat-num">1</div><div class="cat-val">RRHH</div></div>
+          <div class="cat-row"><div class="cat-num">2</div><div class="cat-val">Finanzas</div></div>
+          <div class="cat-row"><div class="cat-num">3</div><div class="cat-val">Marketing</div></div>
+          <div class="cat-row"><div class="cat-num">4</div><div class="cat-val">Operaciones</div></div>
+          <div class="cat-row"><div class="cat-num">5</div><div class="cat-val">Compras</div></div>
+        </div>
+      </div>
+
+      <div class="cat-block">
+        <div class="cat-head">Palanca principal</div>
+        <div class="cat-rows">
+          <div class="cat-row"><div class="cat-num">1</div><div class="cat-val">Champions</div></div>
+          <div class="cat-row"><div class="cat-num">2</div><div class="cat-val">Formación</div></div>
+          <div class="cat-row"><div class="cat-num">3</div><div class="cat-val">Casos de Uso</div></div>
+          <div class="cat-row"><div class="cat-num">4</div><div class="cat-val">Patrocinio Directivo</div></div>
+          <div class="cat-row"><div class="cat-num">5</div><div class="cat-val">Comunidad</div></div>
+        </div>
+      </div>
+
+      <div class="cat-block">
+        <div class="cat-head">Problema inicial</div>
+        <div class="cat-rows">
+          <div class="cat-row"><div class="cat-num">1</div><div class="cat-val">Falta de tiempo</div></div>
+          <div class="cat-row"><div class="cat-num">2</div><div class="cat-val">Resistencia de managers</div></div>
+          <div class="cat-row"><div class="cat-num">3</div><div class="cat-val">Desconocimiento</div></div>
+          <div class="cat-row"><div class="cat-num">4</div><div class="cat-val">Falta de utilidad percibida</div></div>
+          <div class="cat-row"><div class="cat-num">5</div><div class="cat-val">Miedo a la IA</div></div>
+        </div>
+      </div>
+
+      <div class="cat-block">
+        <div class="cat-head">Nivel de adopción a 6 meses</div>
+        <div class="cat-rows">
+          <div class="cat-row"><div class="cat-num">1</div><div class="cat-val">15%</div></div>
+          <div class="cat-row"><div class="cat-num">2</div><div class="cat-val">30%</div></div>
+          <div class="cat-row"><div class="cat-num">3</div><div class="cat-val">45%</div></div>
+          <div class="cat-row"><div class="cat-num">4</div><div class="cat-val">65%</div></div>
+          <div class="cat-row"><div class="cat-num">5</div><div class="cat-val">90%</div></div>
+        </div>
+      </div>
+
+      <!-- CODE INPUT -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-tag">Código REWIND</div>
+          <div class="card-title">Área · Palanca · Problema · Adopción</div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">
+          Escribe los 4 números de la combinación ganadora en ese orden exacto.
+        </div>
+        <div class="code-slots">
+          <div class="cslot" id="cs0"><div class="cslot-num" id="csn0">_</div><div class="cslot-lbl">Área</div></div>
+          <div class="cslot" id="cs1"><div class="cslot-num" id="csn1">_</div><div class="cslot-lbl">Palanca</div></div>
+          <div class="cslot" id="cs2"><div class="cslot-num" id="csn2">_</div><div class="cslot-lbl">Problema</div></div>
+          <div class="cslot" id="cs3"><div class="cslot-num" id="csn3">_</div><div class="cslot-lbl">Adopción</div></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <input type="text" class="code-input" id="codeInput" maxlength="4"
+            placeholder="_ _ _ _" style="width:160px"
+            oninput="syncSlots(this.value)">
+          <button class="btn-primary" onclick="validate()">Validar →</button>
+        </div>
+        <div class="feedback" id="codeResult"></div>
+      </div>
+
+      <button class="btn-hint" style="margin-top:12px" onclick="_toggleHint('hintContent')">
+        💡 Pista <span style="font-size:10px;opacity:.6">(no descuenta tiempo)</span>
+      </button>
+      <div class="hint-content" id="hintContent">
+        Pistas 3+11+12 encadenadas: el área con mayor adopción (Marketing) usó Casos de Uso y partía de Desconocimiento con un 90%. Traduce: Marketing=3, Casos de Uso=3, Desconocimiento=3, 90%=5.
+      </div>
+    </div>
   </div>
 
-  <button class="tip-toggle" onclick="_toggleTip()">💡 Necesito una pista <span style="font-size:10px;color:var(--text-dim)">(no descuenta tiempo)</span></button>
-  <div class="tip-content" id="tipContent">Encadena las 4 pistas en orden: Pista 1+2 → Marketing = 90%. Pista 3 → Casos de Uso = mayor adopción = Marketing. Pista 4 → Casos de Uso partía de Desconocimiento. Ahora traduce cada elemento con la tabla: Marketing=3, Casos de Uso=3, Desconocimiento=3, 90%=5. El código es la concatenación de los 4 valores.</div>
-
-  <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
-    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:var(--bg-card);
-      border:1px solid var(--border);color:var(--text-muted);font-family:var(--mono);font-size:11px;
-      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
-      ← Centro de control</a>
-    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:rgba(255,184,0,.06);
-      border:1px solid rgba(255,184,0,.25);color:var(--amber);font-family:var(--mono);font-size:11px;
-      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
-      ⏭ Saltar prueba</a></div>
+  <div class="nav-row">
+    <a href="index.html" class="nav-hub">← Centro de control</a>
+    <a href="index.html" class="nav-skip">⏭ Saltar prueba</a>
+  </div>
 </div>
 
 <div class="success-overlay" id="successOverlay">
   <div class="success-icon">👥</div>
-  <div class="success-title">CÓDIGO REWIND DESBLOQUEADO</div>
+  <div class="success-title">¡Código REWIND desbloqueado!</div>
   <div style="font-family:var(--mono);font-size:48px;font-weight:900;color:var(--green);
-    letter-spacing:.3em;margin:14px 0;text-shadow:0 0 30px rgba(0,214,143,.5)">3335</div>
+    letter-spacing:.35em;margin:14px 0;text-shadow:0 0 28px rgba(0,201,122,.45)">3335</div>
   <div class="success-divider"></div>
   <div class="success-msg">
     <strong>Marketing · Casos de Uso · Desconocimiento · 90%</strong><br><br>
-    El cambio se adopta cuando atacas la barrera correcta (desconocimiento, no resistencia) con el método adecuado (casos de uso concretos, no comunicación genérica). NexaCorp falló porque no diagnosticó bien las barreras antes de lanzar el programa de cambio.
+    El cambio se adopta cuando atacas la barrera correcta con el método adecuado. NexaCorp falló porque no diagnosticó las barreras reales antes de lanzar el programa.
   </div>
   <a href="index.html" class="next-btn">▶ Volver al centro de control</a>
 </div>
 
 <script>
   
+  // ── SESSION / TIMER ──────────────────────────────────
   const _team = sessionStorage.getItem('teamName') || 'EQUIPO';
-  const _tEl = document.getElementById('teamLabel');
-  if(_tEl) _tEl.textContent = _team.toUpperCase();
-  const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
-  const _TOTAL = 30*60*1000;
+  document.getElementById('teamLabel').textContent = _team.toUpperCase();
+  const _start  = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const _TOTAL  = 30 * 60 * 1000;
   const _timerEl = document.getElementById('timerBadge');
-  function _updT(){
-    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    const r=Math.max(0,_TOTAL-(Date.now()-_start)-pen);
-    const m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);
-    if(_timerEl){
-      _timerEl.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-      _timerEl.className='timer-badge'+(r<5*60000?' danger':r<12*60000?' warning':'');
+  function _updT() {
+    const pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    const r   = Math.max(0, _TOTAL - (Date.now() - _start) - pen);
+    const m   = Math.floor(r / 60000), s = Math.floor((r % 60000) / 1000);
+    _timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    _timerEl.className = 'timer' + (r < 5*60000 ? ' danger' : r < 12*60000 ? ' warning' : '');
+  }
+  setInterval(_updT, 1000); _updT();
+  // Progress track
+  ['sala1done','sala2done','sala3done','sala4done'].forEach((k,i) => {
+    const el = document.getElementById('pt'+i);
+    if (!el) return;
+    if (sessionStorage.getItem(k)) {
+      el.classList.add('done');
+      el.textContent = '✅ ' + el.dataset.label;
     }
+  });
+  function _applyPenalty(msg) {
+    let pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    pen += 2 * 60 * 1000; sessionStorage.setItem('penalty', String(pen));
+    const fl = document.getElementById('penaltyFlash');
+    if (fl) { fl.style.display = 'flex'; setTimeout(() => fl.style.display = 'none', 2200); }
   }
-  setInterval(_updT,1000);_updT();
-  function _applyPenalty(){
-    let pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    pen+=2*60*1000; sessionStorage.setItem('penalty',String(pen));
-    const el=document.getElementById('penaltyFlash');
-    if(el){el.style.display='flex';setTimeout(()=>el.style.display='none',2200);}
+  function _markDone(salaNum, salaName) {
+    sessionStorage.setItem('sala' + salaNum + 'done', Date.now());
+    const eq  = sessionStorage.getItem('teamName') || '?';
+    const pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    const el  = Date.now() - _start + pen;
+    const mm  = Math.floor(el/60000), ss = Math.floor((el%60000)/1000);
+    const t   = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+    const FORMS = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u';
+    const url = FORMS + '&r1=' + encodeURIComponent(eq) + '&r2=' + encodeURIComponent(salaName) + '&r3=' + encodeURIComponent(t);
+    const ifr = document.createElement('iframe'); ifr.style.display='none'; ifr.src=url;
+    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),5000);
   }
-  function _markDone(){
-    sessionStorage.setItem('sala4done',Date.now());
-    const eq=sessionStorage.getItem('teamName')||'Desconocido';
-    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    const el=Date.now()-_start+pen;
-    const mm=Math.floor(el/60000),ss=Math.floor((el%60000)/1000);
-    const t=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
-    const url='https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1='+encodeURIComponent(eq)+'&r2='+encodeURIComponent('SALA 04 — WORKFORCE & ORGANISATION')+'&r3='+encodeURIComponent(t);
-    const ifr=document.createElement('iframe');ifr.style.display='none';ifr.src=url;
-    document.body.appendChild(ifr);setTimeout(()=>ifr.remove(),5000);
+  function _toggleHint(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
   }
-  function _toggleTip(){const t=document.getElementById('tipContent');t.style.display=t.style.display==='block'?'none':'block';}
 
 
-  const CODE = ['3','3','3','5'];
-  let revealedPistas = 0;
-
-  function revealPista(idx) {
-    document.getElementById('p'+idx).classList.add('show');
-    document.getElementById('pc'+idx).classList.add('revealed');
-    revealedPistas++;
-    // Fill code slots progressively
-    if(idx < CODE.length) {
-      const slot = document.getElementById('cb'+idx);
-      slot.textContent = CODE[idx]; slot.classList.add('filled');
-    }
-    // After all 4, auto-fill input
-    if(revealedPistas >= 4) {
-      document.getElementById('codeInput').value = '3335';
-    }
+  function syncSlots(val) {
+    ['0','1','2','3'].forEach((_, i) => {
+      const n = document.getElementById('csn'+i);
+      const s = document.getElementById('cs'+i);
+      const ch = val[i] || '_';
+      n.textContent = ch;
+      s.classList.toggle('filled', ch !== '_' && ch !== ' ');
+    });
   }
 
   function validate() {
     const val = document.getElementById('codeInput').value.trim();
-    const res = document.getElementById('codeResult'); res.style.display='block';
-    if(val === '3335') {
-      _markDone();
-      res.className='code-result success'; res.textContent='✓ Correcto — código REWIND desbloqueado.';
+    const res = document.getElementById('codeResult');
+    if (val === '3335') {
+      _markDone(4,'SALA 04 — WORKFORCE & ORGANISATION');
+      res.className='feedback ok'; res.textContent='✓ Correcto — código REWIND desbloqueado.';
       setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
     } else {
-      _applyPenalty('Código incorrecto — encadena las pistas');
-      res.className='code-result error'; res.textContent='✗ Incorrecto (−2 min). Encadena las pistas y traduce con la tabla.';
+      _applyPenalty('Código incorrecto');
+      res.className='feedback err'; res.textContent='✗ Incorrecto (−2 min). Relee las pistas y deduce la combinación.';
     }
   }
 </script>

@@ -1,416 +1,748 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SALA 01 — Corporate Experience · OPERATION REWIND</title>
 <style>
+
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  /* ── TOKENS ─────────────────────────────────────────── */
   :root {
-    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
-    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
-    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
-    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
-    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --blue:#0070AD; --teal:#12ABDB; --bg:#000F1A; --card:#001E30;
+    --card2:#002440; --white:#FFFFFF; --text:#D8EEF8; --muted:#7AAEC8;
+    --dim:#4A7A96; --green:#00C97A; --amber:#FFB800; --red:#FF4455;
+    --border:rgba(18,171,219,.18); --border2:rgba(18,171,219,.32);
+    --surface:rgba(0,112,173,.1);
+    --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --r4:4px; --r8:8px; --r12:12px; --r16:16px;
+    --shadow:0 4px 24px rgba(0,0,0,.4);
   }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
-  body::before{content:'';position:fixed;inset:0;background:
-    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
-    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
-    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
-  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-  .brand-mark{display:flex;align-items:center;gap:10px}
-  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-  .brand-text span{color:var(--cap-teal)}
-  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
-  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
-  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
-  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
-    border-radius:3px;letter-spacing:.05em}
-  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
-  .room-title{font-size:clamp(32px,7vw,60px);font-weight:900;color:var(--white);
-    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
-  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:32px}
-  .narrative-block{background:var(--surface);border:1px solid var(--border);
-    border-radius:6px;padding:20px 22px;margin-bottom:24px}
-  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
-  .narrative-block p:last-child{margin-bottom:0}
-  .narrative-block strong{color:var(--white)}
-  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
-    border-bottom:1px solid var(--border)}
-  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
-  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
-  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
-    box-shadow:0 0 0 1px var(--cap-teal)}
-  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
-  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
-    margin-bottom:24px;display:flex;align-items:center;gap:12px}
-  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
-    animation:cdot 1s ease-in-out infinite}
-  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
-  .crisis-text strong{color:var(--white)}
-  .code-section{margin-top:24px}
-  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
-  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
-  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
-  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
-    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
-    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
-  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
-  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
-  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
-  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
-    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
-  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
-  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
-  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
-    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
-    transition:all .18s;margin-top:18px;display:block}
-  .tip-toggle:hover{background:rgba(255,184,0,.12)}
-  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
-    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
-    color:var(--text-muted);line-height:1.7}
-  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
-    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
-    flex-direction:column;text-align:center}
-  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-  .success-icon{font-size:60px;margin-bottom:18px}
-  .success-title{font-size:clamp(22px,5vw,38px);font-weight:900;color:var(--white);margin-bottom:14px}
-  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
-  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
-  .success-msg strong{color:var(--white)}
-  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
-  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
-  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
-    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
-  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
-    padding:24px 44px;text-align:center}
-  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
-  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
-</style>
-<style>
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;margin-bottom:22px;
-    display:flex;align-items:center;gap:12px}
-  .stats-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
-  .stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;
-    padding:10px 16px;flex:1;min-width:80px;text-align:center}
-  .stat-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--cap-teal)}
-  .stat-label{font-size:10px;color:var(--text-dim);margin-top:2px}
-  .progress-bar{height:6px;background:var(--bg-card);border-radius:3px;margin-bottom:20px;
-    border:1px solid var(--border);overflow:hidden}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--cap-blue),var(--cap-teal));
-    border-radius:3px;transition:width .5s ease;width:0%}
-  /* Word list */
-  .word-list{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:20px}
-  @media(max-width:460px){.word-list{grid-template-columns:1fr}}
-  .word-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-muted);
-    padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;transition:all .25s}
-  .word-item.found{color:var(--green);border-color:rgba(0,214,143,.25);background:rgba(0,214,143,.05)}
-  .word-name{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--cap-teal);flex-shrink:0}
-  .word-item.found .word-name{color:var(--green);text-decoration:line-through;opacity:.7}
-  /* Grid */
-  .grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:18px;
-    border-radius:6px;border:1px solid var(--border)}
-  .ws-grid{display:grid;grid-template-columns:repeat(16, minmax(34px,1fr));
-    background:var(--bg-card);padding:8px;gap:2px;min-width:480px}
-  .ws-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
-    font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text-muted);
-    border-radius:3px;cursor:pointer;user-select:none;-webkit-user-select:none;
-    touch-action:none;transition:background .1s,color .1s;border:1px solid transparent;
-    position:relative}
-  .ws-cell:hover{background:rgba(18,171,219,.15);color:var(--white)}
-  .ws-cell.highlighted{background:rgba(18,171,219,.25);color:var(--white);
-    border-color:rgba(18,171,219,.4)}
-  .ws-cell.found-cell{background:rgba(18,171,219,.18);color:var(--cap-teal);font-weight:900}
-  .ws-cell.value-cell{background:rgba(0,214,143,.12);color:var(--green);font-weight:900;
-    border-color:rgba(0,214,143,.3)}
-  .ws-cell.value-pop{animation:pop .5s cubic-bezier(.175,.885,.32,1.275) forwards}
-  @keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
-  .ws-cell.wrong-flash{animation:wrongFlash .4s ease-out}
-  @keyframes wrongFlash{0%,100%{background:transparent}50%{background:rgba(255,71,87,.25)}}
-  .instructions{font-size:12px;color:var(--text-muted);background:rgba(18,171,219,.05);
-    border:1px solid rgba(18,171,219,.12);border-radius:4px;padding:10px 14px;margin-bottom:14px;
-    line-height:1.6}
-  .instructions strong{color:var(--white)}
+
+  /* ── RESET ──────────────────────────────────────────── */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:var(--sans); line-height:1.6;
+    min-height:100vh;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 40% at 50% -10%, rgba(0,112,173,.2) 0%, transparent 65%),
+      linear-gradient(rgba(18,171,219,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18,171,219,.04) 1px, transparent 1px);
+    background-size:auto, 48px 48px, 48px 48px;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────── */
+  .page { position:relative; z-index:1; max-width:1240px; margin:0 auto; padding:28px 40px 72px }
+
+  /* ── TOPBAR ─────────────────────────────────────────── */
+  .topbar {
+    display:grid; grid-template-columns:1fr auto auto;
+    align-items:center; gap:20px;
+    padding:16px 24px; margin-bottom:32px;
+    background:rgba(0,30,48,.9); border:1px solid var(--border2);
+    border-radius:var(--r16); backdrop-filter:blur(8px);
+  }
+  .brand { display:flex; align-items:center; gap:10px }
+  .brand-dot { width:8px; height:8px; background:var(--teal); border-radius:50% }
+  .brand-name { font-size:12px; font-weight:600; color:var(--muted);
+    text-transform:uppercase; letter-spacing:.15em }
+  .brand-name em { color:var(--teal); font-style:normal }
+
+  /* ── PROGRESS TRACK ─────────────────────────────────── */
+  .progress-track {
+    display:flex; gap:8px; align-items:center;
+    background:rgba(0,20,36,.8); border:1px solid var(--border);
+    border-radius:var(--r8); padding:8px 14px;
+  }
+  .pt-item {
+    font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+    padding:4px 10px; border-radius:var(--r4);
+    color:var(--dim); background:rgba(255,255,255,.04);
+    border:1px solid transparent; white-space:nowrap;
+  }
+  .pt-item.done { color:var(--green); background:rgba(0,201,122,.08);
+    border-color:rgba(0,201,122,.2) }
+  .pt-item.active { color:var(--teal); background:rgba(18,171,219,.12);
+    border-color:rgba(18,171,219,.3); font-weight:700 }
+
+  /* ── TIMER ──────────────────────────────────────────── */
+  .timer {
+    font-family:var(--mono); font-size:28px; font-weight:800;
+    color:var(--white); background:var(--card2);
+    border:1px solid var(--border2); padding:10px 20px;
+    border-radius:var(--r8); text-align:center; min-width:120px;
+    letter-spacing:.04em;
+  }
+  .timer.warning { color:var(--amber); border-color:rgba(255,184,0,.35) }
+  .timer.danger { color:var(--red); border-color:rgba(255,68,85,.4);
+    animation:tpulse 1.4s ease-in-out infinite }
+  @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+  .team-tag {
+    font-family:var(--mono); font-size:11px; color:var(--teal);
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.25);
+    padding:6px 14px; border-radius:999px; letter-spacing:.08em;
+  }
+
+  /* ── PAGE HEADER ────────────────────────────────────── */
+  .sala-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:10px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:12px;
+  }
+  .sala-badge::before { content:''; width:20px; height:1px; background:var(--teal) }
+  .page-title {
+    font-size:clamp(32px,4.5vw,52px); font-weight:900; color:var(--white);
+    line-height:1.0; letter-spacing:-.02em; margin-bottom:8px;
+  }
+  .page-subtitle {
+    font-family:var(--mono); font-size:11px; color:var(--dim);
+    letter-spacing:.18em; text-transform:uppercase; margin-bottom:28px;
+  }
+
+  /* ── CONTEXT CARD ───────────────────────────────────── */
+  .context-card {
+    background:rgba(0,112,173,.08); border:1px solid rgba(18,171,219,.2);
+    border-left:3px solid var(--teal); border-radius:var(--r8);
+    padding:18px 20px; margin-bottom:24px;
+  }
+  .context-label {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.22em; text-transform:uppercase; margin-bottom:10px;
+  }
+  .context-card p { font-size:14px; color:var(--text); line-height:1.7; margin-bottom:8px }
+  .context-card p:last-child { margin-bottom:0 }
+  .context-card strong { color:var(--white) }
+
+  /* ── ALERT CARD ─────────────────────────────────────── */
+  .alert-card {
+    background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    border-left:3px solid var(--red); border-radius:var(--r8);
+    padding:14px 18px; margin-bottom:24px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .alert-dot { width:8px; height:8px; background:var(--red); border-radius:50%;
+    flex-shrink:0; margin-top:5px; animation:adot 1.2s ease-in-out infinite }
+  @keyframes adot { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .alert-text { font-size:13px; color:rgba(255,255,255,.88); line-height:1.65 }
+  .alert-text strong { color:var(--white) }
+
+  /* ── SECTION HEADER ─────────────────────────────────── */
+  .section-head {
+    font-family:var(--mono); font-size:10px; color:var(--dim);
+    letter-spacing:.2em; text-transform:uppercase;
+    padding-bottom:8px; margin-bottom:14px;
+    border-bottom:1px solid var(--border);
+  }
+
+  /* ── INSTRUCTION BOX ────────────────────────────────── */
+  .instruction-box {
+    background:rgba(18,171,219,.05); border:1px solid rgba(18,171,219,.14);
+    border-radius:var(--r8); padding:12px 16px;
+    font-size:13px; color:var(--muted); line-height:1.6;
+  }
+  .instruction-box strong { color:var(--white) }
+  .instruction-box .step {
+    display:flex; align-items:baseline; gap:10px;
+    padding:5px 0; border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .instruction-box .step:last-child { border-bottom:none }
+  .step-num { font-family:var(--mono); font-size:11px; color:var(--teal);
+    flex-shrink:0; min-width:18px }
+
+  /* ── CARDS ──────────────────────────────────────────── */
+  .card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r12); padding:20px 22px;
+  }
+  .card + .card { margin-top:14px }
+  .card-head {
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px; padding-bottom:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .card-tag {
+    font-family:var(--mono); font-size:9px; color:var(--teal);
+    letter-spacing:.12em; text-transform:uppercase;
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.2);
+    padding:3px 10px; border-radius:var(--r4);
+  }
+  .card-title { font-size:14px; font-weight:700; color:var(--white) }
+  .card-status { margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--dim) }
+  .card-status.done { color:var(--green) }
+
+  /* ── BUTTONS ────────────────────────────────────────── */
+  .btn-primary {
+    background:var(--blue); border:none; color:var(--white);
+    font-family:var(--sans); font-size:14px; font-weight:700;
+    letter-spacing:.05em; text-transform:uppercase;
+    padding:13px 28px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s, transform .15s;
+  }
+  .btn-primary:hover { background:var(--teal); transform:translateY(-1px) }
+
+  .btn-ghost {
+    background:rgba(18,171,219,.06); border:1px solid rgba(18,171,219,.2);
+    color:var(--teal); font-family:var(--mono); font-size:10px;
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:10px 18px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s;
+  }
+  .btn-ghost:hover { background:rgba(18,171,219,.14) }
+
+  .btn-hint {
+    background:rgba(255,184,0,.07); border:1px solid rgba(255,184,0,.22);
+    color:var(--amber); font-family:var(--sans); font-size:13px;
+    padding:10px 16px; border-radius:var(--r8); cursor:pointer;
+    transition:background .18s; text-align:left; width:100%;
+  }
+  .btn-hint:hover { background:rgba(255,184,0,.13) }
+
+  /* ── INPUT ──────────────────────────────────────────── */
+  .code-input {
+    background:var(--card2); border:2px solid var(--border2);
+    border-radius:var(--r8); color:var(--white);
+    font-family:var(--mono); font-size:22px; font-weight:700;
+    letter-spacing:.15em; padding:12px 18px; text-align:center; outline:none;
+    transition:border-color .2s;
+  }
+  .code-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(18,171,219,.12) }
+
+  /* ── FEEDBACK ───────────────────────────────────────── */
+  .feedback { display:none; margin-top:10px; padding:10px 14px; border-radius:var(--r8);
+    font-family:var(--mono); font-size:12px; letter-spacing:.03em }
+  .feedback.ok { background:rgba(0,201,122,.09); border:1px solid rgba(0,201,122,.3);
+    color:var(--green); display:block }
+  .feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.25);
+    color:var(--red); display:block }
+
+  /* ── PROGRESS BAR ───────────────────────────────────── */
+  .prog-bar { height:6px; background:rgba(255,255,255,.07); border-radius:999px; overflow:hidden }
+  .prog-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal));
+    border-radius:999px; transition:width .5s ease; width:0% }
+
+  /* ── STATS ROW ──────────────────────────────────────── */
+  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px }
+  .stat-box { background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r8); padding:12px 14px; text-align:center }
+  .stat-val { font-family:var(--mono); font-size:22px; font-weight:700; color:var(--teal) }
+  .stat-lbl { font-size:10px; color:var(--dim); margin-top:2px; letter-spacing:.05em }
+
+  /* ── PENALTY FLASH ──────────────────────────────────── */
+  .penalty-flash {
+    display:none; position:fixed; inset:0; z-index:300;
+    background:rgba(255,68,85,.14); backdrop-filter:blur(4px);
+    align-items:center; justify-content:center; pointer-events:none;
+  }
+  .penalty-box {
+    background:#160008; border:2px solid var(--red); border-radius:var(--r12);
+    padding:24px 40px; text-align:center;
+    animation:pbox .25s cubic-bezier(.175,.885,.32,1.275);
+  }
+  @keyframes pbox { from{transform:scale(.85);opacity:0} to{transform:scale(1);opacity:1} }
+  .penalty-num { font-family:var(--mono); font-size:20px; color:var(--red);
+    font-weight:700; letter-spacing:.05em }
+  .penalty-sub { font-size:12px; color:var(--muted); margin-top:6px }
+
+  /* ── SUCCESS OVERLAY ────────────────────────────────── */
+  .success-overlay {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(0,6,14,.96); backdrop-filter:blur(10px);
+    align-items:center; justify-content:center;
+    padding:40px 24px; flex-direction:column; text-align:center;
+  }
+  .success-overlay.show { display:flex; animation:sovl .4s ease-out }
+  @keyframes sovl { from{opacity:0;transform:scale(.96)} to{opacity:1;transform:scale(1)} }
+  .success-icon { font-size:64px; margin-bottom:20px }
+  .success-title { font-size:clamp(24px,4vw,38px); font-weight:900; color:var(--white);
+    margin-bottom:14px; letter-spacing:-.01em }
+  .success-divider { width:40px; height:2px; background:var(--teal); margin:0 auto 18px }
+  .success-msg { font-size:14px; color:var(--text); line-height:1.75;
+    max-width:520px; margin-bottom:28px }
+  .success-msg strong { color:var(--white) }
+  .next-btn {
+    background:var(--blue); color:var(--white); font-family:var(--sans);
+    font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    padding:14px 32px; border-radius:var(--r8); text-decoration:none;
+    transition:background .18s, transform .15s; display:inline-block;
+  }
+  .next-btn:hover { background:var(--teal); transform:translateY(-2px) }
+
+  /* ── NAV ACTIONS ────────────────────────────────────── */
+  .nav-row { display:flex; gap:10px; margin-top:28px; flex-wrap:wrap }
+  .nav-hub {
+    flex:1; min-width:150px; text-align:center;
+    background:var(--card); border:1px solid var(--border); color:var(--muted);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:border-color .18s;
+  }
+  .nav-hub:hover { border-color:var(--teal) }
+  .nav-skip {
+    flex:1; min-width:150px; text-align:center;
+    background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.22); color:var(--amber);
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    padding:13px; border-radius:var(--r8); text-decoration:none; transition:background .18s;
+  }
+  .nav-skip:hover { background:rgba(255,184,0,.12) }
+
+  /* ── HINT CONTENT ───────────────────────────────────── */
+  .hint-content {
+    display:none; background:rgba(255,184,0,.05);
+    border:1px solid rgba(255,184,0,.14); border-radius:var(--r8);
+    padding:12px 16px; margin-top:8px;
+    font-size:13px; color:var(--muted); line-height:1.7;
+  }
+
+  /* ── OPTION BUTTONS ─────────────────────────────────── */
+  .opts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px }
+  .opt {
+    flex:1; min-width:140px; background:rgba(0,0,0,.25);
+    border:1px solid var(--border); border-radius:var(--r8);
+    padding:12px 14px; cursor:pointer; text-align:center;
+    font-size:13px; color:var(--text); transition:border-color .15s, background .15s;
+    user-select:none;
+  }
+  .opt:hover { border-color:var(--teal); background:rgba(18,171,219,.08) }
+  .opt.correct { background:rgba(0,201,122,.1); border-color:var(--green); color:var(--green); font-weight:700 }
+  .opt.wrong { background:rgba(255,68,85,.08); border-color:var(--red); color:var(--red) }
+  .opt-feedback { display:none; margin-top:8px; font-family:var(--mono);
+    font-size:11px; padding:7px 12px; border-radius:var(--r4) }
+  .opt-feedback.ok { background:rgba(0,201,122,.07); border:1px solid rgba(0,201,122,.22);
+    color:var(--green); display:block }
+  .opt-feedback.err { background:rgba(255,68,85,.07); border:1px solid rgba(255,68,85,.22);
+    color:var(--red); display:block }
+
+  /* ── TOOLTIP INLINE ─────────────────────────────────── */
+  .inline-hint {
+    font-size:12px; color:var(--amber);
+    background:rgba(255,184,0,.06); border-left:2px solid rgba(255,184,0,.35);
+    padding:7px 12px; margin-bottom:12px; border-radius:0 var(--r4) var(--r4) 0;
+  }
+
+
+/* ── SALA-1 SPECIFIC ─────────────────────────────────── */
+.main-layout {
+  display:grid;
+  grid-template-columns:minmax(320px,1.1fr) minmax(360px,1fr);
+  gap:28px; align-items:start;
+}
+@media(max-width:1020px) { .main-layout { grid-template-columns:1fr } }
+.left-col, .right-col { display:flex; flex-direction:column; gap:16px }
+.right-col { position:sticky; top:20px }
+
+/* selection status */
+.sel-card {
+  background:rgba(18,171,219,.07); border:1px solid rgba(18,171,219,.18);
+  border-radius:var(--r8); padding:12px 16px;
+  transition:border-color .2s, background .2s;
+}
+.sel-card.active { border-color:rgba(18,171,219,.45); background:rgba(18,171,219,.13) }
+.sel-lbl { font-family:var(--mono); font-size:9px; color:var(--teal);
+  letter-spacing:.2em; text-transform:uppercase; margin-bottom:5px }
+.sel-text { font-size:13px; color:var(--text); line-height:1.6 }
+
+/* word list */
+.word-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.word-item {
+  background:var(--card); border:1px solid var(--border); border-radius:var(--r8);
+  padding:10px 12px; transition:all .2s; display:flex; flex-direction:column; gap:4px;
+  position:relative;
+}
+.word-item.found { border-color:rgba(0,201,122,.25); background:rgba(0,201,122,.07) }
+.word-clue { font-size:11px; color:var(--muted); line-height:1.4 }
+.word-hidden {
+  font-family:var(--mono); font-size:13px; font-weight:700;
+  color:var(--teal); letter-spacing:.06em;
+}
+.word-item.found .word-hidden { color:var(--green); text-decoration:line-through; opacity:.8 }
+.hint-btn {
+  position:absolute; top:8px; right:8px;
+  background:none; border:1px solid rgba(255,184,0,.25); color:var(--amber);
+  font-size:10px; padding:2px 8px; border-radius:var(--r4); cursor:pointer;
+  transition:background .15s;
+}
+.hint-btn:hover { background:rgba(255,184,0,.12) }
+.hint-btn:disabled { opacity:.3; cursor:default }
+
+/* VALUE track */
+.value-track {
+  display:flex; gap:8px; justify-content:center;
+  background:rgba(255,184,0,.06); border:1px solid rgba(255,184,0,.15);
+  border-radius:var(--r8); padding:14px;
+}
+.value-slot {
+  width:48px; height:52px; border:1.5px solid rgba(255,184,0,.2);
+  border-radius:var(--r8); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:2px;
+  transition:all .4s; background:rgba(255,184,0,.04);
+}
+.value-slot.lit {
+  border-color:rgba(255,184,0,.6); background:rgba(255,184,0,.14);
+  box-shadow:0 0 12px rgba(255,184,0,.25);
+}
+.vs-letter { font-family:var(--mono); font-size:20px; font-weight:900;
+  color:rgba(255,184,0,.3); transition:color .4s }
+.value-slot.lit .vs-letter { color:var(--amber) }
+.vs-src { font-size:8px; color:var(--dim); letter-spacing:.05em }
+
+/* grid */
+.grid-wrap {
+  overflow-x:auto; background:rgba(0,14,28,.97);
+  border:1px solid var(--border2); border-radius:var(--r12); padding:10px;
+}
+.ws-grid {
+  display:grid; grid-template-columns:repeat(16,1fr);
+  gap:3px; min-width:500px;
+}
+.ws-cell {
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:13px; font-weight:700; color:var(--dim);
+  border-radius:6px; cursor:pointer; user-select:none; -webkit-user-select:none;
+  transition:background .1s, color .1s, transform .12s;
+  border:1.5px solid transparent;
+}
+.ws-cell:hover { background:rgba(18,171,219,.18); color:var(--white); transform:scale(1.08) }
+.ws-cell.sel {
+  background:rgba(18,171,219,.3); color:var(--white);
+  border-color:rgba(18,171,219,.5); transform:scale(1.08);
+}
+.ws-cell.found-cell {
+  background:rgba(0,201,122,.14); color:var(--green);
+  font-weight:900; border-color:rgba(0,201,122,.25);
+}
+.ws-cell.value-letter {
+  background:rgba(255,184,0,.2); color:var(--amber);
+  font-weight:900; border-color:rgba(255,184,0,.4);
+  box-shadow:0 0 8px rgba(255,184,0,.25);
+}
+.ws-cell.wrong { animation:wfl .4s ease-out }
+@keyframes wfl { 0%,100%{background:transparent} 50%{background:rgba(255,68,85,.28)} }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="page">
+
   <header class="topbar">
-    <div class="brand-mark"><div class="brand-dot"></div>
-      <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
-    <div class="timer-badge" id="timerBadge">30:00</div>
-    <div class="team-chip" id="teamLabel">EQUIPO</div>
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <div class="brand-name">Capgemini <em>Invent</em> · ET CONNECT 2026</div>
+    </div>
+    <div class="progress-track"><span class="pt-item" id="pt0" data-key="sala1done" data-label="CEx">CEx</span><span class="pt-item" id="pt1" data-key="sala2done" data-label="BT">BT</span><span class="pt-item" id="pt2" data-key="sala3done" data-label="EDA">EDA</span><span class="pt-item" id="pt3" data-key="sala4done" data-label="W&O">W&O</span></div>
+    <div class="timer" id="timerBadge">30:00</div>
+    <div class="team-tag" id="teamLabel">EQUIPO</div>
   </header>
   <div id="penaltyFlash" class="penalty-flash">
     <div class="penalty-box">
       <div style="font-size:28px;margin-bottom:8px">⚠️</div>
       <div class="penalty-num">−2 MINUTOS</div>
-      <div class="penalty-sub" id="penaltySub">Error detectado — el sistema REWIND pierde ventaja</div>
-      <div id="penaltyAccum" style="font-family:var(--mono);font-size:10px;color:rgba(255,71,87,.5);margin-top:6px"></div>
-    </div></div></div>
-
-  <div class="room-eyebrow">// SALA 01 · Corporate Experience · NexaCorp Finance</div>
-  <h1 class="room-title">El Modelo<br>Operativo Fallido</h1>
-  <div class="room-area">TARGET OPERATING MODEL · VALUE REALIZATION · SOPA DE LETRAS</div>
-
-  <div class="crisis-banner">
-    <div class="crisis-dot"></div>
-    <div class="crisis-text"><strong>Sistema REWIND — Sala 1.</strong>
-    NexaCorp lanzó una transformación de Finance que fracasó. Para reconstruirla necesitas dominar los conceptos clave. Encuéntralos en la sopa de letras — hay 11 palabras ocultas y un código secreto escondido en el tablero.</div>
+      <div class="penalty-sub">Respuesta incorrecta</div>
+    </div>
   </div>
 
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-val" id="foundCount">0</div><div class="stat-label">encontradas</div></div>
-    <div class="stat-box"><div class="stat-val">11</div><div class="stat-label">total</div></div>
-    <div class="stat-box"><div class="stat-val" id="pctStat">0%</div><div class="stat-label">completado</div></div>
+  <!-- ── HEADER ─────────────────────────────────────── -->
+  <div class="sala-badge">SALA 01 · Corporate Experience</div>
+  <h1 class="page-title">El Modelo<br>Operativo Fallido</h1>
+  <div class="page-subtitle">TARGET OPERATING MODEL · VALUE REALIZATION · SOPA DE LETRAS</div>
+
+  <!-- ── CONTEXT ────────────────────────────────────── -->
+  <div class="context-card">
+    <div class="context-label">// Situación</div>
+    <p>NexaCorp lanzó una transformación de Finance con el objetivo de mejorar eficiencia, reducir costes y capturar valor. Los resultados no son los esperados:</p>
+    <p>Procesos inconsistentes entre países · Alto volumen de trabajo manual · Bajo uso de soluciones · Beneficios no capturados.</p>
+    <p><strong>❗ Diagnóstico:</strong> Fallo en el diseño del modelo operativo y en la captura de valor.<br>
+    <strong>Misión:</strong> Reconstruir los fundamentos encontrando los 11 conceptos clave.</p>
   </div>
-  <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
 
-  <div class="section-label">// 11 palabras a encontrar</div>
-  <div class="word-list" id="wordList"></div>
-
-  <div class="instructions">
-    <strong>Cómo jugar:</strong> Toca/arrastra desde la primera hasta la última letra de la palabra (horizontal o vertical). En móvil puedes deslizar el dedo. En escritorio, clic + arrastre o clic-inicio y clic-fin.
+  <!-- ── INSTRUCTIONS ───────────────────────────────── -->
+  <div class="instruction-box" style="margin-bottom:24px">
+    <div class="step"><span class="step-num">01</span><span>Haz clic en la <strong>primera letra</strong> de la palabra — quedará resaltada.</span></div>
+    <div class="step"><span class="step-num">02</span><span>Haz clic en la <strong>última letra</strong> — se validará automáticamente.</span></div>
+    <div class="step"><span class="step-num">03</span><span>Al encontrar las 11 palabras, <strong>las letras VALUE se iluminarán en dorado</strong>.</span></div>
   </div>
 
-  <div class="section-label">// Tablero</div>
-  <div class="grid-wrap"><div class="ws-grid" id="wsGrid"></div></div>
+  <!-- ── MAIN LAYOUT ────────────────────────────────── -->
+  <div class="main-layout">
 
-  <button class="tip-toggle" onclick="_toggleTip()">💡 Pista oculta <span style="font-size:10px;color:var(--text-dim)">(no descuenta tiempo)</span></button>
-  <div class="tip-content" id="tipContent">Las letras del código secreto están en la <strong>columna de la derecha</strong> del tablero (columna 16), en las filas impares. ESTANDARIZACION está en la fila 1, AUTOMATIZACION en la 3. Las palabras cortas (ERP, KPI, SSC) están en vertical. Cuando encuentres las 11, el código VALUE se revelará automáticamente.</div>
+    <!-- LEFT: stats + words + hint -->
+    <div class="left-col">
 
-  <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
-    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:var(--bg-card);
-      border:1px solid var(--border);color:var(--text-muted);font-family:var(--mono);font-size:11px;
-      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
-      ← Centro de control</a>
-    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:rgba(255,184,0,.06);
-      border:1px solid rgba(255,184,0,.25);color:var(--amber);font-family:var(--mono);font-size:11px;
-      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
-      ⏭ Saltar prueba</a></div>
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="foundCount">0</div><div class="stat-lbl">encontradas</div></div>
+        <div class="stat-box"><div class="stat-val">11</div><div class="stat-lbl">total</div></div>
+        <div class="stat-box"><div class="stat-val" id="pctStat">0%</div><div class="stat-lbl">completado</div></div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+
+      <!-- SELECTION STATUS -->
+      <div class="sel-card" id="selCard">
+        <div class="sel-lbl">Estado de selección</div>
+        <div class="sel-text" id="selText">Haz clic en la <strong>primera letra</strong> de la palabra que buscas.</div>
+      </div>
+
+      <!-- VALUE TRACK -->
+      <div>
+        <div class="section-head">// Código oculto — se revela al completar</div>
+        <div class="value-track">
+          <div class="value-slot" id="vs0"><div class="vs-letter">V</div><div class="vs-src">VARIACION</div></div>
+          <div class="value-slot" id="vs1"><div class="vs-letter">A</div><div class="vs-src">REALIZACION</div></div>
+          <div class="value-slot" id="vs2"><div class="vs-letter">L</div><div class="vs-src">CENTRALIZADO</div></div>
+          <div class="value-slot" id="vs3"><div class="vs-letter">U</div><div class="vs-src">AUTOMATIZACION</div></div>
+          <div class="value-slot" id="vs4"><div class="vs-letter">E</div><div class="vs-src">EFICIENCIA</div></div>
+        </div>
+      </div>
+
+      <!-- WORD LIST -->
+      <div>
+        <div class="section-head">// 11 conceptos a encontrar</div>
+        <div class="word-grid" id="wordList"></div>
+      </div>
+
+      <!-- HINT -->
+      <div style="background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.18);
+        border-radius:var(--r8);padding:14px 16px">
+        <div style="font-size:12px;color:var(--amber);font-weight:700;margin-bottom:6px">💡 Pista oculta</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.6">
+          Pulsa 🔍 junto a cualquier palabra para revelar sus letras ocultas.<br>
+          <span style="color:rgba(255,68,85,.8);font-size:11px;margin-top:4px;display:block">
+            ⚠ Solo 1 pista disponible · Coste: −5 minutos del tiempo global
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: grid -->
+    <div class="right-col">
+      <div class="section-head">// Tablero de búsqueda</div>
+      <div class="grid-wrap">
+        <div class="ws-grid" id="wsGrid"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-row">
+    <a href="index.html" class="nav-hub">← Centro de control</a>
+    <a href="index.html" class="nav-skip">⏭ Saltar prueba</a>
+  </div>
 </div>
 
+<!-- ── SUCCESS OVERLAY ────────────────────────────── -->
 <div class="success-overlay" id="successOverlay">
   <div class="success-icon">🎯</div>
-  <div class="success-title">¡Código desbloqueado!</div>
-  <div style="font-family:var(--mono);font-size:52px;font-weight:900;color:var(--green);
-    letter-spacing:.3em;margin:14px 0;text-shadow:0 0 30px rgba(0,214,143,.5)">VALUE</div>
+  <div class="success-title">¡Todas las palabras encontradas!</div>
+  <div style="font-family:var(--mono);font-size:42px;font-weight:900;
+    color:var(--amber);letter-spacing:.5em;margin:16px 0;
+    text-shadow:0 0 30px rgba(255,184,0,.5)">VALUE</div>
   <div class="success-divider"></div>
   <div class="success-msg">
-    <strong>SE HA DESBLOQUEADO EL CÓDIGO: VALUE</strong><br><br>
-    El objetivo de toda transformación es capturar VALOR. Sin armonizar procesos (ESTANDARIZACION), automatizar el trabajo manual, centralizar operaciones en un SSC, y medir con KPIs reales, NexaCorp nunca pudo capturar los beneficios prometidos.
+    <strong>Las letras resaltadas en dorado revelan el código oculto.</strong><br><br>
+    El objetivo de toda transformación es capturar VALOR. Sin armonizar procesos, automatizar el trabajo manual, centralizar en un SSC y medir con KPIs, NexaCorp nunca capturó los beneficios prometidos.
   </div>
   <a href="index.html" class="next-btn">▶ Volver al centro de control</a>
 </div>
 
 <script>
   
+  // ── SESSION / TIMER ──────────────────────────────────
   const _team = sessionStorage.getItem('teamName') || 'EQUIPO';
-  const _tEl = document.getElementById('teamLabel');
-  if(_tEl) _tEl.textContent = _team.toUpperCase();
-  const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
-  const _TOTAL = 30*60*1000;
+  document.getElementById('teamLabel').textContent = _team.toUpperCase();
+  const _start  = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const _TOTAL  = 30 * 60 * 1000;
   const _timerEl = document.getElementById('timerBadge');
-  function _updT(){
-    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    const r=Math.max(0,_TOTAL-(Date.now()-_start)-pen);
-    const m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);
-    if(_timerEl){
-      _timerEl.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-      _timerEl.className='timer-badge'+(r<5*60000?' danger':r<12*60000?' warning':'');
+  function _updT() {
+    const pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    const r   = Math.max(0, _TOTAL - (Date.now() - _start) - pen);
+    const m   = Math.floor(r / 60000), s = Math.floor((r % 60000) / 1000);
+    _timerEl.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    _timerEl.className = 'timer' + (r < 5*60000 ? ' danger' : r < 12*60000 ? ' warning' : '');
+  }
+  setInterval(_updT, 1000); _updT();
+  // Progress track
+  ['sala1done','sala2done','sala3done','sala4done'].forEach((k,i) => {
+    const el = document.getElementById('pt'+i);
+    if (!el) return;
+    if (sessionStorage.getItem(k)) {
+      el.classList.add('done');
+      el.textContent = '✅ ' + el.dataset.label;
     }
+  });
+  function _applyPenalty(msg) {
+    let pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    pen += 2 * 60 * 1000; sessionStorage.setItem('penalty', String(pen));
+    const fl = document.getElementById('penaltyFlash');
+    if (fl) { fl.style.display = 'flex'; setTimeout(() => fl.style.display = 'none', 2200); }
   }
-  setInterval(_updT,1000);_updT();
-  function _applyPenalty(){
-    let pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    pen+=2*60*1000; sessionStorage.setItem('penalty',String(pen));
-    const el=document.getElementById('penaltyFlash');
-    if(el){el.style.display='flex';setTimeout(()=>el.style.display='none',2200);}
+  function _markDone(salaNum, salaName) {
+    sessionStorage.setItem('sala' + salaNum + 'done', Date.now());
+    const eq  = sessionStorage.getItem('teamName') || '?';
+    const pen = parseInt(sessionStorage.getItem('penalty') || '0');
+    const el  = Date.now() - _start + pen;
+    const mm  = Math.floor(el/60000), ss = Math.floor((el%60000)/1000);
+    const t   = String(mm).padStart(2,'0') + ':' + String(ss).padStart(2,'0');
+    const FORMS = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u';
+    const url = FORMS + '&r1=' + encodeURIComponent(eq) + '&r2=' + encodeURIComponent(salaName) + '&r3=' + encodeURIComponent(t);
+    const ifr = document.createElement('iframe'); ifr.style.display='none'; ifr.src=url;
+    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),5000);
   }
-  function _markDone(){
-    sessionStorage.setItem('sala1done',Date.now());
-    const eq=sessionStorage.getItem('teamName')||'Desconocido';
-    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
-    const el=Date.now()-_start+pen;
-    const mm=Math.floor(el/60000),ss=Math.floor((el%60000)/1000);
-    const t=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
-    const url='https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1='+encodeURIComponent(eq)+'&r2='+encodeURIComponent('SALA 01 — CORPORATE EXPERIENCE')+'&r3='+encodeURIComponent(t);
-    const ifr=document.createElement('iframe');ifr.style.display='none';ifr.src=url;
-    document.body.appendChild(ifr);setTimeout(()=>ifr.remove(),5000);
+  function _toggleHint(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
   }
-  function _toggleTip(){const t=document.getElementById('tipContent');t.style.display=t.style.display==='block'?'none':'block';}
 
 
-  const GRID=[["E", "S", "T", "A", "N", "D", "A", "R", "I", "Z", "A", "C", "I", "E", "N", "V"], ["M", "M", "G", "T", "F", "H", "H", "E", "Y", "C", "I", "X", "M", "R", "Q", "V"], ["A", "U", "T", "O", "M", "A", "T", "I", "Z", "A", "C", "I", "O", "P", "W", "A"], ["R", "C", "T", "P", "G", "N", "X", "T", "S", "G", "Z", "Z", "L", "M", "V", "G"], ["R", "E", "A", "L", "I", "Z", "A", "C", "I", "O", "N", "E", "O", "V", "F", "L"], ["S", "K", "C", "W", "Q", "V", "Y", "C", "P", "K", "M", "B", "I", "R", "A", "N"], ["G", "L", "R", "C", "E", "N", "T", "R", "A", "L", "I", "Z", "A", "D", "O", "U"], ["C", "O", "Q", "G", "T", "O", "B", "L", "E", "G", "W", "F", "X", "Z", "O", "K"], ["T", "F", "Q", "V", "V", "A", "R", "I", "A", "C", "I", "O", "N", "F", "B", "E"], ["D", "A", "F", "P", "V", "N", "C", "N", "U", "C", "E", "J", "T", "A", "M", "I"], ["E", "F", "I", "C", "I", "E", "N", "C", "I", "A", "K", "E", "Q", "M", "G", "Z"], ["B", "U", "G", "O", "I", "R", "M", "Y", "E", "L", "W", "P", "B", "S", "E", "X"], ["W", "T", "Y", "X", "E", "M", "O", "D", "E", "L", "S", "4", "H", "S", "N", "A"], ["T", "N", "D", "D", "D", "E", "J", "F", "F", "N", "E", "G", "R", "C", "K", "Y"]];
-  const WP={"ESTANDARIZACION":[[0, 0],[0, 1],[0, 2],[0, 3],[0, 4],[0, 5],[0, 6],[0, 7],[0, 8],[0, 9],[0, 10],[0, 11],[0, 12],[0, 13],[0, 14]],"AUTOMATIZACION":[[2, 0],[2, 1],[2, 2],[2, 3],[2, 4],[2, 5],[2, 6],[2, 7],[2, 8],[2, 9],[2, 10],[2, 11],[2, 12],[2, 13]],"REALIZACION":[[4, 0],[4, 1],[4, 2],[4, 3],[4, 4],[4, 5],[4, 6],[4, 7],[4, 8],[4, 9]],"CENTRALIZADO":[[6, 3],[6, 4],[6, 5],[6, 6],[6, 7],[6, 8],[6, 9],[6, 10],[6, 11],[6, 12],[6, 13]],"VARIACION":[[8, 4],[8, 5],[8, 6],[8, 7],[8, 8],[8, 9],[8, 10],[8, 11],[8, 12]],"EFICIENCIA":[[10, 0],[10, 1],[10, 2],[10, 3],[10, 4],[10, 5],[10, 6],[10, 7],[10, 8],[10, 9]],"MODEL":[[12, 5],[12, 6],[12, 7],[12, 8],[12, 9]],"S4HANA":[[12, 10],[12, 11],[12, 12],[12, 13],[12, 14],[12, 15]],"ERP":[[0, 13],[1, 13],[2, 13]],"KPI":[[7, 15],[8, 15],[9, 15]],"SSC":[[11, 13],[12, 13],[13, 13]]};
-  const VALUE_CELLS=[[0, 15], [2, 15], [4, 15], [6, 15], [8, 15]];
-  const CLUES={"MODEL":"Target Operating Model","ERP":"Sistema integrador financiero-operativo","AUTOMATIZACION":"Eliminación del trabajo manual","KPI":"Métrica de rendimiento","S4HANA":"Solución SAP financiera","REALIZACION":"Captura de beneficios","CENTRALIZADO":"Estructura operativa agrupada","EFICIENCIA":"Mejora por estandarización","ESTANDARIZACION":"Elimina inconsistencias entre países","VARIACION":"Diferencias en ejecución","SSC":"Shared Service Centre (siglas)"};
-  const ROWS=14,COLS=16;
+  // ── GAME DATA ────────────────────────────────────────
+  const GRID  = [["E","S","T","A","N","D","A","R","I","Z","A","C","I","O","N","E"],["U","D","A","X","I","H","H","E","X","D","V","X","R","C","S","R"],["A","U","T","O","M","A","T","I","Z","A","C","I","O","N","N","P"],["B","A","C","G","H","Q","T","A","R","G","W","U","W","R","N","H"],["R","E","A","L","I","Z","A","C","I","O","N","O","S","I","Z","K"],["A","Y","Z","F","W","N","K","I","E","G","Y","K","D","C","M","P"],["C","E","N","T","R","A","L","I","Z","A","D","O","D","L","L","I"],["T","I","Z","B","X","O","R","D","M","C","R","J","U","T","L","S"],["V","A","R","I","A","C","I","O","N","G","W","C","B","V","H","S"],["Y","J","C","H","D","M","I","O","U","L","F","L","L","G","V","S"],["E","F","I","C","I","E","N","C","I","A","I","W","V","U","C","C"],["T","U","F","R","X","H","F","O","M","I","U","W","R","H","V","K"],["T","O","M","Y","S","4","H","A","N","A","Y","B","H","B","Z","K"]];
+  const WP    = {"ESTANDARIZACION":[[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14]],"AUTOMATIZACION":[[2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[2,10],[2,11],[2,12],[2,13]],"REALIZACION":[[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],[4,8],[4,9],[4,10]],"CENTRALIZADO":[[6,0],[6,1],[6,2],[6,3],[6,4],[6,5],[6,6],[6,7],[6,8],[6,9],[6,10],[6,11]],"VARIACION":[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,6],[8,7],[8,8]],"EFICIENCIA":[[10,0],[10,1],[10,2],[10,3],[10,4],[10,5],[10,6],[10,7],[10,8],[10,9]],"TOM":[[12,0],[12,1],[12,2]],"S4HANA":[[12,4],[12,5],[12,6],[12,7],[12,8],[12,9]],"ERP":[[0,15],[1,15],[2,15]],"KPI":[[4,15],[5,15],[6,15]],"SSC":[[8,15],[9,15],[10,15]]};
+  const CLUES = {"TOM": "Concepto clave de diseño futuro → T _ M", "ERP": "Sistema integrador financiero-operativo → _ R _", "AUTOMATIZACION": "Reducción del trabajo manual mediante tecnología → A _ T _ _ _ T _ Z _ _ _ O _", "KPI": "Métrica para medir y hacer seguimiento del rendimiento → K _ _", "S4HANA": "Solución SAP para planificación y análisis financiero → S _ H _ _ _", "REALIZACION": "Captura de beneficios de la transformación en el tiempo → R _ _ L _ Z _ C _ _ _", "CENTRALIZADO": "Modelo donde las operaciones se agrupan en una estructura → C _ N _ _ _ L _ Z _ D _", "EFICIENCIA": "Mejora clave al estandarizar y reducir la variabilidad → E _ I C _ E N C _ A", "ESTANDARIZACION": "Evita inconsistencias entre países y formas de trabajo → E S T _ _ D _ R _ _ _ C _ _ N", "SSC": "Modelo organizativo centralizado (siglas en inglés) → S _ _", "VARIACION": "Diferencias en ejecución entre equipos o países → V _ R _ _ C _ _ _"};
+  const VALUE_MAP = {"VARIACION": [0], "REALIZACION": [2], "CENTRALIZADO": [6], "AUTOMATIZACION": [1], "EFICIENCIA": [0]};
+  const ROWS = 13, COLS = 16;
 
-  let found=new Set();
-  let dragging=false, dragCells=[], startCell=null;
+  // VALUE slot words → slot index
+  const VALUE_WORDS = {'VARIACION':0,'REALIZACION':1,'CENTRALIZADO':2,'AUTOMATIZACION':3,'EFICIENCIA':4};
 
-  // Build word list
-  const wl=document.getElementById('wordList');
-  Object.keys(WP).forEach(w=>{
-    const d=document.createElement('div');
-    d.className='word-item'; d.id='wi-'+w;
-    d.innerHTML='<span class="word-name">'+w+'</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+CLUES[w]+'</span>';
+  // ── STATE ────────────────────────────────────────────
+  let found    = new Set();
+  let firstR   = -1, firstC = -1;
+  let selCells = [];
+  let hintUsed = false;
+
+  // ── BUILD WORD LIST ──────────────────────────────────
+  const wl = document.getElementById('wordList');
+  Object.keys(WP).forEach(w => {
+    const parts = CLUES[w].split(' → ');
+    const d = document.createElement('div');
+    d.className = 'word-item'; d.id = 'wi-' + w;
+    d.innerHTML =
+      '<div class="word-clue">' + parts[0] + ':</div>' +
+      '<div class="word-hidden" id="wh-' + w + '">' + parts[1] + '</div>' +
+      '<button class="hint-btn" id="hb-' + w + '" onclick="useHint(\'' + w + '\')" title="Revelar letras">🔍</button>';
     wl.appendChild(d);
   });
 
-  // Build grid
-  const gridEl=document.getElementById('wsGrid');
-  const cells=[];
-  for(let r=0;r<ROWS;r++){
-    cells[r]=[];
-    for(let c=0;c<COLS;c++){
-      const el=document.createElement('div');
-      el.className='ws-cell';
-      el.textContent=GRID[r][c];
-      el.dataset.r=r; el.dataset.c=c;
-      const isVal=VALUE_CELLS.some(([vr,vc])=>vr===r&&vc===c);
-      if(isVal) el.classList.add('value-cell');
-      // Mouse events
-      el.addEventListener('mousedown',e=>{e.preventDefault();startDrag(r,c);});
-      el.addEventListener('mouseover',()=>{if(dragging)moveDrag(r,c);});
-      el.addEventListener('mouseup',()=>{if(dragging)endDrag();});
-      // Touch events
-      el.addEventListener('touchstart',e=>{e.preventDefault();startDrag(r,c);},{passive:false});
-      el.addEventListener('touchmove',e=>{
-        e.preventDefault();
-        const t=e.touches[0];
-        const el2=document.elementFromPoint(t.clientX,t.clientY);
-        if(el2&&el2.classList.contains('ws-cell'))
-          moveDrag(parseInt(el2.dataset.r),parseInt(el2.dataset.c));
-      },{passive:false});
-      el.addEventListener('touchend',()=>{if(dragging)endDrag();});
+  // ── BUILD GRID ───────────────────────────────────────
+  const gridEl  = document.getElementById('wsGrid');
+  const cellEls = [];
+  for (let r = 0; r < ROWS; r++) {
+    cellEls[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      const el = document.createElement('div');
+      el.className   = 'ws-cell';
+      el.textContent = GRID[r][c];
+      el.dataset.r   = r; el.dataset.c = c;
+      el.addEventListener('click', () => onCellClick(r, c));
       gridEl.appendChild(el);
-      cells[r][c]=el;
+      cellEls[r][c] = el;
     }
   }
-  document.addEventListener('mouseup',()=>{if(dragging)endDrag();});
 
-  function getCell(r,c){return cells[r][c];}
+  // ── HELPERS ──────────────────────────────────────────
+  function cellEl(r, c) { return cellEls[r][c]; }
 
-  function clearHighlight(){
-    dragCells.forEach(([r,c])=>{
-      const el=getCell(r,c);
-      if(!el.classList.contains('found-cell')&&!el.classList.contains('value-cell'))
-        el.classList.remove('highlighted');
+  function computeSel(r1, c1, r2, c2) {
+    const cells = [];
+    if (r1 === r2) {
+      const lo = Math.min(c1,c2), hi = Math.max(c1,c2);
+      for (let c=lo; c<=hi; c++) cells.push([r1,c]);
+    } else if (c1 === c2) {
+      const lo = Math.min(r1,r2), hi = Math.max(r1,r2);
+      for (let r=lo; r<=hi; r++) cells.push([r,c1]);
+    }
+    return cells;
+  }
+
+  function setSel(cells, on) {
+    cells.forEach(([r,c]) => {
+      if (on) cellEl(r,c).classList.add('sel');
+      else    cellEl(r,c).classList.remove('sel');
     });
-    dragCells=[];
   }
 
-  function startDrag(r,c){
-    dragging=true; startCell={r,c};
-    clearHighlight();
-    dragCells=[[r,c]];
-    getCell(r,c).classList.add('highlighted');
+  function setStatus(html, active) {
+    document.getElementById('selText').innerHTML = html;
+    document.getElementById('selCard').className = 'sel-card' + (active?' active':'');
   }
 
-  function moveDrag(r,c){
-    if(!dragging||!startCell) return;
-    clearHighlight();
-    const r1=startCell.r,c1=startCell.c;
-    // Only allow horizontal or vertical
-    let newCells=[];
-    if(r===r1){
-      const minC=Math.min(c1,c),maxC=Math.max(c1,c);
-      for(let cc=minC;cc<=maxC;cc++) newCells.push([r1,cc]);
-    } else if(c===c1){
-      const minR=Math.min(r1,r),maxR=Math.max(r1,r);
-      for(let rr=minR;rr<=maxR;rr++) newCells.push([rr,c1]);
+  // ── CLICK ────────────────────────────────────────────
+  function onCellClick(r, c) {
+    if (firstR === -1) {
+      setSel(selCells, false); selCells = [];
+      firstR = r; firstC = c; selCells = [[r,c]]; setSel(selCells, true);
+      setStatus('Primera letra: <strong>' + GRID[r][c] + '</strong> — ahora haz clic en la última.', true);
     } else {
-      newCells=[[r1,c1]];
+      const candidate = computeSel(firstR, firstC, r, c);
+      setSel(selCells, false);
+      firstR = -1; firstC = -1; selCells = [];
+      setStatus('Haz clic en la <strong>primera letra</strong> de la siguiente palabra.', false);
+      if (candidate.length >= 2) tryMatch(candidate);
     }
-    dragCells=newCells;
-    newCells.forEach(([rr,cc])=>getCell(rr,cc).classList.add('highlighted'));
   }
 
-  function endDrag(){
-    dragging=false;
-    if(dragCells.length<2){clearHighlight();return;}
-    // Get selected string
-    const sel=dragCells.map(([r,c])=>GRID[r][c]).join('');
-    const selKey=dragCells.map(([r,c])=>r+','+c).join('|');
-    let matched=false;
-    for(const [word,positions] of Object.entries(WP)){
-      if(found.has(word)) continue;
-      const fwd=word;
-      const rev=word.split('').reverse().join('');
-      if(sel===fwd||sel===rev){
-        const wpKey=positions.map(([r,c])=>r+','+c).join('|');
-        const wpKeyRev=positions.map(([r,c])=>r+','+c).reverse().join('|');
-        if(selKey===wpKey||selKey===wpKeyRev){
-          markFound(word,positions);
-          matched=true; break;
-        }
+  // ── MATCH ────────────────────────────────────────────
+  function tryMatch(cells) {
+    const fwd    = cells.map(([r,c]) => GRID[r][c]).join('');
+    const rev    = fwd.split('').reverse().join('');
+    const keyFwd = cells.map(([r,c]) => r+','+c).join('|');
+    const keyRev = cells.map(([r,c]) => r+','+c).reverse().join('|');
+    for (const [word, positions] of Object.entries(WP)) {
+      if (found.has(word)) continue;
+      const wpKey = positions.map(([r,c]) => r+','+c).join('|');
+      if ((fwd===word && keyFwd===wpKey) || (rev===word && keyRev===wpKey)) {
+        markFound(word, positions); return;
       }
     }
-    if(!matched){
-      dragCells.forEach(([r,c])=>{
-        const el=getCell(r,c);
-        el.classList.add('wrong-flash');
-        setTimeout(()=>el.classList.remove('wrong-flash'),400);
-      });
-      clearHighlight();
-    }
+    cells.forEach(([r,c]) => {
+      cellEl(r,c).classList.add('wrong');
+      setTimeout(() => cellEl(r,c).classList.remove('wrong'), 400);
+    });
+    setStatus('No corresponde. Inténtalo de nuevo.', false);
   }
 
-  function markFound(word,positions){
+  // ── MARK FOUND ───────────────────────────────────────
+  function markFound(word, positions) {
     found.add(word);
-    positions.forEach(([r,c])=>{
-      const el=getCell(r,c);
-      el.classList.remove('highlighted','value-cell');
-      el.classList.add('found-cell');
+    const valueIdxs = VALUE_MAP[word] || [];
+    positions.forEach(([r,c], i) => {
+      cellEl(r,c).classList.remove('sel');
+      cellEl(r,c).classList.add(valueIdxs.includes(i) ? 'value-letter' : 'found-cell');
     });
-    clearHighlight();
+    // Light up VALUE slot
+    if (VALUE_WORDS[word] !== undefined) {
+      document.getElementById('vs'+VALUE_WORDS[word]).classList.add('lit');
+    }
     document.getElementById('wi-'+word).classList.add('found');
-    const count=found.size;
-    document.getElementById('foundCount').textContent=count;
-    const pct=Math.round(count/11*100);
-    document.getElementById('pctStat').textContent=pct+'%';
-    document.getElementById('progFill').style.width=pct+'%';
-    if(count===11) setTimeout(revealValue,300);
+    document.getElementById('wh-'+word).textContent = word;
+    const n = found.size;
+    document.getElementById('foundCount').textContent = n;
+    const pct = Math.round(n/11*100);
+    document.getElementById('pctStat').textContent = pct+'%';
+    document.getElementById('progFill').style.width = pct+'%';
+    setStatus('✓ <strong>'+word+'</strong> encontrada ('+n+'/11).', false);
+    if (n === 11) setTimeout(() => {
+      _markDone(1, 'SALA 01 — CORPORATE EXPERIENCE');
+      document.getElementById('successOverlay').classList.add('show');
+    }, 700);
   }
 
-  function revealValue(){
-    VALUE_CELLS.forEach(([r,c],i)=>{
-      setTimeout(()=>{
-        const el=getCell(r,c);
-        el.classList.remove('found-cell');
-        el.classList.add('value-cell','value-pop');
-      },i*180);
-    });
-    setTimeout(()=>{
-      _markDone();
-      document.getElementById('successOverlay').classList.add('show');
-    },VALUE_CELLS.length*180+800);
+  // ── HINT ─────────────────────────────────────────────
+  function useHint(word) {
+    if (hintUsed) { alert('Ya usaste tu única pista.'); return; }
+    if (!confirm('Revelar las letras de "'+word+'"?\nCoste: −5 minutos del tiempo global.')) return;
+    hintUsed = true;
+    let pen = parseInt(sessionStorage.getItem('penalty')||'0');
+    pen += 5*60*1000; sessionStorage.setItem('penalty', String(pen));
+    document.getElementById('wh-'+word).textContent = word;
+    document.getElementById('wh-'+word).style.color = 'var(--amber)';
+    document.querySelectorAll('.hint-btn').forEach(b => { b.disabled=true; b.style.opacity='.3'; });
+    const fl = document.getElementById('penaltyFlash');
+    const sub = fl.querySelector('.penalty-sub');
+    if (sub) sub.textContent = 'Pista usada — coste 5 minutos';
+    fl.style.display='flex'; setTimeout(()=>fl.style.display='none',2500);
   }
 </script>
 </body></html>
