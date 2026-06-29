@@ -1,803 +1,403 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>REWIND ACTIVADO · ET CONNECT 2026 · V2</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REWIND ACTIVADO — ET CONNECT 2026</title>
 <style>
-/* ================================================================
-   ET CONNECT 2026 — shared.css v2
-   Corporativo Capgemini + thriller digital
-   ================================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap');
-
-/* ── TOKENS ── */
-:root {
-  --blue:    #0070AD;
-  --teal:    #12ABDB;
-  --navy:    #001828;
-  --navy2:   #031e30;
-  --navy3:   #052840;
-  --ok:      #19c37d;
-  --bad:     #ff4d4d;
-  --warn:    #ffb020;
-  --ink:     #e8f4fb;
-  --dim:     #7aaec8;
-  --dim2:    #3d7a9a;
-  --line:    rgba(18,171,219,.15);
-  --line2:   rgba(18,171,219,.07);
-  --glow:    rgba(18,171,219,.08);
-  --mono:    'Share Tech Mono', monospace;
-  --sans:    'Inter', system-ui, sans-serif;
-  --r:       12px;
-  --r-sm:    8px;
-  --r-lg:    18px;
-  --shadow:  0 8px 40px rgba(0,0,0,.35);
-  --shadow-sm: 0 4px 16px rgba(0,0,0,.25);
-}
-
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--sans);
-  background:
-    radial-gradient(ellipse 1200px 600px at 90% -10%, rgba(18,171,219,.07) 0%, transparent 55%),
-    radial-gradient(ellipse 900px 700px at -5% 115%, rgba(0,112,173,.09) 0%, transparent 50%),
-    radial-gradient(ellipse 600px 400px at 50% 50%, rgba(1,14,26,.0) 0%, transparent 100%),
-    var(--navy);
-  color: var(--ink);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-button { font-family: var(--sans); cursor: pointer; }
-a { color: var(--teal); text-decoration: none; }
-
-/* ── TRANSICIONES DE PÁGINA ── */
-body { opacity: 1; transition: opacity .3s ease; }
-body.et-fade-in { animation: fadeIn .35s ease; }
-body.et-fade-out { opacity: 0; pointer-events: none; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* ── TOPBAR ── */
-.et-topbar {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  padding: 10px 20px;
-  background: rgba(0,10,20,.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-.et-brand { display: flex; flex-direction: column; line-height: 1.2; }
-.et-brand-name { font-weight: 900; font-size: 14px; color: var(--ink); letter-spacing: -.2px; }
-.et-brand-name em { font-style: normal; color: var(--teal); }
-.et-brand-sub { font-size: 10px; color: var(--dim2); letter-spacing: 2px; text-transform: uppercase; }
-.et-spacer { flex: 1; }
-.et-sala-chip {
-  font-family: var(--mono); font-size: 11px; padding: 5px 12px;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: var(--line2); letter-spacing: 1px;
-}
-.et-team-chip {
-  font-family: var(--mono); font-size: 12px; padding: 5px 12px;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: var(--line2); color: var(--ink); max-width: 160px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.et-timer-chip {
-  font-family: var(--mono); font-size: 14px; font-weight: 700;
-  padding: 6px 14px; border: 1.5px solid rgba(255,176,32,.4);
-  border-radius: 999px; background: rgba(255,176,32,.07); color: var(--warn);
-  min-width: 72px; text-align: center; letter-spacing: 1px;
-}
-.et-timer-chip.warn { border-color: var(--warn); animation: pulse 1.2s infinite; }
-.et-timer-chip.crit { border-color: var(--bad); color: var(--bad); background: rgba(255,77,77,.08); animation: pulse .6s infinite; }
-@keyframes pulse { 50% { opacity: .45; } }
-
-/* ── FLASH + TOAST ── */
-#et-flash {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(255,30,30,.45);
-  opacity: 0; pointer-events: none;
-}
-#et-flash.active { animation: flashOut .6s ease-out forwards; }
-@keyframes flashOut { 0% { opacity: .8; } 100% { opacity: 0; } }
-
-.et-toast {
-  position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
-  background: var(--bad); color: #fff; font-weight: 800; font-size: 13px;
-  padding: 10px 20px; border-radius: 999px; z-index: 501;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-  box-shadow: 0 8px 24px rgba(255,77,77,.4); white-space: nowrap;
-}
-.et-toast.active { opacity: 1; }
-
-/* ── LAYOUT ── */
-.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 100px; }
-.wrap-sm { max-width: 760px; }
-.wrap-lg { max-width: 1200px; }
-
-/* ── TIPOGRAFÍA ── */
-.kicker {
-  display: block;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
-}
-h1 { font-weight: 900; font-size: clamp(24px, 4vw, 44px); letter-spacing: -.5px; line-height: 1.1; }
-h2 { font-weight: 800; font-size: clamp(17px, 2.5vw, 22px); line-height: 1.2; }
-h3 { font-weight: 700; font-size: 15px; }
-.sub  { color: var(--dim); font-size: 14px; line-height: 1.7; max-width: 680px; }
-.muted { color: var(--dim); font-size: 13px; }
-.mono { font-family: var(--mono); }
-
-/* ── CARDS ── */
-.card {
-  background: linear-gradient(150deg, rgba(5,40,64,.9) 0%, rgba(2,26,42,.7) 100%);
-  border: 1px solid var(--line); border-radius: var(--r);
-  padding: 20px; box-shadow: var(--shadow-sm);
-}
-.card-sm { padding: 14px 16px; }
-.card-glow { border-color: rgba(18,171,219,.35); box-shadow: 0 0 0 1px var(--line2), var(--shadow); }
-.card-warn { border-color: rgba(255,176,32,.3); }
-
-/* ── ALERTA NARRATIVA ── */
-.nexacorp-alert {
-  position: relative; overflow: hidden;
-  border-left: 3px solid var(--bad);
-  background: linear-gradient(135deg, rgba(255,50,50,.08) 0%, rgba(255,50,50,.02) 100%);
-  border-radius: 0 var(--r) var(--r) 0;
-  padding: 14px 16px; margin-bottom: 22px;
-}
-.nexacorp-alert::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, var(--bad), transparent);
-}
-.alert-tag {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
-  color: #ff8080; text-transform: uppercase; margin-bottom: 7px;
-}
-.alert-tag::before {
-  content: ''; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--bad); flex-shrink: 0;
-  animation: blink 1.4s infinite;
-}
-@keyframes blink { 50% { opacity: .15; } }
-.nexacorp-alert p { font-size: 13px; color: #ffb8b8; line-height: 1.65; }
-.nexacorp-alert b { color: #ffe0e0; }
-
-/* ── BOTONES ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  border: 1px solid var(--teal); background: rgba(18,171,219,.09);
-  color: var(--ink); padding: 10px 18px; border-radius: var(--r-sm);
-  font-weight: 700; font-size: 13px; transition: .15s;
-  cursor: pointer; text-decoration: none; white-space: nowrap; font-family: var(--sans);
-}
-.btn:hover  { background: rgba(18,171,219,.2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(18,171,219,.15); }
-.btn:active { transform: translateY(0); }
-.btn.primary { background: var(--blue); border-color: var(--blue); font-size: 14px; padding: 12px 24px; }
-.btn.primary:hover { background: #0880c0; border-color: #0880c0; }
-.btn.ghost { border-color: var(--line); background: transparent; color: var(--dim); }
-.btn.ghost:hover { color: var(--ink); border-color: rgba(18,171,219,.4); background: var(--line2); }
-.btn.sm { padding: 7px 13px; font-size: 12px; }
-.btn.lg { padding: 14px 28px; font-size: 15px; }
-.btn:disabled { opacity: .3; cursor: not-allowed; transform: none; box-shadow: none; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-col { display: flex; flex-direction: column; gap: 9px; }
-
-/* ── INPUTS ── */
-.field-label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-family: var(--mono); display: block; }
-.input {
-  font-family: var(--mono); font-size: 15px;
-  background: rgba(0,8,18,.7); border: 1.5px solid var(--line);
-  border-radius: var(--r-sm); color: var(--ink);
-  padding: 11px 14px; outline: none; width: 100%;
-  transition: border-color .15s;
-}
-.input:focus { border-color: var(--teal); }
-.input.ok  { border-color: var(--ok); color: var(--ok); }
-.input.bad { border-color: var(--bad); color: var(--bad); animation: shake .4s; }
-@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-
-/* ── PISTA ── */
-.hint-panel {
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 14px; border: 1px solid rgba(255,176,32,.2);
-  border-radius: var(--r-sm); background: rgba(255,176,32,.04);
-  margin-top: 4px;
-}
-#et-hint-box {
-  font-size: 13px; color: #ffe0a0; line-height: 1.65;
-  display: none; padding-top: 4px;
-}
-#et-hint-box.visible { display: block; animation: fadeIn .3s ease; }
-#et-hint-btn {
-  font-size: 12px; color: var(--warn); background: none; border: none;
-  cursor: pointer; font-family: var(--sans); text-align: left;
-  font-weight: 700; padding: 0;
-}
-#et-hint-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-/* ── FEEDBACK ── */
-.fb { font-size: 14px; font-weight: 700; min-height: 22px; }
-.fb.ok  { color: var(--ok); }
-.fb.bad { color: var(--bad); }
-
-/* ── PROGRESS ── */
-.prog-wrap { margin-bottom: 20px; }
-.prog-bar  { height: 3px; background: rgba(18,171,219,.12); border-radius: 2px; overflow: hidden; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 2px; transition: width .6s ease; }
-.prog-label { font-size: 12px; color: var(--dim); margin-top: 5px; font-family: var(--mono); }
-
-/* ── SEPARADOR ── */
-.sep { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
-
-/* ── SALAS GRID ── */
-.rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 22px 0; }
-.room-card {
-  position: relative; display: flex; flex-direction: column; gap: 10px;
-  background: linear-gradient(150deg, rgba(5,40,64,.9), rgba(2,26,42,.6));
-  border: 1px solid var(--line); border-radius: var(--r-lg);
-  padding: 20px; cursor: pointer; transition: .2s;
-  text-decoration: none; color: var(--ink); overflow: hidden;
-}
-.room-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--teal), transparent);
-  opacity: 0; transition: opacity .2s;
-}
-.room-card:hover { transform: translateY(-4px); border-color: rgba(18,171,219,.35); box-shadow: 0 16px 48px rgba(0,0,0,.4); }
-.room-card:hover::before { opacity: 1; }
-.room-card.done { border-color: rgba(25,195,125,.3); }
-.room-card.done::before { background: linear-gradient(90deg, transparent, var(--ok), transparent); opacity: 1; }
-.room-n    { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--dim2); }
-.room-name { font-weight: 800; font-size: 16px; line-height: 1.2; }
-.room-desc { color: var(--dim); font-size: 12px; line-height: 1.55; flex: 1; }
-.room-status { font-size: 12px; font-weight: 600; margin-top: 4px; }
-.room-card:not(.done) .room-status { color: var(--dim); }
-.room-card.done .room-status { color: var(--ok); }
-.room-check {
-  position: absolute; top: 14px; right: 14px;
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--ok); color: #011; font-weight: 900; font-size: 13px;
-  display: none; align-items: center; justify-content: center;
-}
-.room-card.done .room-check { display: flex; }
-
-/* ── TABLAS ── */
-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
-th { background: rgba(18,171,219,.08); color: var(--teal); font-weight: 700; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; }
-tr.clickable { cursor: pointer; transition: background .1s; }
-tr.clickable:hover td { background: rgba(18,171,219,.05); }
-tr.row-sel td { background: rgba(18,171,219,.12) !important; }
-
-/* ── RANKING ── */
-.rank-table { width: 100%; }
-.rank-table th, .rank-table td { padding: 10px 14px; border: 1px solid var(--line); }
-.rank-table tr.mine td { background: rgba(18,171,219,.10); font-weight: 700; }
-.rank-dots { display: flex; gap: 4px; }
-.rdot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); border: 1px solid rgba(18,171,219,.15); transition: .3s; }
-.rdot.on { background: var(--ok); border-color: var(--ok); box-shadow: 0 0 6px rgba(25,195,125,.4); }
-
-/* ── OVERLAYS ── */
-.ov-bg {
-  display: none; position: fixed; inset: 0; z-index: 300;
-  background: rgba(0,4,10,.95); align-items: center; justify-content: center; padding: 20px;
-}
-.ov-bg.show { display: flex; }
-.ov-card {
-  background: linear-gradient(150deg, rgba(5,40,64,.98), rgba(1,16,28,.98));
-  border: 1.5px solid var(--ok); border-radius: var(--r-lg);
-  padding: 38px 32px; max-width: 580px; width: 100%;
-  text-align: center; max-height: 90vh; overflow-y: auto;
-  box-shadow: 0 30px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(25,195,125,.1);
-  animation: ovIn .4s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes ovIn { from { transform: scale(.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-.ov-icon { font-size: 52px; margin-bottom: 12px; line-height: 1; }
-.ov-card h2 { font-size: 22px; font-weight: 900; color: var(--ok); margin-bottom: 8px; }
-.ov-sub { color: var(--dim); font-size: 13px; margin-bottom: 18px; line-height: 1.65; }
-.code-reveal {
-  font-family: var(--mono); font-size: 30px; letter-spacing: 5px; color: var(--warn);
-  font-weight: 900; background: rgba(255,176,32,.07);
-  border: 1.5px solid rgba(255,176,32,.25); border-radius: var(--r-sm);
-  padding: 14px 22px; margin: 16px auto; display: inline-block;
-}
-.cl { display: inline-block; animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both; }
-@keyframes popIn { from { transform: scale(0) rotate(-15deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
-.learning-box {
-  background: rgba(25,195,125,.07); border: 1px solid rgba(25,195,125,.2);
-  border-radius: var(--r-sm); padding: 14px 16px;
-  font-size: 13px; color: rgba(200,255,230,.8); line-height: 1.65;
-  text-align: left; margin: 14px 0 20px;
-}
-.learning-box b { color: var(--ok); }
-
-/* ── MODALES ── */
-.modal-bg {
-  position: fixed; inset: 0; background: rgba(0,6,14,.75);
-  z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--navy2); border: 1px solid var(--teal);
-  border-radius: var(--r-lg); padding: 24px;
-  max-width: 520px; width: 100%; max-height: 84vh; overflow-y: auto;
-  box-shadow: var(--shadow); animation: ovIn .3s ease;
-}
-.modal-close { float: right; cursor: pointer; color: var(--dim); font-size: 20px; background: none; border: none; line-height: 1; }
-.modal h3 { color: var(--teal); margin-bottom: 14px; font-size: 15px; }
-
-/* ── INTRO SCREEN ── */
-.intro-screen {
-  position: fixed; inset: 0; z-index: 900;
-  background: var(--navy);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 20px;
-}
-.intro-screen .intro-logo { font-size: 60px; margin-bottom: 16px; animation: pulse 2s infinite; }
-.intro-screen .intro-title { font-family: var(--mono); font-size: clamp(14px, 3vw, 20px); letter-spacing: 4px; color: var(--teal); margin-bottom: 8px; text-transform: uppercase; }
-.intro-screen .intro-sub { color: var(--dim); font-size: 13px; margin-bottom: 30px; }
-.intro-screen .intro-cd { font-family: var(--mono); font-size: 48px; font-weight: 900; color: var(--warn); }
-.intro-screen.hide { animation: fadeOut .5s ease forwards; pointer-events: none; }
-@keyframes fadeOut { to { opacity: 0; } }
-
-/* ── NAV BAR INFERIOR ── */
-.nav-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
-  padding: 10px 20px;
-  background: rgba(0,6,14,.96); backdrop-filter: blur(12px);
-  border-top: 1px solid var(--line);
-  display: flex; gap: 10px; justify-content: center;
-}
-.nav-bar .btn { padding: 9px 18px; }
-
-/* ── PILLS ── */
-.pill { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; font-size: 12px; color: var(--dim); }
-.pill.ok { border-color: rgba(25,195,125,.3); color: var(--ok); background: rgba(25,195,125,.07); }
-.pill.warn { border-color: rgba(255,176,32,.3); color: var(--warn); background: rgba(255,176,32,.06); }
-
-/* ── MISC ── */
-.flex { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
-.col { flex: 1; min-width: 240px; }
-.note { font-size: 11px; color: var(--dim2); text-align: center; margin-top: 28px; line-height: 1.6; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.anim-up { animation: slideUp .35s ease; }
-@media (max-width: 600px) { .wrap { padding: 18px 14px 90px; } }
-
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
+    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
+    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
+    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
+    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
+  body::before{content:'';position:fixed;inset:0;background:
+    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
+    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
+    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
+    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+  .brand-mark{display:flex;align-items:center;gap:10px}
+  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
+  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
+  .brand-text span{color:var(--cap-teal)}
+  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
+    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
+  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
+  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
+  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
+    border-radius:3px;letter-spacing:.05em}
+  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+  .room-title{font-size:clamp(32px,7vw,60px);font-weight:900;color:var(--white);
+    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
+  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:32px}
+  .narrative-block{background:var(--surface);border:1px solid var(--border);
+    border-radius:6px;padding:20px 22px;margin-bottom:24px}
+  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
+  .narrative-block p:last-child{margin-bottom:0}
+  .narrative-block strong{color:var(--white)}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
+    border-bottom:1px solid var(--border)}
+  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
+  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
+  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
+    box-shadow:0 0 0 1px var(--cap-teal)}
+  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
+  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
+  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
+    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
+    margin-bottom:24px;display:flex;align-items:center;gap:12px}
+  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
+    animation:cdot 1s ease-in-out infinite}
+  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
+  .crisis-text strong{color:var(--white)}
+  .code-section{margin-top:24px}
+  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
+  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
+  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
+  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
+    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
+    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
+  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
+  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
+    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
+  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
+  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
+    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
+  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
+  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
+  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
+    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
+    transition:all .18s;margin-top:18px;display:block}
+  .tip-toggle:hover{background:rgba(255,184,0,.12)}
+  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
+    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
+    color:var(--text-muted);line-height:1.7}
+  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
+    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
+    flex-direction:column;text-align:center}
+  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
+  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+  .success-icon{font-size:60px;margin-bottom:18px}
+  .success-title{font-size:clamp(22px,5vw,38px);font-weight:900;color:var(--white);margin-bottom:14px}
+  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
+  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
+  .success-msg strong{color:var(--white)}
+  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
+    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
+  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
+  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
+    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
+  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
+    padding:24px 44px;text-align:center}
+  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
+  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
 </style>
 <style>
-.hero{text-align:center;padding:40px 16px 28px}
-.rewind-icon{font-size:clamp(60px,12vw,100px);line-height:1;margin-bottom:14px;animation:pulse 3s infinite}
-.hero h1{font-size:clamp(28px,6vw,56px);font-weight:900;letter-spacing:-1px;margin-bottom:8px}
-.hero h1 span{color:var(--teal)}
-.hero .tagline{font-size:14px;color:var(--dim);max-width:520px;margin:0 auto 32px;line-height:1.7}
-.cd-wrap{display:flex;gap:10px;justify-content:center;margin-bottom:36px;flex-wrap:wrap}
-.cd{background:rgba(5,40,64,.9);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;text-align:center;min-width:68px}
-.cd-n{font-family:var(--mono);font-size:34px;font-weight:900;color:var(--teal);line-height:1}
-.cd-l{font-size:9px;color:var(--dim2);text-transform:uppercase;letter-spacing:2px;margin-top:4px}
-.score-card{background:linear-gradient(150deg,rgba(5,40,64,.95),rgba(2,26,42,.8));border:2px solid rgba(255,176,32,.3);border-radius:var(--r);padding:22px;margin-bottom:24px;text-align:center}
-.sc-l{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--warn);text-transform:uppercase;margin-bottom:8px}
-.sc-t{font-family:var(--mono);font-size:46px;font-weight:900;color:var(--warn)}
-.sc-team{font-size:17px;font-weight:800;margin-top:4px;color:var(--ink)}
-.rewind-box{background:linear-gradient(135deg,rgba(0,112,173,.10),rgba(18,171,219,.06));border:1.5px solid rgba(18,171,219,.3);border-radius:var(--r);padding:26px;text-align:center;margin-bottom:24px}
-.rb-text{font-size:clamp(20px,4vw,32px);font-weight:900;letter-spacing:2px;color:var(--teal);margin-bottom:8px}
-.rb-sub{color:var(--dim);font-size:13px;line-height:1.65;max-width:500px;margin:0 auto}
-.learns{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:28px}
-.lc{background:linear-gradient(150deg,rgba(5,40,64,.9),rgba(2,26,42,.7));border:1px solid var(--line);border-radius:var(--r);padding:18px;animation:slideUp .4s ease both}
-.lc:nth-child(1){animation-delay:.1s}.lc:nth-child(2){animation-delay:.2s}.lc:nth-child(3){animation-delay:.3s}.lc:nth-child(4){animation-delay:.4s}
-.lc-n{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
-.lc-title{font-weight:800;font-size:14px;margin-bottom:7px}
-.lc-txt{font-size:12px;color:var(--dim);line-height:1.6}
-.rank-final{width:100%}
-.rank-final th,.rank-final td{padding:10px 14px;border:1px solid var(--line);font-size:13px}
-.rank-final tr.mine td{background:rgba(18,171,219,.10);font-weight:800}
-.trophy{font-size:16px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
+    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+  .brand-mark{display:flex;align-items:center;gap:10px}
+  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
+  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
+  .brand-text span{color:var(--cap-teal)}
+  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
+    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
+  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    background:var(--surface);border:1px solid var(--border);padding:6px 12px;border-radius:3px}
+  /* Pre-activation */
+  .codes-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+  @media(max-width:560px){.codes-row{grid-template-columns:repeat(2,1fr)}}
+  .code-pill{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+    padding:14px 8px;text-align:center}
+  .code-pill.done{border-color:rgba(0,214,143,.3)}
+  .code-pill.missing{border-color:rgba(255,71,87,.2)}
+  .pill-area{font-family:var(--mono);font-size:8px;color:var(--text-dim);letter-spacing:.08em;margin-bottom:5px}
+  .pill-code{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--cap-teal)}
+  .code-pill.missing .pill-code{color:rgba(255,71,87,.6)}
+  .activate-btn{background:var(--cap-blue);border:none;color:var(--white);
+    font-family:var(--sans);font-size:16px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;padding:20px 48px;border-radius:4px;cursor:pointer;
+    transition:all .2s;display:block;margin:0 auto}
+  .activate-btn:hover{background:var(--cap-teal);transform:translateY(-2px);
+    box-shadow:0 8px 28px rgba(18,171,219,.35)}
+  .activate-btn:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+  .incomplete-warn{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.2);
+    border-radius:4px;padding:12px 16px;font-size:13px;color:#FF8090;margin-bottom:18px;display:none}
+  /* Countdown */
+  .countdown-anim{display:none;text-align:center;padding:60px 0}
+  .countdown-anim.show{display:block}
+  .count-num{font-family:var(--mono);font-size:120px;font-weight:900;color:var(--cap-teal);
+    line-height:1;animation:cPulse .8s ease-in-out}
+  @keyframes cPulse{0%{transform:scale(1.3);opacity:0}100%{transform:scale(1);opacity:1}}
+  .count-label{font-family:var(--mono);font-size:13px;color:var(--text-dim);
+    letter-spacing:.2em;margin-top:8px}
+  /* Success section */
+  .success-section{display:none;text-align:center}
+  .success-section.show{display:block;animation:fadeIn .5s ease-out}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .s-burst{font-size:72px;margin-bottom:20px}
+  .s-headline{font-size:clamp(26px,5vw,42px);font-weight:900;color:var(--green);
+    line-height:1.1;margin-bottom:14px}
+  .s-copy{font-size:16px;color:var(--text);line-height:1.8;max-width:580px;
+    margin:0 auto 32px}
+  .s-copy strong{color:var(--white)}
+  /* Stats grid */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:12px;margin-bottom:28px;text-align:left}
+  .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:18px}
+  .stat-card-label{font-family:var(--mono);font-size:9px;color:var(--text-dim);
+    letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+  .stat-card-val{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--cap-teal);
+    margin-bottom:4px}
+  .stat-card-sub{font-size:12px;color:var(--text-muted)}
+  .stat-card.green .stat-card-val{color:var(--green)}
+  .stat-card.red .stat-card-val{color:var(--red)}
+  /* Learnings */
+  .learnings{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+    padding:26px;margin-bottom:28px;text-align:left}
+  .learnings-title{font-family:var(--mono);font-size:10px;color:var(--text-dim);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:22px}
+  .l-row{display:flex;gap:16px;margin-bottom:18px;padding-bottom:18px;
+    border-bottom:1px solid rgba(255,255,255,.05)}
+  .l-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+  .l-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--cap-teal);
+    flex-shrink:0;width:24px;margin-top:2px}
+  .l-domain{font-family:var(--mono);font-size:9px;color:var(--cap-teal);
+    letter-spacing:.1em;margin-bottom:4px}
+  .l-insight{font-size:14px;color:var(--text);line-height:1.75}
+  .l-insight strong{color:var(--white)}
+  /* Debate questions — waiting room content */
+  .debate-box{background:linear-gradient(135deg,rgba(18,171,219,.06),rgba(0,112,173,.04));
+    border:1px solid rgba(18,171,219,.2);border-radius:8px;padding:24px;margin-bottom:28px;text-align:left}
+  .debate-title{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px;
+    display:flex;align-items:center;gap:8px}
+  .debate-q{font-size:14px;color:var(--text);line-height:1.7;padding:10px 14px;
+    background:rgba(0,0,0,.25);border-radius:4px;margin-bottom:8px;
+    border-left:3px solid var(--cap-teal)}
+  .debate-q:last-child{margin-bottom:0}
+  /* Sala breakdown */
+  .sala-breakdown{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:24px}
+  @media(max-width:480px){.sala-breakdown{grid-template-columns:1fr}}
+  .sb-card{background:var(--bg-card);border:1px solid var(--border);border-radius:5px;padding:14px}
+  .sb-area{font-family:var(--mono);font-size:9px;color:var(--cap-teal);letter-spacing:.1em;margin-bottom:5px}
+  .sb-status{font-size:13px;color:var(--text-muted)}
+  .sb-status.done{color:var(--green);font-weight:600}
+  .sb-status.skip{color:rgba(255,184,0,.7)}
+  .footer-note{text-align:center;padding:24px 0;font-family:var(--mono);font-size:11px;
+    color:var(--text-dim);letter-spacing:.08em}
 </style>
 </head>
 <body>
-<div id="et-topbar"></div>
-<!-- BARRA TEMPORIZADOR 30 MIN -->
-<div id="et-timer-bar-wrap" style="position:sticky;top:53px;z-index:99;background:rgba(0,10,20,.95);padding:0 0 2px;border-bottom:1px solid rgba(18,171,219,.1)">
-  <div id="et-timer-bar" style="height:3px;background:linear-gradient(90deg,#0070AD,#12ABDB);width:100%;transition:width 1s linear;border-radius:0 2px 2px 0"></div>
-</div>
-<script>
-(function initTimerBar(){
-  function updateBar(){
-    const startTs=parseInt(localStorage.getItem('et_start')||'0',10);
-    if(!startTs){setTimeout(updateBar,500);return;}
-    const penMs=parseInt(localStorage.getItem('et_pen')||'0',10);
-    const elapsed=Math.floor((Date.now()-startTs+penMs)/1000);
-    const total=30*60;
-    const pct=Math.max(0,Math.min(100,(1-elapsed/total)*100));
-    const bar=document.getElementById('et-timer-bar');
-    if(!bar){setTimeout(updateBar,500);return;}
-    bar.style.width=pct+'%';
-    // Color: verde→amarillo→rojo
-    if(pct>40) bar.style.background='linear-gradient(90deg,#0070AD,#12ABDB)';
-    else if(pct>15) bar.style.background='linear-gradient(90deg,#7a6000,#ffb020)';
-    else bar.style.background='linear-gradient(90deg,#7a0000,#ff4d4d)';
-    setTimeout(updateBar,1000);
-  }
-  document.addEventListener('DOMContentLoaded',updateBar);
-})();
-</script>
+<div class="container">
+  <header class="topbar">
+    <div class="brand-mark"><div class="brand-dot"></div>
+      <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
+    <div class="timer-badge" id="timerBadge">--:--</div>
+    <div class="team-chip" id="teamLabel">EQUIPO</div>
+  </header>
 
-<div class="wrap">
-  <!-- HERO -->
-  <div class="hero">
-    <div class="rewind-icon">⏪</div>
-    <h1>PROTOCOLO <span>REWIND</span><br>ACTIVADO</h1>
-    <p class="tagline">Habéis diagnosticado las 4 dimensiones del fallo de NexaCorp. La línea temporal puede restaurarse. La transformación tiene una segunda oportunidad.</p>
-  </div>
+  <!-- PRE-ACTIVATION -->
+  <div id="preSection">
+    <div class="room-eyebrow">// Sistema REWIND — activación final</div>
+    <h1 class="room-title">Código<br>REWIND</h1>
+    <div class="room-area">LAS 4 DIMENSIONES RECONSTRUIDAS</div>
 
-  <!-- CUENTA ATRÁS -->
-  <div style="text-align:center;margin-bottom:8px">
-    <span class="kicker">Tiempo restante de misión</span>
-  </div>
-  <div class="cd-wrap">
-    <div class="cd"><div class="cd-n" id="cdm">--</div><div class="cd-l">Min</div></div>
-    <div class="cd"><div class="cd-n" id="cds">--</div><div class="cd-l">Seg</div></div>
-  </div>
-
-  <!-- SCORE -->
-  <div class="score-card">
-    <div class="sc-l">Tiempo de misión</div>
-    <div class="sc-t" id="scT">--:--</div>
-    <div class="sc-team" id="scTeam">—</div>
-    <div class="muted" style="font-size:11px;margin-top:4px">ET CONNECT 2026 · Capgemini Invent España</div>
-  </div>
-
-  <!-- REWIND -->
-  <div class="rewind-box">
-    <div class="rb-text">⏪ REWIND ACTIVADO</div>
-    <p class="rb-sub">NexaCorp recupera el control de su transformación. Las 4 dimensiones diagnosticadas formarán la base del nuevo modelo operativo. Lo que falló puede corregirse.</p>
-  </div>
-
-  <!-- LEARNINGS -->
-  <span class="kicker" style="margin-bottom:12px;display:block">Lo que NexaCorp no hizo · Learnings por dimensión</span>
-  <div class="learns" id="learns"></div>
-
-  <!-- RANKING FINAL -->
-  <h2 style="margin-bottom:12px">Clasificación final</h2>
-  <div class="card card-sm" style="margin-bottom:28px">
-    <table class="rank-final">
-      <thead><tr><th>#</th><th>Equipo</th><th>Salas</th><th>Tiempo</th></tr></thead>
-      <tbody id="rankBody"><tr><td colspan="4" class="muted" style="text-align:center;padding:16px">Cargando...</td></tr></tbody>
-    </table>
-    <p class="muted" id="rankNote" style="margin-top:8px;font-size:11px"></p>
-  </div>
-
-  <div class="btn-row" style="justify-content:center;margin-bottom:24px">
-    <button class="btn ghost" onclick="etNavigate('index.html')">← Centro de Control</button>
-  </div>
-  <p class="note">ET CONNECT 2026 · Capgemini Invent España · Enterprise Transformation Community</p>
-</div>
-
-<script>
-/* ================================================================
-   ET CONNECT 2026 — shared.js v2
-   Timer global único · Pistas con coste · localStorage · Firebase
-   ================================================================ */
-
-/* ── CONFIG ── */
-const ET_CONFIG = {
-  TOTAL_MIN: 30,
-  PENALTY_SEC: 120,   // error en puzzle: −2 min
-  HINT_SEC: 60,       // pista: −1 min
-
-  FORMS_URL:          'PLACEHOLDER_FORMS_URL',
-  FORMS_ENTRY_EQUIPO: 'PLACEHOLDER_ENTRY_EQUIPO',
-  FORMS_ENTRY_SALA:   'PLACEHOLDER_ENTRY_SALA',
-  FORMS_ENTRY_TIEMPO: 'PLACEHOLDER_ENTRY_TIEMPO',
-
-  FB_DATABASE_URL: 'PLACEHOLDER_FB_URL',
-  FB_API_KEY:      'PLACEHOLDER_FB_KEY',
-  FB_PROJECT_ID:   'PLACEHOLDER_FB_PROJECT',
-};
-
-/* ── SALAS ── */
-const SALAS = {
-  1: { name:'Corporate Experience',        short:'CEx',  file:'sala-1-v2.html', color:'#0070AD',
-       learning:'El Target Operating Model y el Value Realization Office son los mecanismos que aseguran que el valor de la transformación se captura y se mantiene en el tiempo.' },
-  2: { name:'Business Technology',         short:'BT',   file:'sala-2-v2.html', color:'#12ABDB',
-       learning:'Una arquitectura tecnológica robusta requiere seguridad por capas, modelo Zero Trust y gobierno claro. Sin ello, la transformación queda expuesta.' },
-  3: { name:'Enterprise Data & Analytics', short:'EDA',  file:'sala-3-v2.html', color:'#19c37d',
-       learning:'Los datos pueden ser técnicamente correctos y aun así llevar a decisiones erróneas. La causa raíz casi siempre está en el proceso, no en el dato.' },
-  4: { name:'Workforce & Organisation',    short:'WfO',  file:'sala-4-v2.html', color:'#ffb020',
-       learning:'La adopción sostenible requiere combinar la palanca correcta con el problema real de cada área. No existe una única estrategia válida para todos.' },
-};
-
-/* ── PISTAS (3 niveles por sala, solo orientación) ── */
-const HINTS = {
-  1: [
-    'Piensa en qué hace que una transformación capture valor a lo largo del tiempo, no solo en el momento del lanzamiento.',
-    'Hay dos elementos estructurales que toda transformación necesita para no perder el rumbo. Uno define el destino, el otro asegura que se llega.',
-    'Las palabras que buscas describen el modelo al que se aspira llegar y el proceso que garantiza que los beneficios no se evaporan.',
-  ],
-  2: [
-    'En transformación digital, la seguridad no es una capa que se añade al final. Piensa en cómo debería estructurarse desde el principio.',
-    'Cada pregunta describe un principio o palanca de transformación tecnológica. La respuesta correcta no es siempre la más obvia ni la más radical.',
-    'Zero Trust, automatización y arquitectura por capas son conceptos clave. Aplícalos a los escenarios concretos que se describen.',
-  ],
-  3: [
-    'Hay una inconsistencia en cómo se publicaron los datos. No está en los números en sí, sino en el momento en que ocurrió algo.',
-    'Revisa la secuencia de eventos con atención al orden temporal. Un proceso bien diseñado tiene un orden específico por una razón.',
-    'La causa raíz no es un error de datos ni una fórmula incorrecta. Es una decisión de proceso que comprometió la validez de todo lo demás.',
-  ],
-  4: [
-    'Cada área de NexaCorp tenía un problema de partida diferente. La palanca correcta depende de cuál era ese problema, no de cuál parece más potente.',
-    'Elimina las combinaciones imposibles usando las pistas que descartan áreas o palancas concretas. El proceso de deducción es el camino.',
-    'Hay una sola área que combinó correctamente problema, palanca y resultado. Las demás tienen al menos un elemento que no encaja.',
-  ],
-};
-
-/* ── LOCALSTORAGE ── */
-const LS = {
-  get team()  { return localStorage.getItem('et_team') || ''; },
-  set team(v) { localStorage.setItem('et_team', v); },
-
-  get startTs() { return parseInt(localStorage.getItem('et_start') || '0', 10); },
-  start()       { if (!this.startTs) localStorage.setItem('et_start', Date.now().toString()); },
-
-  get penMs()   { return parseInt(localStorage.getItem('et_pen') || '0', 10); },
-  addPen(ms)    { localStorage.setItem('et_pen', String(this.penMs + ms)); },
-
-  done()        { try { return JSON.parse(localStorage.getItem('et_done') || '{}'); } catch(e) { return {}; } },
-  isDone(n)     { return !!this.done()[n]; },
-  markDone(n, secs) {
-    const d = this.done();
-    if (!d[n]) { d[n] = { t: secs }; localStorage.setItem('et_done', JSON.stringify(d)); }
-  },
-  doneCount()   { return Object.keys(this.done()).length; },
-  clearAll()    { ['et_team','et_start','et_pen','et_done'].forEach(k => localStorage.removeItem(k)); },
-
-  elapsedSec()  { return this.startTs ? Math.floor((Date.now() - this.startTs + this.penMs) / 1000) : 0; },
-  remainSec()   { return ET_CONFIG.TOTAL_MIN * 60 - this.elapsedSec(); },
-
-  hintsUsed(n)  { try { return JSON.parse(localStorage.getItem('et_hints') || '{}')[n] || 0; } catch(e) { return 0; } },
-  useHint(n)    {
-    const h = (() => { try { return JSON.parse(localStorage.getItem('et_hints') || '{}'); } catch(e) { return {}; } })();
-    h[n] = (h[n] || 0) + 1;
-    localStorage.setItem('et_hints', JSON.stringify(h));
-    this.addPen(ET_CONFIG.HINT_SEC * 1000);
-  },
-};
-
-/* ── TIMER GLOBAL ── */
-function etFmt(s) {
-  const neg = s < 0; const a = Math.abs(s);
-  return (neg ? '+' : '') + String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0');
-}
-
-function etStartTimer() {
-  LS.start();
-  const el = document.getElementById('et-timer');
-  if (!el) return;
-  function tick() {
-    const r = LS.remainSec();
-    el.textContent = etFmt(r);
-    el.className = 'et-timer-chip' +
-      (r <= 300 && r > 60 ? ' warn' : '') +
-      (r <= 60 ? ' crit' : '');
-    setTimeout(tick, 1000);
-  }
-  tick();
-}
-
-/* ── PENALIZACIÓN ── */
-function etPenalize() {
-  LS.addPen(ET_CONFIG.PENALTY_SEC * 1000);
-  _flashRed();
-  etFbPush();
-}
-
-function _flashRed() {
-  const f = document.getElementById('et-flash');
-  const t = document.getElementById('et-toast');
-  if (f) { f.classList.remove('active'); void f.offsetWidth; f.classList.add('active'); }
-  if (t) { t.classList.add('active'); setTimeout(() => t.classList.remove('active'), 1200); }
-}
-
-/* ── SISTEMA DE PISTAS ── */
-function etGetHint(salaNum, btn) {
-  const used = LS.hintsUsed(salaNum);
-  const available = HINTS[salaNum] || [];
-  if (used >= available.length) return;
-
-  const next = available[used];
-  const remaining = available.length - used - 1;
-  const cost = ET_CONFIG.HINT_SEC;
-
-  if (!confirm(`¿Usar pista ${used + 1}? Costará −${cost / 60}:00 minuto.
-
-Quedan ${remaining} pista(s) después de esta.`)) return;
-
-  LS.useHint(salaNum);
-  etFbPush();
-
-  const box = document.getElementById('et-hint-box');
-  if (box) {
-    box.textContent = next;
-    box.classList.add('visible');
-  }
-
-  const used2 = LS.hintsUsed(salaNum);
-  if (btn) {
-    if (used2 >= available.length) {
-      btn.textContent = 'Sin más pistas';
-      btn.disabled = true;
-    } else {
-      btn.textContent = `💡 Pista ${used2 + 1} / ${available.length} (−1:00)`;
-    }
-  }
-}
-
-function etInitHintBtn(salaNum) {
-  const btn = document.getElementById('et-hint-btn');
-  if (!btn) return;
-  const used = LS.hintsUsed(salaNum);
-  const total = (HINTS[salaNum] || []).length;
-  if (used >= total) {
-    btn.textContent = 'Sin más pistas';
-    btn.disabled = true;
-  } else {
-    btn.textContent = `💡 Pista ${used + 1} / ${total} (−1:00)`;
-  }
-  btn.onclick = () => etGetHint(salaNum, btn);
-}
-
-/* ── COMPLETAR SALA ── */
-function etCompleteSala(n) {
-  const secs = LS.elapsedSec();
-  LS.markDone(n, secs);
-  etTrack(n, secs);
-  etFbPush();
-}
-
-/* ── TRANSICIÓN DE PÁGINA ── */
-function etNavigate(url) {
-  document.body.classList.add('et-fade-out');
-  setTimeout(() => { location.href = url; }, 320);
-}
-
-/* ── TRACKING ── */
-function etTrack(salaNum, secs) {
-  try {
-    const cfg = ET_CONFIG;
-    if (!cfg.FORMS_URL || cfg.FORMS_URL.startsWith('PLACEHOLDER')) return;
-    const params = new URLSearchParams();
-    params.set(cfg.FORMS_ENTRY_EQUIPO, LS.team);
-    params.set(cfg.FORMS_ENTRY_SALA, SALAS[salaNum]?.name || 'Sala ' + salaNum);
-    params.set(cfg.FORMS_ENTRY_TIEMPO, String(secs));
-    let fr = document.getElementById('et-track-frame');
-    if (!fr) { fr = document.createElement('iframe'); fr.id = 'et-track-frame'; fr.style.display = 'none'; document.body.appendChild(fr); }
-    fr.src = cfg.FORMS_URL + '?' + params.toString();
-  } catch(e) {}
-}
-
-/* ── FIREBASE ── */
-let _fbReady = false, _fbDb = null;
-function etFbInit(cb) {
-  const cfg = ET_CONFIG;
-  if (!cfg.FB_DATABASE_URL || cfg.FB_DATABASE_URL.startsWith('PLACEHOLDER')) { if (cb) cb(false); return; }
-  if (_fbReady) { if (cb) cb(true); return; }
-  const load = (src, next) => {
-    const s = document.createElement('script'); s.src = src;
-    s.onload = next; s.onerror = () => { if (cb) cb(false); };
-    document.head.appendChild(s);
-  };
-  load('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', () => {
-    load('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js', () => {
-      try {
-        if (!firebase.apps.length) firebase.initializeApp({ apiKey: cfg.FB_API_KEY, databaseURL: cfg.FB_DATABASE_URL, projectId: cfg.FB_PROJECT_ID });
-        _fbDb = firebase.database(); _fbReady = true; if (cb) cb(true);
-      } catch(e) { if (cb) cb(false); }
-    });
-  });
-}
-function etFbPush() {
-  try {
-    if (!_fbReady || !_fbDb || !LS.team) return;
-    _fbDb.ref('et2026/' + _slug(LS.team)).set({ name: LS.team, done: LS.doneCount(), elapsed: LS.elapsedSec(), finished: LS.doneCount() >= 4, ts: Date.now() });
-  } catch(e) {}
-}
-function etFbWatch(fn) {
-  try { if (_fbReady && _fbDb) _fbDb.ref('et2026').on('value', s => fn(Object.values(s.val() || {}))); } catch(e) {}
-}
-function _slug(s) { return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 40) || 'equipo'; }
-
-/* ── TOPBAR ── */
-function etMountTopbar(salaNum) {
-  const slot = document.getElementById('et-topbar');
-  if (!slot) return;
-  const sala = salaNum ? SALAS[salaNum] : null;
-  slot.innerHTML = `
-    <div class="et-topbar">
-      <div class="et-brand" onclick="etNavigate('index.html')" style="cursor:pointer">
-        <span class="et-brand-name">ET CONNECT <em>by Capgemini Invent España</em></span>
-        <span class="et-brand-sub">Operation Rewind · NexaCorp 2026</span>
-      </div>
-      <div class="et-spacer"></div>
-      ${sala ? `<div class="et-sala-chip" style="border-color:${sala.color}20;color:${sala.color}"><span style="opacity:.6">●</span> SALA 0${salaNum} · ${sala.short}</div>` : ''}
-      <div class="et-team-chip" id="et-team-chip">${LS.team || '—'}</div>
-      <div class="et-timer-chip" id="et-timer">--:--</div>
+    <div class="narrative-block">
+      <div class="eyebrow">// Estado del sistema</div>
+      <p>Has reconstruido las 4 dimensiones de la transformación de NexaCorp. Activa el sistema REWIND para certificar el resultado y registrar el tiempo de vuestro equipo.</p>
     </div>
-    <div id="et-flash"></div>
-    <div class="et-toast" id="et-toast">⚠ −2:00 · Respuesta incorrecta</div>`;
-}
 
-/* ── GUARD ── */
-function etRequireTeam() {
-  if (!LS.team) { location.href = 'index.html'; return false; }
-  return true;
-}
+    <div class="section-label">// Códigos obtenidos</div>
+    <div class="codes-row" id="codesRow"></div>
 
-/* ── FADE IN ON LOAD ── */
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add('et-fade-in');
-});
+    <div class="section-label" style="margin-top:16px">// Desglose por sala</div>
+    <div class="sala-breakdown" id="salaBreakdown"></div>
 
-</script>
+    <div class="incomplete-warn" id="incompleteWarn">⚠ Hay salas sin completar. Vuelve al centro de control y termínalas.</div>
+    <button class="activate-btn" id="activateBtn" onclick="startCountdown()">⏮ Activar sistema REWIND</button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-anim" id="countdownAnim">
+    <div class="count-num" id="countNum">5</div>
+    <div class="count-label">// ACTIVANDO SISTEMA REWIND · CALCULANDO TIEMPO FINAL</div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-section" id="successSection">
+    <div class="s-burst">⏮</div>
+    <h2 class="s-headline">REWIND ACTIVADO.<br>NEXACORP SALVADA.</h2>
+    <p class="s-copy"><strong>Habéis reconstruido las 4 dimensiones de la Enterprise Transformation.</strong> Guardad vuestro tiempo — lo anunciamos en la sesión conjunta.</p>
+
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Learnings -->
+    <div class="learnings">
+      <div class="learnings-title">// Lo que habéis demostrado</div>
+      <div class="l-row">
+        <div class="l-num">01</div>
+        <div><div class="l-domain">CORPORATE EXPERIENCE · VALUE</div>
+          <div class="l-insight"><strong>Una transformación existe para capturar valor, no para implementar soluciones.</strong> Sin armonizar procesos, automatizar el trabajo manual y medir con KPIs reales, los beneficios prometidos nunca llegan. La Value Realization Office cierra ese círculo.</div></div>
+      </div>
+      <div class="l-row">
+        <div class="l-num">02</div>
+        <div><div class="l-domain">BUSINESS TECHNOLOGY · A066</div>
+          <div class="l-insight"><strong>La tecnología necesita base, seguridad y gobierno.</strong> Zero Trust no acepta ninguna práctica insegura. La arquitectura IT tiene componentes verticales y transversales. La TMO monitoriza todo lo que puede romper el programa — sin excepciones.</div></div>
+      </div>
+      <div class="l-row">
+        <div class="l-num">03</div>
+        <div><div class="l-domain">ENTERPRISE DATA & ANALYTICS · PROCESS-GATE-04</div>
+          <div class="l-insight"><strong>A veces el problema no está en el dato — está en el proceso.</strong> El dashboard mentía no por mala calidad ni mala definición, sino porque se publicó antes de completar las validaciones. La causa raíz era una desviación en la ejecución, no en los datos.</div></div>
+      </div>
+      <div class="l-row">
+        <div class="l-num">04</div>
+        <div><div class="l-domain">WORKFORCE & ORGANISATION · 3335</div>
+          <div class="l-insight"><strong>El cambio se adopta con casos de uso concretos, atacando la barrera real.</strong> Marketing alcanzó el 90% porque identificó el desconocimiento como su problema y usó ejemplos tangibles. La gestión del cambio sin diagnóstico previo no funciona.</div></div>
+      </div>
+    </div>
+
+    <!-- Debate questions — waiting room -->
+    <div class="debate-box">
+      <div class="debate-title">💬 Preguntas para la sesión conjunta</div>
+      <div class="debate-q">¿Cuál de las 4 salas os costó más y por qué?</div>
+      <div class="debate-q">¿En cuál de estas áreas creéis que NexaCorp tenía el problema más grave?</div>
+      <div class="debate-q">¿Qué patrón común veis en los 4 fallos de NexaCorp?</div>
+      <div class="debate-q">¿Hay alguna decisión con la que no estéis de acuerdo? ¿Por qué?</div>
+    </div>
+
+    <div class="footer-note">OPERATION REWIND · ET CONNECT 2026 · Capgemini Invent España</div>
+  </div>
+</div>
+
 <script>
-etMountTopbar(null);
-etStartTimer();
+  const _team = sessionStorage.getItem('teamName') || '—';
+  document.getElementById('teamLabel').textContent = _team.toUpperCase();
+  const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const _TOTAL = 30*60*1000;
 
-const team = LS.team || '—';
-document.getElementById('scTeam').textContent = team;
-document.getElementById('scT').textContent = etFmt(LS.elapsedSec());
-
-/* Learnings */
-const colors = ['#0070AD','#12ABDB','#19c37d','#ffb020'];
-const lEl = document.getElementById('learns');
-[1,2,3,4].forEach(n => {
-  const s = SALAS[n];
-  const d = document.createElement('div'); d.className='lc';
-  d.innerHTML=`<div class="lc-n" style="color:${colors[n-1]}">SALA 0${n} · ${s.short}</div>
-    <div class="lc-title">${s.name}</div>
-    <div class="lc-txt">${s.learning}</div>`;
-  lEl.appendChild(d);
-});
-
-/* Countdown */
-(function tick(){
-  const r = Math.max(0, LS.remainSec());
-  document.getElementById('cdm').textContent = String(Math.floor(r/60)).padStart(2,'0');
-  document.getElementById('cds').textContent = String(r%60).padStart(2,'0');
-  if(r>0) setTimeout(tick,1000);
-})();
-
-/* Ranking */
-etFbInit(ok => {
-  if(ok){
-    etFbPush(); etFbWatch(renderRank);
-    document.getElementById('rankNote').textContent='Clasificación en tiempo real · Firebase';
-  }else{
-    renderRank([{name:LS.team, done:LS.doneCount(), elapsed:LS.elapsedSec()}]);
-    document.getElementById('rankNote').textContent='Ranking local (Firebase no configurado).';
+  // Show remaining time (frozen after activation)
+  function updTimer() {
+    const pen = parseInt(sessionStorage.getItem('penalty')||'0');
+    const r = Math.max(0, _TOTAL-(Date.now()-_start)-pen);
+    const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
+    document.getElementById('timerBadge').textContent =
+      String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   }
-});
+  const _ti = setInterval(updTimer,1000); updTimer();
 
-function renderRank(list){
-  list=list.slice().sort((a,b)=>(b.done||0)-(a.done||0)||(a.elapsed||1e9)-(b.elapsed||1e9));
-  const me=_slug(LS.team);
-  const tr=['🥇','🥈','🥉'];
-  document.getElementById('rankBody').innerHTML=list.map((t,i)=>`
-    <tr class="${_slug(t.name)===me?'mine':''}">
-      <td><span class="trophy">${tr[i]||i+1}</span></td>
-      <td>${esc(t.name)}</td>
-      <td style="font-family:var(--mono)">${t.done||0}/4</td>
-      <td style="font-family:var(--mono)">${etFmt(t.elapsed||0)}</td>
-    </tr>`).join('');
-}
+  function _submitForms(sala, tiempo) {
+    const eq = sessionStorage.getItem('teamName')||'Desconocido';
+    const url = 'https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1='+encodeURIComponent(eq)+'&r2='+encodeURIComponent(sala)+'&r3='+encodeURIComponent(tiempo);
+    const ifr = document.createElement('iframe'); ifr.style.display='none'; ifr.src=url;
+    document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),5000);
+  }
 
-function esc(s){return(s||'').replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
+  const CODES = [
+    {key:'sala1done', label:'CEx', code:'VALUE',     area:'Corporate Experience'},
+    {key:'sala2done', label:'BT',  code:'A066',      area:'Business Technology'},
+    {key:'sala3done', label:'EDA', code:'PROCESS-GATE-04', area:'Enterprise Data & Analytics'},
+    {key:'sala4done', label:'W&O', code:'3335',      area:'Workforce & Org'},
+  ];
+
+  // Build codes row & breakdown
+  const cr = document.getElementById('codesRow');
+  const sb = document.getElementById('salaBreakdown');
+  let allDone = true;
+  CODES.forEach(c => {
+    const done = !!sessionStorage.getItem(c.key);
+    if(!done) allDone = false;
+    const pill = document.createElement('div');
+    pill.className = 'code-pill '+(done?'done':'missing');
+    pill.innerHTML = '<div class="pill-area">'+c.label+'</div><div class="pill-code">'+(done?c.code:'??')+'</div>';
+    cr.appendChild(pill);
+    const sbCard = document.createElement('div');
+    sbCard.className = 'sb-card';
+    sbCard.innerHTML = '<div class="sb-area">'+c.area+'</div>'
+      + '<div class="sb-status '+(done?'done':'skip')+'">'+(done?'✅ Completada':'⏭ No completada')+'</div>';
+    sb.appendChild(sbCard);
+  });
+
+  if(!allDone) {
+    document.getElementById('incompleteWarn').style.display='block';
+    document.getElementById('activateBtn').disabled = true;
+  }
+
+  function fmt(ms) {
+    const m=Math.floor(ms/60000),s=Math.floor((ms%60000)/1000);
+    return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  }
+
+  function startCountdown() {
+    document.getElementById('preSection').style.display='none';
+    const anim = document.getElementById('countdownAnim');
+    anim.classList.add('show');
+    let count=5;
+    const numEl=document.getElementById('countNum');
+    numEl.textContent=count;
+    const iv=setInterval(()=>{
+      count--;
+      if(count>0){
+        numEl.style.animation='none'; numEl.offsetHeight;
+        numEl.style.animation='cPulse .8s ease-in-out';
+        numEl.textContent=count;
+      } else {
+        clearInterval(iv);
+        anim.classList.remove('show');
+        activate();
+      }
+    },1000);
+  }
+
+  function activate() {
+    clearInterval(_ti);
+    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
+    const elapsed=Date.now()-_start+pen;
+    const timeStr=fmt(elapsed);
+    const penErrors=Math.round(pen/(2*60*1000));
+    const rawElapsed=Date.now()-_start;
+    const rawStr=fmt(rawElapsed);
+
+    sessionStorage.setItem('finalTime',timeStr);
+    _submitForms('✅ REWIND COMPLETO',timeStr);
+
+    // Build stats
+    const sg=document.getElementById('statsGrid');
+    const stats=[
+      {label:'Tiempo total (con penalizaciones)',val:timeStr,sub:'Tiempo real registrado',cls:'green'},
+      {label:'Tiempo sin penalizaciones',val:rawStr,sub:'Tiempo en el reloj',cls:''},
+      {label:'Errores cometidos',val:String(penErrors),sub:penErrors===0?'¡Sin errores!':penErrors+' × −2 min = −'+(penErrors*2)+' min',cls:penErrors>0?'red':'green'},
+      {label:'Penalización total',val:'−'+(penErrors*2)+' min',sub:'Sumada al tiempo final',cls:penErrors>0?'red':'green'},
+    ];
+    stats.forEach(s=>{
+      const d=document.createElement('div');
+      d.className='stat-card '+(s.cls||'');
+      d.innerHTML='<div class="stat-card-label">'+s.label+'</div>'
+        +'<div class="stat-card-val">'+s.val+'</div>'
+        +'<div class="stat-card-sub">'+s.sub+'</div>';
+      sg.appendChild(d);
+    });
+
+    document.getElementById('timerBadge').textContent=timeStr;
+    document.getElementById('successSection').classList.add('show');
+    document.title='✅ REWIND ACTIVADO — '+timeStr+' — ET CONNECT 2026';
+  }
 </script>
-</body>
-</html>
+</body></html>

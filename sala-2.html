@@ -1,837 +1,426 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SALA 02 · BT · ET CONNECT 2026 · V2</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SALA 02 — Business Technology · OPERATION REWIND</title>
 <style>
-/* ================================================================
-   ET CONNECT 2026 — shared.css v2
-   Corporativo Capgemini + thriller digital
-   ================================================================ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap');
-
-/* ── TOKENS ── */
-:root {
-  --blue:    #0070AD;
-  --teal:    #12ABDB;
-  --navy:    #001828;
-  --navy2:   #031e30;
-  --navy3:   #052840;
-  --ok:      #19c37d;
-  --bad:     #ff4d4d;
-  --warn:    #ffb020;
-  --ink:     #e8f4fb;
-  --dim:     #7aaec8;
-  --dim2:    #3d7a9a;
-  --line:    rgba(18,171,219,.15);
-  --line2:   rgba(18,171,219,.07);
-  --glow:    rgba(18,171,219,.08);
-  --mono:    'Share Tech Mono', monospace;
-  --sans:    'Inter', system-ui, sans-serif;
-  --r:       12px;
-  --r-sm:    8px;
-  --r-lg:    18px;
-  --shadow:  0 8px 40px rgba(0,0,0,.35);
-  --shadow-sm: 0 4px 16px rgba(0,0,0,.25);
-}
-
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: var(--sans);
-  background:
-    radial-gradient(ellipse 1200px 600px at 90% -10%, rgba(18,171,219,.07) 0%, transparent 55%),
-    radial-gradient(ellipse 900px 700px at -5% 115%, rgba(0,112,173,.09) 0%, transparent 50%),
-    radial-gradient(ellipse 600px 400px at 50% 50%, rgba(1,14,26,.0) 0%, transparent 100%),
-    var(--navy);
-  color: var(--ink);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-button { font-family: var(--sans); cursor: pointer; }
-a { color: var(--teal); text-decoration: none; }
-
-/* ── TRANSICIONES DE PÁGINA ── */
-body { opacity: 1; transition: opacity .3s ease; }
-body.et-fade-in { animation: fadeIn .35s ease; }
-body.et-fade-out { opacity: 0; pointer-events: none; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* ── TOPBAR ── */
-.et-topbar {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  padding: 10px 20px;
-  background: rgba(0,10,20,.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-.et-brand { display: flex; flex-direction: column; line-height: 1.2; }
-.et-brand-name { font-weight: 900; font-size: 14px; color: var(--ink); letter-spacing: -.2px; }
-.et-brand-name em { font-style: normal; color: var(--teal); }
-.et-brand-sub { font-size: 10px; color: var(--dim2); letter-spacing: 2px; text-transform: uppercase; }
-.et-spacer { flex: 1; }
-.et-sala-chip {
-  font-family: var(--mono); font-size: 11px; padding: 5px 12px;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: var(--line2); letter-spacing: 1px;
-}
-.et-team-chip {
-  font-family: var(--mono); font-size: 12px; padding: 5px 12px;
-  border: 1px solid var(--line); border-radius: 999px;
-  background: var(--line2); color: var(--ink); max-width: 160px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.et-timer-chip {
-  font-family: var(--mono); font-size: 14px; font-weight: 700;
-  padding: 6px 14px; border: 1.5px solid rgba(255,176,32,.4);
-  border-radius: 999px; background: rgba(255,176,32,.07); color: var(--warn);
-  min-width: 72px; text-align: center; letter-spacing: 1px;
-}
-.et-timer-chip.warn { border-color: var(--warn); animation: pulse 1.2s infinite; }
-.et-timer-chip.crit { border-color: var(--bad); color: var(--bad); background: rgba(255,77,77,.08); animation: pulse .6s infinite; }
-@keyframes pulse { 50% { opacity: .45; } }
-
-/* ── FLASH + TOAST ── */
-#et-flash {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(255,30,30,.45);
-  opacity: 0; pointer-events: none;
-}
-#et-flash.active { animation: flashOut .6s ease-out forwards; }
-@keyframes flashOut { 0% { opacity: .8; } 100% { opacity: 0; } }
-
-.et-toast {
-  position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
-  background: var(--bad); color: #fff; font-weight: 800; font-size: 13px;
-  padding: 10px 20px; border-radius: 999px; z-index: 501;
-  opacity: 0; pointer-events: none; transition: opacity .2s;
-  box-shadow: 0 8px 24px rgba(255,77,77,.4); white-space: nowrap;
-}
-.et-toast.active { opacity: 1; }
-
-/* ── LAYOUT ── */
-.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px 100px; }
-.wrap-sm { max-width: 760px; }
-.wrap-lg { max-width: 1200px; }
-
-/* ── TIPOGRAFÍA ── */
-.kicker {
-  display: block;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--teal); margin-bottom: 6px;
-}
-h1 { font-weight: 900; font-size: clamp(24px, 4vw, 44px); letter-spacing: -.5px; line-height: 1.1; }
-h2 { font-weight: 800; font-size: clamp(17px, 2.5vw, 22px); line-height: 1.2; }
-h3 { font-weight: 700; font-size: 15px; }
-.sub  { color: var(--dim); font-size: 14px; line-height: 1.7; max-width: 680px; }
-.muted { color: var(--dim); font-size: 13px; }
-.mono { font-family: var(--mono); }
-
-/* ── CARDS ── */
-.card {
-  background: linear-gradient(150deg, rgba(5,40,64,.9) 0%, rgba(2,26,42,.7) 100%);
-  border: 1px solid var(--line); border-radius: var(--r);
-  padding: 20px; box-shadow: var(--shadow-sm);
-}
-.card-sm { padding: 14px 16px; }
-.card-glow { border-color: rgba(18,171,219,.35); box-shadow: 0 0 0 1px var(--line2), var(--shadow); }
-.card-warn { border-color: rgba(255,176,32,.3); }
-
-/* ── ALERTA NARRATIVA ── */
-.nexacorp-alert {
-  position: relative; overflow: hidden;
-  border-left: 3px solid var(--bad);
-  background: linear-gradient(135deg, rgba(255,50,50,.08) 0%, rgba(255,50,50,.02) 100%);
-  border-radius: 0 var(--r) var(--r) 0;
-  padding: 14px 16px; margin-bottom: 22px;
-}
-.nexacorp-alert::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, var(--bad), transparent);
-}
-.alert-tag {
-  display: flex; align-items: center; gap: 8px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
-  color: #ff8080; text-transform: uppercase; margin-bottom: 7px;
-}
-.alert-tag::before {
-  content: ''; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--bad); flex-shrink: 0;
-  animation: blink 1.4s infinite;
-}
-@keyframes blink { 50% { opacity: .15; } }
-.nexacorp-alert p { font-size: 13px; color: #ffb8b8; line-height: 1.65; }
-.nexacorp-alert b { color: #ffe0e0; }
-
-/* ── BOTONES ── */
-.btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  border: 1px solid var(--teal); background: rgba(18,171,219,.09);
-  color: var(--ink); padding: 10px 18px; border-radius: var(--r-sm);
-  font-weight: 700; font-size: 13px; transition: .15s;
-  cursor: pointer; text-decoration: none; white-space: nowrap; font-family: var(--sans);
-}
-.btn:hover  { background: rgba(18,171,219,.2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(18,171,219,.15); }
-.btn:active { transform: translateY(0); }
-.btn.primary { background: var(--blue); border-color: var(--blue); font-size: 14px; padding: 12px 24px; }
-.btn.primary:hover { background: #0880c0; border-color: #0880c0; }
-.btn.ghost { border-color: var(--line); background: transparent; color: var(--dim); }
-.btn.ghost:hover { color: var(--ink); border-color: rgba(18,171,219,.4); background: var(--line2); }
-.btn.sm { padding: 7px 13px; font-size: 12px; }
-.btn.lg { padding: 14px 28px; font-size: 15px; }
-.btn:disabled { opacity: .3; cursor: not-allowed; transform: none; box-shadow: none; }
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn-col { display: flex; flex-direction: column; gap: 9px; }
-
-/* ── INPUTS ── */
-.field-label { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; font-family: var(--mono); display: block; }
-.input {
-  font-family: var(--mono); font-size: 15px;
-  background: rgba(0,8,18,.7); border: 1.5px solid var(--line);
-  border-radius: var(--r-sm); color: var(--ink);
-  padding: 11px 14px; outline: none; width: 100%;
-  transition: border-color .15s;
-}
-.input:focus { border-color: var(--teal); }
-.input.ok  { border-color: var(--ok); color: var(--ok); }
-.input.bad { border-color: var(--bad); color: var(--bad); animation: shake .4s; }
-@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-
-/* ── PISTA ── */
-.hint-panel {
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 14px; border: 1px solid rgba(255,176,32,.2);
-  border-radius: var(--r-sm); background: rgba(255,176,32,.04);
-  margin-top: 4px;
-}
-#et-hint-box {
-  font-size: 13px; color: #ffe0a0; line-height: 1.65;
-  display: none; padding-top: 4px;
-}
-#et-hint-box.visible { display: block; animation: fadeIn .3s ease; }
-#et-hint-btn {
-  font-size: 12px; color: var(--warn); background: none; border: none;
-  cursor: pointer; font-family: var(--sans); text-align: left;
-  font-weight: 700; padding: 0;
-}
-#et-hint-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-/* ── FEEDBACK ── */
-.fb { font-size: 14px; font-weight: 700; min-height: 22px; }
-.fb.ok  { color: var(--ok); }
-.fb.bad { color: var(--bad); }
-
-/* ── PROGRESS ── */
-.prog-wrap { margin-bottom: 20px; }
-.prog-bar  { height: 3px; background: rgba(18,171,219,.12); border-radius: 2px; overflow: hidden; }
-.prog-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 2px; transition: width .6s ease; }
-.prog-label { font-size: 12px; color: var(--dim); margin-top: 5px; font-family: var(--mono); }
-
-/* ── SEPARADOR ── */
-.sep { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
-
-/* ── SALAS GRID ── */
-.rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin: 22px 0; }
-.room-card {
-  position: relative; display: flex; flex-direction: column; gap: 10px;
-  background: linear-gradient(150deg, rgba(5,40,64,.9), rgba(2,26,42,.6));
-  border: 1px solid var(--line); border-radius: var(--r-lg);
-  padding: 20px; cursor: pointer; transition: .2s;
-  text-decoration: none; color: var(--ink); overflow: hidden;
-}
-.room-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: linear-gradient(90deg, transparent, var(--teal), transparent);
-  opacity: 0; transition: opacity .2s;
-}
-.room-card:hover { transform: translateY(-4px); border-color: rgba(18,171,219,.35); box-shadow: 0 16px 48px rgba(0,0,0,.4); }
-.room-card:hover::before { opacity: 1; }
-.room-card.done { border-color: rgba(25,195,125,.3); }
-.room-card.done::before { background: linear-gradient(90deg, transparent, var(--ok), transparent); opacity: 1; }
-.room-n    { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--dim2); }
-.room-name { font-weight: 800; font-size: 16px; line-height: 1.2; }
-.room-desc { color: var(--dim); font-size: 12px; line-height: 1.55; flex: 1; }
-.room-status { font-size: 12px; font-weight: 600; margin-top: 4px; }
-.room-card:not(.done) .room-status { color: var(--dim); }
-.room-card.done .room-status { color: var(--ok); }
-.room-check {
-  position: absolute; top: 14px; right: 14px;
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--ok); color: #011; font-weight: 900; font-size: 13px;
-  display: none; align-items: center; justify-content: center;
-}
-.room-card.done .room-check { display: flex; }
-
-/* ── TABLAS ── */
-table { border-collapse: collapse; width: 100%; font-size: 13px; }
-th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
-th { background: rgba(18,171,219,.08); color: var(--teal); font-weight: 700; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; white-space: nowrap; }
-tr.clickable { cursor: pointer; transition: background .1s; }
-tr.clickable:hover td { background: rgba(18,171,219,.05); }
-tr.row-sel td { background: rgba(18,171,219,.12) !important; }
-
-/* ── RANKING ── */
-.rank-table { width: 100%; }
-.rank-table th, .rank-table td { padding: 10px 14px; border: 1px solid var(--line); }
-.rank-table tr.mine td { background: rgba(18,171,219,.10); font-weight: 700; }
-.rank-dots { display: flex; gap: 4px; }
-.rdot { width: 10px; height: 10px; border-radius: 50%; background: var(--line); border: 1px solid rgba(18,171,219,.15); transition: .3s; }
-.rdot.on { background: var(--ok); border-color: var(--ok); box-shadow: 0 0 6px rgba(25,195,125,.4); }
-
-/* ── OVERLAYS ── */
-.ov-bg {
-  display: none; position: fixed; inset: 0; z-index: 300;
-  background: rgba(0,4,10,.95); align-items: center; justify-content: center; padding: 20px;
-}
-.ov-bg.show { display: flex; }
-.ov-card {
-  background: linear-gradient(150deg, rgba(5,40,64,.98), rgba(1,16,28,.98));
-  border: 1.5px solid var(--ok); border-radius: var(--r-lg);
-  padding: 38px 32px; max-width: 580px; width: 100%;
-  text-align: center; max-height: 90vh; overflow-y: auto;
-  box-shadow: 0 30px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(25,195,125,.1);
-  animation: ovIn .4s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes ovIn { from { transform: scale(.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-.ov-icon { font-size: 52px; margin-bottom: 12px; line-height: 1; }
-.ov-card h2 { font-size: 22px; font-weight: 900; color: var(--ok); margin-bottom: 8px; }
-.ov-sub { color: var(--dim); font-size: 13px; margin-bottom: 18px; line-height: 1.65; }
-.code-reveal {
-  font-family: var(--mono); font-size: 30px; letter-spacing: 5px; color: var(--warn);
-  font-weight: 900; background: rgba(255,176,32,.07);
-  border: 1.5px solid rgba(255,176,32,.25); border-radius: var(--r-sm);
-  padding: 14px 22px; margin: 16px auto; display: inline-block;
-}
-.cl { display: inline-block; animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both; }
-@keyframes popIn { from { transform: scale(0) rotate(-15deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
-.learning-box {
-  background: rgba(25,195,125,.07); border: 1px solid rgba(25,195,125,.2);
-  border-radius: var(--r-sm); padding: 14px 16px;
-  font-size: 13px; color: rgba(200,255,230,.8); line-height: 1.65;
-  text-align: left; margin: 14px 0 20px;
-}
-.learning-box b { color: var(--ok); }
-
-/* ── MODALES ── */
-.modal-bg {
-  position: fixed; inset: 0; background: rgba(0,6,14,.75);
-  z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.modal-bg.show { display: flex; }
-.modal {
-  background: var(--navy2); border: 1px solid var(--teal);
-  border-radius: var(--r-lg); padding: 24px;
-  max-width: 520px; width: 100%; max-height: 84vh; overflow-y: auto;
-  box-shadow: var(--shadow); animation: ovIn .3s ease;
-}
-.modal-close { float: right; cursor: pointer; color: var(--dim); font-size: 20px; background: none; border: none; line-height: 1; }
-.modal h3 { color: var(--teal); margin-bottom: 14px; font-size: 15px; }
-
-/* ── INTRO SCREEN ── */
-.intro-screen {
-  position: fixed; inset: 0; z-index: 900;
-  background: var(--navy);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; padding: 20px;
-}
-.intro-screen .intro-logo { font-size: 60px; margin-bottom: 16px; animation: pulse 2s infinite; }
-.intro-screen .intro-title { font-family: var(--mono); font-size: clamp(14px, 3vw, 20px); letter-spacing: 4px; color: var(--teal); margin-bottom: 8px; text-transform: uppercase; }
-.intro-screen .intro-sub { color: var(--dim); font-size: 13px; margin-bottom: 30px; }
-.intro-screen .intro-cd { font-family: var(--mono); font-size: 48px; font-weight: 900; color: var(--warn); }
-.intro-screen.hide { animation: fadeOut .5s ease forwards; pointer-events: none; }
-@keyframes fadeOut { to { opacity: 0; } }
-
-/* ── NAV BAR INFERIOR ── */
-.nav-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
-  padding: 10px 20px;
-  background: rgba(0,6,14,.96); backdrop-filter: blur(12px);
-  border-top: 1px solid var(--line);
-  display: flex; gap: 10px; justify-content: center;
-}
-.nav-bar .btn { padding: 9px 18px; }
-
-/* ── PILLS ── */
-.pill { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px; font-size: 12px; color: var(--dim); }
-.pill.ok { border-color: rgba(25,195,125,.3); color: var(--ok); background: rgba(25,195,125,.07); }
-.pill.warn { border-color: rgba(255,176,32,.3); color: var(--warn); background: rgba(255,176,32,.06); }
-
-/* ── MISC ── */
-.flex { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-start; }
-.col { flex: 1; min-width: 240px; }
-.note { font-size: 11px; color: var(--dim2); text-align: center; margin-top: 28px; line-height: 1.6; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-.anim-up { animation: slideUp .35s ease; }
-@media (max-width: 600px) { .wrap { padding: 18px 14px 90px; } }
-
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
+  :root {
+    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
+    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
+    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
+    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
+    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
+  body::before{content:'';position:fixed;inset:0;background:
+    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
+    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
+    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
+  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
+    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
+  .brand-mark{display:flex;align-items:center;gap:10px}
+  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
+  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
+  .brand-text span{color:var(--cap-teal)}
+  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
+    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
+  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
+  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
+  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
+    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
+    border-radius:3px;letter-spacing:.05em}
+  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
+  .room-title{font-size:clamp(32px,7vw,60px);font-weight:900;color:var(--white);
+    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
+  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:32px}
+  .narrative-block{background:var(--surface);border:1px solid var(--border);
+    border-radius:6px;padding:20px 22px;margin-bottom:24px}
+  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
+  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
+  .narrative-block p:last-child{margin-bottom:0}
+  .narrative-block strong{color:var(--white)}
+  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
+    border-bottom:1px solid var(--border)}
+  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
+    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
+  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
+  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
+    box-shadow:0 0 0 1px var(--cap-teal)}
+  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
+  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
+  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
+    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
+    margin-bottom:24px;display:flex;align-items:center;gap:12px}
+  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
+    animation:cdot 1s ease-in-out infinite}
+  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
+  .crisis-text strong{color:var(--white)}
+  .code-section{margin-top:24px}
+  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
+    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
+  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
+  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
+  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
+    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
+    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
+  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
+  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
+    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
+  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
+  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
+    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
+  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
+  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
+  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
+    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
+    transition:all .18s;margin-top:18px;display:block}
+  .tip-toggle:hover{background:rgba(255,184,0,.12)}
+  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
+    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
+    color:var(--text-muted);line-height:1.7}
+  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
+    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
+    flex-direction:column;text-align:center}
+  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
+  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+  .success-icon{font-size:60px;margin-bottom:18px}
+  .success-title{font-size:clamp(22px,5vw,38px);font-weight:900;color:var(--white);margin-bottom:14px}
+  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
+  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
+  .success-msg strong{color:var(--white)}
+  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
+    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
+  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
+  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
+    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
+  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
+    padding:24px 44px;text-align:center}
+  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
+  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
 </style>
 <style>
-.stepper{display:flex;align-items:center;gap:4px;margin-bottom:24px;flex-wrap:wrap}
-.sdot{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--dim2);transition:.3s;flex-shrink:0}
-.sdot.act{border-color:var(--teal);color:var(--teal);background:rgba(18,171,219,.1)}
-.sdot.done{border-color:var(--ok);color:var(--ok);background:rgba(25,195,125,.1)}
-.sline{flex:1;height:2px;background:var(--line);min-width:8px;transition:.4s;border-radius:1px}
-.sline.done{background:var(--ok)}
-.prueba{background:linear-gradient(150deg,rgba(5,40,64,.9),rgba(2,26,42,.7));border:1px solid var(--line);border-radius:var(--r);padding:22px;animation:slideUp .3s ease}
-.ctx{background:rgba(18,171,219,.04);border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:14px;font-size:13px;color:var(--dim);line-height:1.65}
-.ctx b{color:var(--ink)}
-.opts{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-.opt{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px;cursor:pointer;transition:.15s;font-size:14px;background:rgba(255,255,255,.02);text-align:left;color:var(--ink);font-family:var(--sans)}
-.opt:hover{background:rgba(18,171,219,.08);border-color:rgba(18,171,219,.3)}
-.opt.ok{border-color:var(--ok);background:rgba(25,195,125,.08);color:var(--ok)}
-.opt.bad{border-color:var(--bad);background:rgba(255,77,77,.07);color:var(--bad);animation:shake .4s}
-.ol{font-family:var(--mono);font-weight:900;font-size:13px;min-width:20px;color:var(--teal);flex-shrink:0}
-.opt.ok .ol,.opt.bad .ol{color:inherit}
-.num-row{display:flex;gap:10px;align-items:center;margin-bottom:14px}
-.ninput{font-family:var(--mono);font-size:26px;width:90px;text-align:center;background:rgba(0,8,18,.7);border:2px solid var(--line);border-radius:var(--r-sm);color:var(--ink);padding:10px;outline:none;transition:border-color .15s}
-.ninput:focus{border-color:var(--teal)}.ninput.ok{border-color:var(--ok);color:var(--ok)}.ninput.bad{border-color:var(--bad);color:var(--bad);animation:shake .4s}
-.code-accum{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:var(--r-sm);margin-top:16px;display:none}
-.cf{font-family:var(--mono);font-size:18px;font-weight:900;color:var(--warn);background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.2);border-radius:5px;padding:4px 10px;display:inline-block;animation:popIn .4s cubic-bezier(.34,1.56,.64,1) both}
+  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
+    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;margin-bottom:24px;
+    display:flex;align-items:center;gap:12px}
+  .reto-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+    margin-bottom:14px;overflow:hidden}
+  .reto-header{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.05);
+    display:flex;align-items:center;gap:12px}
+  .reto-tag{font-family:var(--mono);font-size:10px;color:var(--cap-teal);letter-spacing:.1em;
+    background:rgba(18,171,219,.1);border:1px solid rgba(18,171,219,.2);padding:4px 10px;border-radius:3px}
+  .reto-title{font-size:14px;font-weight:700;color:var(--white)}
+  .reto-status{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--text-dim)}
+  .reto-status.done{color:var(--green)}
+  .reto-body{padding:18px 20px}
+  .scenario{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:14px;
+    background:rgba(0,0,0,.25);border-radius:4px;padding:12px 14px}
+  .scenario strong{color:var(--text)}
+  .scenario ul{margin:8px 0 0 16px}
+  .scenario li{margin-bottom:3px}
+  .reto-q{font-size:14px;font-weight:700;color:var(--white);margin-bottom:12px}
+  .hint-inline{font-size:12px;color:var(--amber);background:rgba(255,184,0,.06);
+    border-left:2px solid rgba(255,184,0,.4);padding:7px 12px;margin-bottom:12px;border-radius:0 3px 3px 0}
+  .opts{display:flex;gap:8px;flex-wrap:wrap}
+  .opt{flex:1;min-width:120px;background:rgba(0,0,0,.3);border:1px solid var(--border);
+    border-radius:4px;padding:11px 14px;cursor:pointer;transition:all .18s;
+    text-align:center;font-size:13px;color:var(--text);user-select:none}
+  .opt:hover{border-color:var(--cap-teal)}
+  .opt.correct{background:rgba(0,214,143,.12);border-color:var(--green);color:var(--green);font-weight:700}
+  .opt.wrong{background:rgba(255,71,87,.08);border-color:var(--red);color:var(--red)}
+  .reto-feedback{display:none;margin-top:10px;font-family:var(--mono);font-size:12px;
+    padding:8px 12px;border-radius:3px}
+  .reto-feedback.ok{background:rgba(0,214,143,.08);border:1px solid rgba(0,214,143,.2);color:var(--green);display:block}
+  .reto-feedback.err{background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.2);color:var(--red);display:block}
+  .code-build{display:flex;gap:8px;justify-content:center;margin:20px 0}
+  .cb-slot{width:54px;height:64px;border:2px solid var(--border);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;font-family:var(--mono);
+    font-size:28px;font-weight:700;color:var(--cap-teal);background:rgba(0,0,0,.3);transition:all .3s}
+  .cb-slot.filled{border-color:var(--cap-teal);background:rgba(18,171,219,.08)}
+  .penalty-note{font-family:var(--mono);font-size:11px;color:rgba(255,71,87,.7);
+    background:rgba(255,71,87,.06);border:1px solid rgba(255,71,87,.15);border-radius:3px;
+    padding:7px 12px;margin-bottom:14px;display:inline-block}
 </style>
 </head>
 <body>
-<div id="et-topbar"></div>
-<!-- BARRA TEMPORIZADOR 30 MIN -->
-<div id="et-timer-bar-wrap" style="position:sticky;top:53px;z-index:99;background:rgba(0,10,20,.95);padding:0 0 2px;border-bottom:1px solid rgba(18,171,219,.1)">
-  <div id="et-timer-bar" style="height:3px;background:linear-gradient(90deg,#0070AD,#12ABDB);width:100%;transition:width 1s linear;border-radius:0 2px 2px 0"></div>
+<div class="container">
+  <header class="topbar">
+    <div class="brand-mark"><div class="brand-dot"></div>
+      <div class="brand-text">Capgemini <span>Invent</span> · ET CONNECT 2026</div></div>
+    <div class="timer-badge" id="timerBadge">30:00</div>
+    <div class="team-chip" id="teamLabel">EQUIPO</div>
+  </header>
+  <div id="penaltyFlash" class="penalty-flash">
+    <div class="penalty-box">
+      <div style="font-size:28px;margin-bottom:8px">⚠️</div>
+      <div class="penalty-num">−2 MINUTOS</div>
+      <div class="penalty-sub" id="penaltySub">Error detectado — el sistema REWIND pierde ventaja</div>
+      <div id="penaltyAccum" style="font-family:var(--mono);font-size:10px;color:rgba(255,71,87,.5);margin-top:6px"></div>
+    </div></div></div>
+
+  <div class="room-eyebrow">// SALA 02 · Business Technology · Misión de recuperación</div>
+  <h1 class="room-title">La Arquitectura<br>que Falló</h1>
+  <div class="room-area">DIGITAL TRUST · IT STRATEGY · PROGRAM EXCELLENCE</div>
+
+  <div class="crisis-banner">
+    <div class="crisis-dot"></div>
+    <div class="crisis-text"><strong>Sistema REWIND — Sala 2 activa.</strong>
+    El stack tecnológico de NexaCorp colapsó porque nadie tomó las decisiones correctas en seguridad, automatización y gobierno. Resuelve los 5 retos para reconstruir la arquitectura. Cada respuesta correcta desbloquea un carácter del código.</div>
+  </div>
+
+  <div class="section-label">// Código en construcción</div>
+  <div class="code-build">
+    <div class="cb-slot" id="cb0"></div>
+    <div class="cb-slot" id="cb1"></div>
+    <div class="cb-slot" id="cb2"></div>
+    <div class="cb-slot" id="cb3"></div>
+  </div>
+  <div class="penalty-note">⚠ Cada respuesta incorrecta descuenta 2 minutos</div>
+
+  <!-- RETO 0 -->
+  <div class="reto-card" id="r0card">
+    <div class="reto-header">
+      <div class="reto-tag">RETO 0</div>
+      <div class="reto-title">¿Dónde está el activo crítico?</div>
+      <div class="reto-status" id="r0st">⬜ pendiente</div>
+    </div>
+    <div class="reto-body">
+      <div class="scenario">La información más crítica de NexaCorp debe ubicarse siguiendo criterios de <strong>seguridad, control de accesos y separación de entornos</strong>.<br><br>
+        Opciones: <strong>Planta 1</strong> (acceso público) · <strong>Planta 2</strong> (operaciones) · <strong>Planta 3</strong> (IT) · <strong>Planta 4</strong> (área restringida)
+      </div>
+      <div class="reto-q">¿Dónde debe almacenarse la información más crítica?</div>
+      <div class="opts">
+        <div class="opt" onclick="answerReto(0,this,false)">A) Planta 1</div>
+        <div class="opt" onclick="answerReto(0,this,false)">B) Planta 2</div>
+        <div class="opt" onclick="answerReto(0,this,false)">C) Planta 3</div>
+        <div class="opt" onclick="answerReto(0,this,true,'')">D) Planta 4</div>
+      </div>
+      <div class="reto-feedback" id="rf0"></div>
+    </div>
+  </div>
+
+  <!-- RETO 1 -->
+  <div class="reto-card" id="r1card">
+    <div class="reto-header">
+      <div class="reto-tag">RETO 1 · DIGITAL ACCELERATION</div>
+      <div class="reto-title">La palanca correcta</div>
+      <div class="reto-status" id="r1st">⬜ pendiente</div>
+    </div>
+    <div class="reto-body">
+      <div class="scenario">NexaCorp detectó:
+        <ul><li>40% de errores en introducción manual de datos</li>
+        <li>Retrasos por validaciones entre departamentos</li>
+        <li>Herramientas no integradas entre sí</li></ul>
+        Se implementó una solución que <strong>elimina tareas manuales, integra sistemas y reduce tiempos un 80%</strong>.
+      </div>
+      <div class="hint-inline">💡 "Identifica la acción que elimina el error humano, no la que reorganiza"</div>
+      <div class="reto-q">¿Cuál es la palanca principal de transformación aplicada?</div>
+      <div class="opts">
+        <div class="opt" onclick="answerReto(1,this,true,'A')">A) Automatización de procesos</div>
+        <div class="opt" onclick="answerReto(1,this,false)">B) Reingeniería organizativa</div>
+        <div class="opt" onclick="answerReto(1,this,false)">C) Externalización</div>
+      </div>
+      <div class="reto-feedback" id="rf1"></div>
+    </div>
+  </div>
+
+  <!-- RETO 2 -->
+  <div class="reto-card" id="r2card">
+    <div class="reto-header">
+      <div class="reto-tag">RETO 2 · DIGITAL TRUST / GRC</div>
+      <div class="reto-title">Zero Trust en acción</div>
+      <div class="reto-status" id="r2st">⬜ pendiente</div>
+    </div>
+    <div class="reto-body">
+      <div class="scenario">Auditoría ISO 27001 en NexaCorp detectó:
+        <ul><li>3 usuarios compartiendo credenciales</li>
+        <li>2 accesos no autorizados registrados</li>
+        <li>1 política de contraseñas incompleta</li></ul>
+        Decisión: implementar modelo <strong>Zero Trust</strong>.
+      </div>
+      <div class="hint-inline">💡 "Zero Trust no reduce riesgos… elimina la confianza implícita"</div>
+      <div class="reto-q">Tras implementar Zero Trust correctamente, ¿cuántas de estas prácticas siguen siendo aceptables?</div>
+      <div class="opts">
+        <div class="opt" onclick="answerReto(2,this,true,'0')">0 — ninguna</div>
+        <div class="opt" onclick="answerReto(2,this,false)">3 — las más críticas</div>
+        <div class="opt" onclick="answerReto(2,this,false)">6 — todas</div>
+      </div>
+      <div class="reto-feedback" id="rf2"></div>
+    </div>
+  </div>
+
+  <!-- RETO 3 -->
+  <div class="reto-card" id="r3card">
+    <div class="reto-header">
+      <div class="reto-tag">RETO 3 · IT STRATEGY</div>
+      <div class="reto-title">Arquitectura objetivo</div>
+      <div class="reto-status" id="r3st">⬜ pendiente</div>
+    </div>
+    <div class="reto-body">
+      <div class="scenario">Se define la arquitectura objetivo de NexaCorp:
+        <ul><li><strong>3 capas tecnológicas</strong> (Aplicación, Datos, Infraestructura)</li>
+        <li><strong>2 dimensiones transversales</strong> (Seguridad, Integración)</li>
+        <li><strong>1 capa de gobierno</strong></li></ul>
+      </div>
+      <div class="hint-inline">💡 "Incluye tanto lo vertical como lo transversal"</div>
+      <div class="reto-q">¿Cuántos componentes estructurales tiene el modelo completo?</div>
+      <div class="opts">
+        <div class="opt" onclick="answerReto(3,this,false)">3</div>
+        <div class="opt" onclick="answerReto(3,this,false)">5</div>
+        <div class="opt" onclick="answerReto(3,this,true,'6')">6</div>
+        <div class="opt" onclick="answerReto(3,this,false)">7</div>
+      </div>
+      <div class="reto-feedback" id="rf3"></div>
+    </div>
+  </div>
+
+  <!-- RETO 4 -->
+  <div class="reto-card" id="r4card">
+    <div class="reto-header">
+      <div class="reto-tag">RETO 4 · PROGRAM EXCELLENCE / TMO</div>
+      <div class="reto-title">Control del programa</div>
+      <div class="reto-status" id="r4st">⬜ pendiente</div>
+    </div>
+    <div class="reto-body">
+      <div class="scenario">La TMO de NexaCorp evalúa el programa de transformación:
+        <ul><li><strong>2 proyectos</strong> en riesgo alto</li>
+        <li><strong>3 dependencias críticas</strong> entre proyectos</li>
+        <li><strong>1 hito regulatorio</strong> obligatorio</li></ul>
+        Sin controlar cualquiera → fallo del programa.
+      </div>
+      <div class="hint-inline">💡 "Todo lo que puede romper el programa es crítico"</div>
+      <div class="reto-q">¿Cuántos elementos críticos totales deben monitorizarse activamente?</div>
+      <div class="opts">
+        <div class="opt" onclick="answerReto(4,this,false)">3</div>
+        <div class="opt" onclick="answerReto(4,this,false)">5</div>
+        <div class="opt" onclick="answerReto(4,this,true,'6')">6</div>
+      </div>
+      <div class="reto-feedback" id="rf4"></div>
+    </div>
+  </div>
+
+  <div class="code-section" style="margin-top:20px">
+    <div class="code-label">// Código de la prueba</div>
+    <div class="code-sublabel">Retos 1+2+3+4 en orden (Planta 4 valida ubicación pero no genera carácter)</div>
+    <div class="code-input-row">
+      <input type="text" class="code-input" id="codeInput" maxlength="4" placeholder="____" oninput="this.value=this.value.toUpperCase()">
+      <button class="validate-btn" onclick="validate()">Validar →</button>
+    </div>
+    <div class="code-result" id="codeResult"></div>
+  </div>
+
+  <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
+    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:var(--bg-card);
+      border:1px solid var(--border);color:var(--text-muted);font-family:var(--mono);font-size:11px;
+      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
+      ← Centro de control</a>
+    <a href="index.html" style="flex:1;min-width:160px;text-align:center;background:rgba(255,184,0,.06);
+      border:1px solid rgba(255,184,0,.25);color:var(--amber);font-family:var(--mono);font-size:11px;
+      letter-spacing:.1em;text-transform:uppercase;padding:13px;border-radius:4px;text-decoration:none">
+      ⏭ Saltar prueba</a></div>
 </div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-icon">🔐</div>
+  <div class="success-title">PLANTA 4 · A066</div>
+  <div class="success-divider"></div>
+  <div class="success-msg">
+    <strong>Código recuperado: A066</strong><br><br>
+    La información crítica va en zona restringida (Planta 4). La automatización elimina el error humano. Zero Trust no acepta ninguna práctica insegura. La arquitectura IT tiene 6 componentes. La TMO monitoriza 6 elementos críticos. Base tecnológica reconstruida.
+  </div>
+  <a href="index.html" class="next-btn">▶ Volver al centro de control</a>
+</div>
+
 <script>
-(function initTimerBar(){
-  function updateBar(){
-    const startTs=parseInt(localStorage.getItem('et_start')||'0',10);
-    if(!startTs){setTimeout(updateBar,500);return;}
-    const penMs=parseInt(localStorage.getItem('et_pen')||'0',10);
-    const elapsed=Math.floor((Date.now()-startTs+penMs)/1000);
-    const total=30*60;
-    const pct=Math.max(0,Math.min(100,(1-elapsed/total)*100));
-    const bar=document.getElementById('et-timer-bar');
-    if(!bar){setTimeout(updateBar,500);return;}
-    bar.style.width=pct+'%';
-    // Color: verde→amarillo→rojo
-    if(pct>40) bar.style.background='linear-gradient(90deg,#0070AD,#12ABDB)';
-    else if(pct>15) bar.style.background='linear-gradient(90deg,#7a6000,#ffb020)';
-    else bar.style.background='linear-gradient(90deg,#7a0000,#ff4d4d)';
-    setTimeout(updateBar,1000);
-  }
-  document.addEventListener('DOMContentLoaded',updateBar);
-})();
-</script>
-
-<div class="ov-bg" id="ov">
-  <div class="ov-card">
-    <div class="ov-icon">🔒</div>
-    <h2>SISTEMA RECUPERADO</h2>
-    <p class="ov-sub">Has demostrado dominio de las 5 dimensiones de Business Technology. Código desbloqueado:</p>
-    <div class="code-reveal"><span class="cl">A</span><span class="cl" style="animation-delay:.1s">0</span><span class="cl" style="animation-delay:.2s">6</span><span class="cl" style="animation-delay:.3s">6</span></div>
-    <div style="margin:12px 0 16px;padding:12px 14px;background:rgba(18,171,219,.08);border:1px solid rgba(18,171,219,.2);border-radius:var(--r-sm);font-size:13px;color:var(--teal);font-weight:700">📦 En la taquilla encontraréis el mensaje físico secreto</div>
-    <div class="learning-box"><b>Learning:</b> Una arquitectura tecnológica robusta requiere seguridad por capas, modelo Zero Trust y gobierno claro. Sin ello, la transformación queda expuesta desde el primer día.</div>
-    <button class="btn primary" onclick="etNavigate('index.html')">▶ Volver al Centro de Control</button>
-  </div>
-</div>
-
-<div class="wrap wrap-sm">
-  <span class="kicker">Sala 02 · Business Technology · Operation Rewind</span>
-  <h1 style="margin-bottom:8px">SISTEMA DE TRANSFORMACIÓN<br><span style="color:var(--teal)">MISIÓN DE RECUPERACIÓN</span></h1>
-
-  <div class="nexacorp-alert">
-    <div class="alert-tag">NexaCorp · IT Infrastructure · Código crítico comprometido</div>
-    <p>Los sistemas de NexaCorp están en riesgo. Credenciales expuestas, arquitectura sin capas de seguridad, decisiones erróneas de transformación. <b>Supera las 5 pruebas para recuperar el código crítico.</b> Cada respuesta correcta desbloquea un fragmento. Cada error cuesta 2 minutos.</p>
-  </div>
-
-  <div class="prog-wrap">
-    <div class="prog-bar"><div class="prog-fill" id="pf" style="width:0%"></div></div>
-  </div>
-  <div class="stepper" id="stepper"></div>
-  <div id="pc"></div>
-  <div class="code-accum" id="ca">
-    <span class="muted" style="font-family:var(--mono);font-size:10px;letter-spacing:1px">CÓDIGO PARCIAL:</span>
-    <span id="cf"></span>
-  </div>
-</div>
-
-<div class="nav-bar">
-  <button class="btn ghost" onclick="etNavigate('index.html')">← Control</button>
-  <button class="btn ghost" onclick="skip()">↷ Saltar</button>
-</div>
-
-<script>
-/* ================================================================
-   ET CONNECT 2026 — shared.js v2
-   Timer global único · Pistas con coste · localStorage · Firebase
-   ================================================================ */
-
-/* ── CONFIG ── */
-const ET_CONFIG = {
-  TOTAL_MIN: 30,
-  PENALTY_SEC: 120,   // error en puzzle: −2 min
-  HINT_SEC: 60,       // pista: −1 min
-
-  FORMS_URL:          'PLACEHOLDER_FORMS_URL',
-  FORMS_ENTRY_EQUIPO: 'PLACEHOLDER_ENTRY_EQUIPO',
-  FORMS_ENTRY_SALA:   'PLACEHOLDER_ENTRY_SALA',
-  FORMS_ENTRY_TIEMPO: 'PLACEHOLDER_ENTRY_TIEMPO',
-
-  FB_DATABASE_URL: 'PLACEHOLDER_FB_URL',
-  FB_API_KEY:      'PLACEHOLDER_FB_KEY',
-  FB_PROJECT_ID:   'PLACEHOLDER_FB_PROJECT',
-};
-
-/* ── SALAS ── */
-const SALAS = {
-  1: { name:'Corporate Experience',        short:'CEx',  file:'sala-1-v2.html', color:'#0070AD',
-       learning:'El Target Operating Model y el Value Realization Office son los mecanismos que aseguran que el valor de la transformación se captura y se mantiene en el tiempo.' },
-  2: { name:'Business Technology',         short:'BT',   file:'sala-2-v2.html', color:'#12ABDB',
-       learning:'Una arquitectura tecnológica robusta requiere seguridad por capas, modelo Zero Trust y gobierno claro. Sin ello, la transformación queda expuesta.' },
-  3: { name:'Enterprise Data & Analytics', short:'EDA',  file:'sala-3-v2.html', color:'#19c37d',
-       learning:'Los datos pueden ser técnicamente correctos y aun así llevar a decisiones erróneas. La causa raíz casi siempre está en el proceso, no en el dato.' },
-  4: { name:'Workforce & Organisation',    short:'WfO',  file:'sala-4-v2.html', color:'#ffb020',
-       learning:'La adopción sostenible requiere combinar la palanca correcta con el problema real de cada área. No existe una única estrategia válida para todos.' },
-};
-
-/* ── PISTAS (3 niveles por sala, solo orientación) ── */
-const HINTS = {
-  1: [
-    'Piensa en qué hace que una transformación capture valor a lo largo del tiempo, no solo en el momento del lanzamiento.',
-    'Hay dos elementos estructurales que toda transformación necesita para no perder el rumbo. Uno define el destino, el otro asegura que se llega.',
-    'Las palabras que buscas describen el modelo al que se aspira llegar y el proceso que garantiza que los beneficios no se evaporan.',
-  ],
-  2: [
-    'En transformación digital, la seguridad no es una capa que se añade al final. Piensa en cómo debería estructurarse desde el principio.',
-    'Cada pregunta describe un principio o palanca de transformación tecnológica. La respuesta correcta no es siempre la más obvia ni la más radical.',
-    'Zero Trust, automatización y arquitectura por capas son conceptos clave. Aplícalos a los escenarios concretos que se describen.',
-  ],
-  3: [
-    'Hay una inconsistencia en cómo se publicaron los datos. No está en los números en sí, sino en el momento en que ocurrió algo.',
-    'Revisa la secuencia de eventos con atención al orden temporal. Un proceso bien diseñado tiene un orden específico por una razón.',
-    'La causa raíz no es un error de datos ni una fórmula incorrecta. Es una decisión de proceso que comprometió la validez de todo lo demás.',
-  ],
-  4: [
-    'Cada área de NexaCorp tenía un problema de partida diferente. La palanca correcta depende de cuál era ese problema, no de cuál parece más potente.',
-    'Elimina las combinaciones imposibles usando las pistas que descartan áreas o palancas concretas. El proceso de deducción es el camino.',
-    'Hay una sola área que combinó correctamente problema, palanca y resultado. Las demás tienen al menos un elemento que no encaja.',
-  ],
-};
-
-/* ── LOCALSTORAGE ── */
-const LS = {
-  get team()  { return localStorage.getItem('et_team') || ''; },
-  set team(v) { localStorage.setItem('et_team', v); },
-
-  get startTs() { return parseInt(localStorage.getItem('et_start') || '0', 10); },
-  start()       { if (!this.startTs) localStorage.setItem('et_start', Date.now().toString()); },
-
-  get penMs()   { return parseInt(localStorage.getItem('et_pen') || '0', 10); },
-  addPen(ms)    { localStorage.setItem('et_pen', String(this.penMs + ms)); },
-
-  done()        { try { return JSON.parse(localStorage.getItem('et_done') || '{}'); } catch(e) { return {}; } },
-  isDone(n)     { return !!this.done()[n]; },
-  markDone(n, secs) {
-    const d = this.done();
-    if (!d[n]) { d[n] = { t: secs }; localStorage.setItem('et_done', JSON.stringify(d)); }
-  },
-  doneCount()   { return Object.keys(this.done()).length; },
-  clearAll()    { ['et_team','et_start','et_pen','et_done'].forEach(k => localStorage.removeItem(k)); },
-
-  elapsedSec()  { return this.startTs ? Math.floor((Date.now() - this.startTs + this.penMs) / 1000) : 0; },
-  remainSec()   { return ET_CONFIG.TOTAL_MIN * 60 - this.elapsedSec(); },
-
-  hintsUsed(n)  { try { return JSON.parse(localStorage.getItem('et_hints') || '{}')[n] || 0; } catch(e) { return 0; } },
-  useHint(n)    {
-    const h = (() => { try { return JSON.parse(localStorage.getItem('et_hints') || '{}'); } catch(e) { return {}; } })();
-    h[n] = (h[n] || 0) + 1;
-    localStorage.setItem('et_hints', JSON.stringify(h));
-    this.addPen(ET_CONFIG.HINT_SEC * 1000);
-  },
-};
-
-/* ── TIMER GLOBAL ── */
-function etFmt(s) {
-  const neg = s < 0; const a = Math.abs(s);
-  return (neg ? '+' : '') + String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0');
-}
-
-function etStartTimer() {
-  LS.start();
-  const el = document.getElementById('et-timer');
-  if (!el) return;
-  function tick() {
-    const r = LS.remainSec();
-    el.textContent = etFmt(r);
-    el.className = 'et-timer-chip' +
-      (r <= 300 && r > 60 ? ' warn' : '') +
-      (r <= 60 ? ' crit' : '');
-    setTimeout(tick, 1000);
-  }
-  tick();
-}
-
-/* ── PENALIZACIÓN ── */
-function etPenalize() {
-  LS.addPen(ET_CONFIG.PENALTY_SEC * 1000);
-  _flashRed();
-  etFbPush();
-}
-
-function _flashRed() {
-  const f = document.getElementById('et-flash');
-  const t = document.getElementById('et-toast');
-  if (f) { f.classList.remove('active'); void f.offsetWidth; f.classList.add('active'); }
-  if (t) { t.classList.add('active'); setTimeout(() => t.classList.remove('active'), 1200); }
-}
-
-/* ── SISTEMA DE PISTAS ── */
-function etGetHint(salaNum, btn) {
-  const used = LS.hintsUsed(salaNum);
-  const available = HINTS[salaNum] || [];
-  if (used >= available.length) return;
-
-  const next = available[used];
-  const remaining = available.length - used - 1;
-  const cost = ET_CONFIG.HINT_SEC;
-
-  if (!confirm(`¿Usar pista ${used + 1}? Costará −${cost / 60}:00 minuto.
-
-Quedan ${remaining} pista(s) después de esta.`)) return;
-
-  LS.useHint(salaNum);
-  etFbPush();
-
-  const box = document.getElementById('et-hint-box');
-  if (box) {
-    box.textContent = next;
-    box.classList.add('visible');
-  }
-
-  const used2 = LS.hintsUsed(salaNum);
-  if (btn) {
-    if (used2 >= available.length) {
-      btn.textContent = 'Sin más pistas';
-      btn.disabled = true;
-    } else {
-      btn.textContent = `💡 Pista ${used2 + 1} / ${available.length} (−1:00)`;
+  
+  const _team = sessionStorage.getItem('teamName') || 'EQUIPO';
+  const _tEl = document.getElementById('teamLabel');
+  if(_tEl) _tEl.textContent = _team.toUpperCase();
+  const _start = parseInt(sessionStorage.getItem('startTime') || Date.now());
+  const _TOTAL = 30*60*1000;
+  const _timerEl = document.getElementById('timerBadge');
+  function _updT(){
+    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
+    const r=Math.max(0,_TOTAL-(Date.now()-_start)-pen);
+    const m=Math.floor(r/60000),s=Math.floor((r%60000)/1000);
+    if(_timerEl){
+      _timerEl.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+      _timerEl.className='timer-badge'+(r<5*60000?' danger':r<12*60000?' warning':'');
     }
   }
-}
-
-function etInitHintBtn(salaNum) {
-  const btn = document.getElementById('et-hint-btn');
-  if (!btn) return;
-  const used = LS.hintsUsed(salaNum);
-  const total = (HINTS[salaNum] || []).length;
-  if (used >= total) {
-    btn.textContent = 'Sin más pistas';
-    btn.disabled = true;
-  } else {
-    btn.textContent = `💡 Pista ${used + 1} / ${total} (−1:00)`;
+  setInterval(_updT,1000);_updT();
+  function _applyPenalty(){
+    let pen=parseInt(sessionStorage.getItem('penalty')||'0');
+    pen+=2*60*1000; sessionStorage.setItem('penalty',String(pen));
+    const el=document.getElementById('penaltyFlash');
+    if(el){el.style.display='flex';setTimeout(()=>el.style.display='none',2200);}
   }
-  btn.onclick = () => etGetHint(salaNum, btn);
-}
+  function _markDone(){
+    sessionStorage.setItem('sala2done',Date.now());
+    const eq=sessionStorage.getItem('teamName')||'Desconocido';
+    const pen=parseInt(sessionStorage.getItem('penalty')||'0');
+    const el=Date.now()-_start+pen;
+    const mm=Math.floor(el/60000),ss=Math.floor((el%60000)/1000);
+    const t=String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+    const url='https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYRKJvDu1IJ5HmxMbPDAfs11UMkg2RDE1UEIxR01LUDBHOVJDR0U5SkxJSy4u&r1='+encodeURIComponent(eq)+'&r2='+encodeURIComponent('SALA 02 — BUSINESS TECHNOLOGY')+'&r3='+encodeURIComponent(t);
+    const ifr=document.createElement('iframe');ifr.style.display='none';ifr.src=url;
+    document.body.appendChild(ifr);setTimeout(()=>ifr.remove(),5000);
+  }
+  function _toggleTip(){const t=document.getElementById('tipContent');t.style.display=t.style.display==='block'?'none':'block';}
 
-/* ── COMPLETAR SALA ── */
-function etCompleteSala(n) {
-  const secs = LS.elapsedSec();
-  LS.markDone(n, secs);
-  etTrack(n, secs);
-  etFbPush();
-}
 
-/* ── TRANSICIÓN DE PÁGINA ── */
-function etNavigate(url) {
-  document.body.classList.add('et-fade-out');
-  setTimeout(() => { location.href = url; }, 320);
-}
+  const chars = {1:'A', 2:'0', 3:'6', 4:'6'};
+  let done = {};
 
-/* ── TRACKING ── */
-function etTrack(salaNum, secs) {
-  try {
-    const cfg = ET_CONFIG;
-    if (!cfg.FORMS_URL || cfg.FORMS_URL.startsWith('PLACEHOLDER')) return;
-    const params = new URLSearchParams();
-    params.set(cfg.FORMS_ENTRY_EQUIPO, LS.team);
-    params.set(cfg.FORMS_ENTRY_SALA, SALAS[salaNum]?.name || 'Sala ' + salaNum);
-    params.set(cfg.FORMS_ENTRY_TIEMPO, String(secs));
-    let fr = document.getElementById('et-track-frame');
-    if (!fr) { fr = document.createElement('iframe'); fr.id = 'et-track-frame'; fr.style.display = 'none'; document.body.appendChild(fr); }
-    fr.src = cfg.FORMS_URL + '?' + params.toString();
-  } catch(e) {}
-}
+  function answerReto(idx, el, correct, char) {
+    const opts = el.closest('.opts').querySelectorAll('.opt');
+    const fb = document.getElementById('rf'+idx);
+    const st = document.getElementById('r'+idx+'st');
+    opts.forEach(o => o.style.pointerEvents='none');
+    if(correct) {
+      el.classList.add('correct');
+      fb.className='reto-feedback ok';
+      fb.textContent='✓ Correcto';
+      st.textContent='✅ completado'; st.className='reto-status done';
+      done[idx]=true;
+      if(char && chars[idx]) {
+        const slot=document.getElementById('cb'+(idx-1));
+        if(slot){slot.textContent=chars[idx];slot.classList.add('filled');}
+      }
+      if(Object.keys(done).length===5 && done[0]&&done[1]&&done[2]&&done[3]&&done[4]) {
+        document.getElementById('codeInput').value='A066';
+      }
+    } else {
+      el.classList.add('wrong');
+      fb.className='reto-feedback err';
+      fb.textContent='✗ Incorrecto — revisa el razonamiento';
+      opts.forEach(o=>o.style.pointerEvents='auto');
+      _applyPenalty('Error en reto — revisa el razonamiento');
+    }
+  }
 
-/* ── FIREBASE ── */
-let _fbReady = false, _fbDb = null;
-function etFbInit(cb) {
-  const cfg = ET_CONFIG;
-  if (!cfg.FB_DATABASE_URL || cfg.FB_DATABASE_URL.startsWith('PLACEHOLDER')) { if (cb) cb(false); return; }
-  if (_fbReady) { if (cb) cb(true); return; }
-  const load = (src, next) => {
-    const s = document.createElement('script'); s.src = src;
-    s.onload = next; s.onerror = () => { if (cb) cb(false); };
-    document.head.appendChild(s);
-  };
-  load('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js', () => {
-    load('https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js', () => {
-      try {
-        if (!firebase.apps.length) firebase.initializeApp({ apiKey: cfg.FB_API_KEY, databaseURL: cfg.FB_DATABASE_URL, projectId: cfg.FB_PROJECT_ID });
-        _fbDb = firebase.database(); _fbReady = true; if (cb) cb(true);
-      } catch(e) { if (cb) cb(false); }
-    });
-  });
-}
-function etFbPush() {
-  try {
-    if (!_fbReady || !_fbDb || !LS.team) return;
-    _fbDb.ref('et2026/' + _slug(LS.team)).set({ name: LS.team, done: LS.doneCount(), elapsed: LS.elapsedSec(), finished: LS.doneCount() >= 4, ts: Date.now() });
-  } catch(e) {}
-}
-function etFbWatch(fn) {
-  try { if (_fbReady && _fbDb) _fbDb.ref('et2026').on('value', s => fn(Object.values(s.val() || {}))); } catch(e) {}
-}
-function _slug(s) { return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 40) || 'equipo'; }
-
-/* ── TOPBAR ── */
-function etMountTopbar(salaNum) {
-  const slot = document.getElementById('et-topbar');
-  if (!slot) return;
-  const sala = salaNum ? SALAS[salaNum] : null;
-  slot.innerHTML = `
-    <div class="et-topbar">
-      <div class="et-brand" onclick="etNavigate('index.html')" style="cursor:pointer">
-        <span class="et-brand-name">ET CONNECT <em>by Capgemini Invent España</em></span>
-        <span class="et-brand-sub">Operation Rewind · NexaCorp 2026</span>
-      </div>
-      <div class="et-spacer"></div>
-      ${sala ? `<div class="et-sala-chip" style="border-color:${sala.color}20;color:${sala.color}"><span style="opacity:.6">●</span> SALA 0${salaNum} · ${sala.short}</div>` : ''}
-      <div class="et-team-chip" id="et-team-chip">${LS.team || '—'}</div>
-      <div class="et-timer-chip" id="et-timer">--:--</div>
-    </div>
-    <div id="et-flash"></div>
-    <div class="et-toast" id="et-toast">⚠ −2:00 · Respuesta incorrecta</div>`;
-}
-
-/* ── GUARD ── */
-function etRequireTeam() {
-  if (!LS.team) { location.href = 'index.html'; return false; }
-  return true;
-}
-
-/* ── FADE IN ON LOAD ── */
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add('et-fade-in');
-});
-
+  function validate() {
+    const val=document.getElementById('codeInput').value.trim().toUpperCase();
+    const res=document.getElementById('codeResult'); res.style.display='block';
+    if(val==='A066') {
+      _markDone();
+      res.className='code-result success'; res.textContent='✓ Correcto — PLANTA 4 | A066';
+      setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),800);
+    } else {
+      _applyPenalty('Error en reto — revisa el razonamiento');
+      res.className='code-result error'; res.textContent='✗ Incorrecto (−2 min). Completa los 5 retos correctamente.';
+    }
+  }
 </script>
-<script>
-if(!etRequireTeam()) throw '';
-etMountTopbar(2); etStartTimer(); etInitHintBtn(2);
-
-const PS=[
-  {n:0,lbl:'PRUEBA 0 · Seguridad física',
-   q:'¿Dónde debe almacenarse la información más crítica de NexaCorp?',
-   ctx:'La arquitectura de seguridad de NexaCorp define 4 zonas con diferente nivel de protección, control de accesos y separación de entornos. La ubicación de la información crítica no es una elección arbitraria.',
-   type:'choice',
-   opts:[{l:'A',t:'Planta 1 — Acceso público'},{l:'B',t:'Planta 2 — Operaciones generales'},{l:'C',t:'Planta 3 — IT compartido'},{l:'D',t:'Planta 4 — Área de máxima restricción'}],
-   ans:'D',frag:'PLANTA·4'},
-  {n:1,lbl:'PRUEBA 1 · Digital Acceleration',
-   q:'¿Cuál es la palanca principal de transformación que aplicó NexaCorp?',
-   ctx:'El equipo de operaciones presenta: un 40% de los errores provienen de introducción manual de datos. Los retrasos se producen en las transferencias entre departamentos. Existen 12 herramientas distintas sin integración. La solución implementada elimina las tareas manuales y conecta todos los sistemas en un flujo único.',
-   type:'choice',
-   opts:[{l:'A',t:'Automatización de procesos'},{l:'B',t:'Reingeniería organizativa'},{l:'C',t:'Externalización de operaciones'}],
-   ans:'A',frag:'A'},
-  {n:2,lbl:'PRUEBA 2 · Digital Trust / Zero Trust',
-   q:'Tras implementar Zero Trust correctamente, ¿cuántas de estas prácticas siguen siendo aceptables?',
-   ctx:'Auditoría de seguridad en NexaCorp: 3 usuarios comparten credenciales de administrador. 2 accesos externos no autorizados activos en el sistema. 1 política de contraseñas sin caducidad configurada. 1 excepción de firewall sin revisar en 14 meses. Se ha implementado el modelo Zero Trust.',
-   type:'number',ans:'0',frag:'0'},
-  {n:3,lbl:'PRUEBA 3 · IT Architecture',
-   q:'¿Cuántos componentes estructurales tiene la arquitectura objetivo completa?',
-   ctx:'La arquitectura objetivo de NexaCorp está compuesta por: 3 capas tecnológicas verticales (Aplicación, Datos, Infraestructura). 2 dimensiones transversales que atraviesan todas las capas (Seguridad, Integración). 1 capa de gobierno que coordina el conjunto.',
-   type:'number',ans:'6',frag:'6'},
-  {n:4,lbl:'PRUEBA 4 · Program Excellence / TMO',
-   q:'¿Cuántos elementos debe monitorizar activamente la TMO para garantizar el programa?',
-   ctx:'La Transformation Management Office evalúa el estado del programa: 2 proyectos en riesgo alto con posibilidad de impactar el roadmap global. 3 dependencias técnicas críticas entre proyectos que, si se rompen, bloquean la entrega. 1 hito regulatorio de obligado cumplimiento antes del cierre del ejercicio.',
-   type:'number',ans:'6',frag:'6'},
-];
-
-let step=0;
-const frags=[];
-
-function buildStepper(){
-  const el=document.getElementById('stepper');el.innerHTML='';
-  PS.forEach((_,i)=>{
-    if(i>0){const l=document.createElement('div');l.className='sline';l.id='sl'+i;el.appendChild(l);}
-    const d=document.createElement('div');d.className='sdot';d.id='sd'+i;d.textContent=i;el.appendChild(d);
-  });
-}
-
-function updateStepper(){
-  PS.forEach((_,i)=>{
-    const d=document.getElementById('sd'+i),l=document.getElementById('sl'+i);
-    if(i<step){d.className='sdot done';d.textContent='✓';if(l)l.classList.add('done');}
-    else if(i===step){d.className='sdot act';d.textContent=i;}
-    else{d.className='sdot';d.textContent=i;if(l)l.classList.remove('done');}
-  });
-  document.getElementById('pf').style.width=`${step/PS.length*100}%`;
-}
-
-function renderStep(i){
-  const p=PS[i];let h=`<div class="prueba"><div class="kicker" style="margin-bottom:8px">${p.lbl}</div>`;
-  if(p.ctx)h+=`<div class="ctx">${p.ctx}</div>`;
-  h+=`<h2 style="margin-bottom:14px">${p.q}</h2>`;
-  if(p.type==='choice'){
-    h+=`<div class="opts">`;
-    p.opts.forEach(o=>{h+=`<button class="opt" id="o${o.l}" onclick="ansC('${o.l}')"><span class="ol">${o.l}</span>${o.t}</button>`;});
-    h+=`</div>`;
-  }else{
-    h+=`<div class="num-row"><input class="ninput" id="ni" type="number" min="0" max="99" placeholder="?" onkeydown="if(event.key==='Enter')ansN()"><button class="btn" onclick="ansN()">Confirmar</button></div>`;
-  }
-  h+=`<div class="hint-panel"><button id="et-hint-btn"></button><div id="et-hint-box"></div></div><div class="fb" id="fb"></div></div>`;
-  document.getElementById('pc').innerHTML=h;
-  updateStepper();
-  etInitHintBtn(2);
-}
-
-function ansC(l){
-  const p=PS[step],fb=document.getElementById('fb');
-  if(l===p.ans){
-    document.getElementById('o'+l).classList.add('ok');
-    document.querySelectorAll('.opt').forEach(b=>b.onclick=null);
-    fb.className='fb ok';fb.textContent='✅ Correcto.';
-    frags.push(p.frag);updateAccum();setTimeout(advance,950);
-  }else{
-    document.getElementById('o'+l).classList.add('bad');
-    setTimeout(()=>document.getElementById('o'+l)?.classList.remove('bad'),600);
-    fb.className='fb bad';fb.textContent='❌ Incorrecto.';etPenalize();
-  }
-}
-
-function ansN(){
-  const p=PS[step],inp=document.getElementById('ni'),fb=document.getElementById('fb');
-  if(inp.value.trim()===p.ans){
-    inp.classList.add('ok');inp.disabled=true;
-    fb.className='fb ok';fb.textContent='✅ Correcto.';
-    frags.push(p.frag);updateAccum();setTimeout(advance,950);
-  }else{
-    inp.classList.add('bad');setTimeout(()=>{inp.classList.remove('bad');inp.value='';},600);
-    fb.className='fb bad';fb.textContent='❌ Incorrecto.';etPenalize();
-  }
-}
-
-function advance(){step++;step>=PS.length?showWin():renderStep(step);}
-
-function updateAccum(){
-  const ca=document.getElementById('ca');ca.style.display='flex';
-  document.getElementById('cf').innerHTML=frags.map((f,i)=>`<span class="cf" style="animation-delay:${i*.07}s">${f}</span>`).join('');
-}
-
-function showWin(){document.getElementById('ov').classList.add('show');etCompleteSala(2);}
-function skip(){if(confirm('¿Saltar esta sala?'))etNavigate('index.html');}
-
-buildStepper();renderStep(0);
-</script>
-</body>
-</html>
+</body></html>
