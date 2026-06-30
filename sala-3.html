@@ -575,9 +575,9 @@
         <tbody>
           <tr class="clickable" onclick="flagRow(this,'C001')"><td>C001</td><td>ES</td><td>Wave 1</td><td>MT103</td><td>pacs.008</td><td>Active</td><td>1240</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C002')"><td>C002</td><td>ES</td><td>Wave 1</td><td>MT940</td><td>camt.053</td><td>Active</td><td>870</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C003')"><td>C003</td><td>PT</td><td>Wave 2</td><td class="null-val">NULL</td><td>pacs.008</td><td>Active</td><td>430</td><td>Yes</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C003')"><td>C003</td><td>PT</td><td>Wave 2</td><td>MT103</td><td>pacs.008</td><td>Active</td><td>430</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C004')"><td>C004</td><td>FR</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>610</td><td>Yes</td></tr>
-          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>PT</td><td>Wave 2</td><td class="null-val">NULL</td><td>camt.053</td><td>Inactive</td><td>0</td><td>Yes</td></tr>
+          <tr class="clickable" onclick="flagRow(this,'C005')"><td>C005</td><td>ES</td><td>Wave 3</td><td>MT103</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C006')"><td>C006</td><td>IT</td><td>Wave 3</td><td>MT940</td><td>camt.053</td><td>Active</td><td>320</td><td>Yes</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C007')"><td>C007</td><td>ES</td><td>Wave 3</td><td class="null-val">NULL</td><td>pacs.008</td><td>Inactive</td><td>0</td><td>No</td></tr>
           <tr class="clickable" onclick="flagRow(this,'C008')"><td>C008</td><td>DE</td><td>Wave 2</td><td>MT202</td><td>pacs.009</td><td>Active</td><td>780</td><td>Yes</td></tr>
@@ -643,7 +643,7 @@
         <div class="section-head">// Metadata del dashboard</div>
         <table class="meta-table">
           <tr><td>dashboard_id</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">dashboard_v2</td></tr>
-          <tr><td>Último refresh</td><td style="font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700">08:45</td></tr>
+          <tr><td>Último refresh</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">08:45</td></tr>
           <tr><td>Snapshot origen</td><td style="font-family:var(--mono);font-size:12px;color:var(--text)">kpi_snapshot_prevalidation</td></tr>
         </table>
       </div>
@@ -664,11 +664,7 @@
           <tr onclick="flagEvent(this,false)"><td class="tl-time">08:10</td><td class="tl-event">DQ Checks</td><td>DQ Engine</td><td>✓ OK</td></tr>
           <tr onclick="flagEvent(this,false)"><td class="tl-time">08:22</td><td class="tl-event">Mapping</td><td>Transform</td><td>✓ OK</td></tr>
           <tr onclick="flagEvent(this,false)"><td class="tl-time">08:35</td><td class="tl-event">KPI Snapshot</td><td>Analytics</td><td>✓ OK</td></tr>
-          <tr onclick="flagEvent(this,true)" style="border-left:3px solid var(--amber)">
-            <td class="tl-time" style="color:var(--amber)">08:45</td>
-            <td class="tl-event"><strong>Refresh Dashboard</strong></td><td>BI Layer</td>
-            <td style="color:var(--amber)">⚠ —</td>
-          </tr>
+          <tr onclick="flagEvent(this,true)"><td class="tl-time">08:45</td><td class="tl-event">Refresh Dashboard</td><td>BI Layer</td><td>✓ OK</td></tr>
           <tr onclick="flagEvent(this,false)"><td class="tl-time">09:05</td><td class="tl-event">Validation Regulatory</td><td>Compliance</td><td>✓ OK</td></tr>
           <tr onclick="flagEvent(this,false)"><td class="tl-time">09:20</td><td class="tl-event">KPI Gate Approval</td><td>Governance</td><td>✓ OK</td></tr>
           <tr onclick="flagEvent(this,false)"><td class="tl-time">09:30</td><td class="tl-event">Publish to Committee</td><td>Portal</td><td>✓ OK</td></tr>
