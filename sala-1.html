@@ -722,10 +722,6 @@
       cellEl(r,c).classList.remove('sel');
       cellEl(r,c).classList.add(valueIdxs.includes(i) ? 'value-letter' : 'found-cell');
     });
-    // Light up VALUE slot
-    if (VALUE_WORDS[word] !== undefined) {
-      document.getElementById('vs'+VALUE_WORDS[word]).classList.add('lit');
-    }
     document.getElementById('wi-'+word).classList.add('found');
     document.getElementById('wh-'+word).textContent = word;
     const n = found.size;
