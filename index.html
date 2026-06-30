@@ -5,249 +5,282 @@
 <title>OPERATION REWIND — ET CONNECT 2026 · Capgemini Invent</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;500;600;700;800;900&display=swap');
-  :root {
-    --cap-blue:#0070AD; --cap-teal:#12ABDB; --bg:#001828; --bg-card:#002440;
-    --bg-card-hover:#002E52; --white:#FFFFFF; --text:#E8F4FD; --text-muted:#8BB8D4;
-    --text-dim:#5A8FAD; --green:#00D68F; --amber:#FFB800; --red:#FF4757;
-    --border:rgba(18,171,219,0.25); --border-strong:rgba(18,171,219,0.5);
-    --surface:rgba(0,112,173,0.15); --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;line-height:1.6}
-  body::before{content:'';position:fixed;inset:0;background:
-    radial-gradient(ellipse 80% 50% at 50% -20%,rgba(0,112,173,.25) 0%,transparent 60%),
-    linear-gradient(rgba(0,112,173,.05) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,112,173,.05) 1px,transparent 1px);
-    background-size:auto,48px 48px,48px 48px;pointer-events:none;z-index:0}
-  .container{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:28px 20px 80px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;
-    padding-bottom:18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px}
-  .brand-mark{display:flex;align-items:center;gap:10px}
-  .brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-  .brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-  .brand-text span{color:var(--cap-teal)}
-  .timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-    background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-  .timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
-  .timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
-  @keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
-  .team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-    background:var(--surface);border:1px solid var(--border);padding:6px 12px;
-    border-radius:3px;letter-spacing:.05em}
-  .room-eyebrow{font-family:var(--mono);font-size:11px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
-  .room-title{font-size:clamp(28px,4vw,52px);font-weight:900;color:var(--white);
-    line-height:1.0;letter-spacing:-.02em;margin-bottom:10px}
-  .room-area{font-family:var(--mono);font-size:11px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}.narrative-block{background:var(--surface);border:1px solid var(--border);
-    border-radius:6px;padding:14px 18px;margin-bottom:16px}
-  .narrative-block .eyebrow{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px}
-  .narrative-block p{font-size:14px;color:var(--text);line-height:1.75;margin-bottom:8px}
-  .narrative-block p:last-child{margin-bottom:0}
-  .narrative-block strong{color:var(--white)}
-  .section-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:7px;
-    border-bottom:1px solid var(--border)}
-  .sel-card{background:var(--bg-card);border:1px solid var(--border);border-radius:6px;
-    padding:16px 18px;cursor:pointer;transition:all .18s;user-select:none}
-  .sel-card:hover{border-color:var(--cap-teal);background:var(--bg-card-hover)}
-  .sel-card.selected{border-color:var(--cap-teal);background:rgba(18,171,219,.1);
-    box-shadow:0 0 0 1px var(--cap-teal)}
-  .card-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:5px}
-  .card-desc{font-size:13px;color:var(--text-muted);line-height:1.5}
-  .crisis-banner{background:linear-gradient(135deg,rgba(255,71,87,.12),rgba(255,71,87,.06));
-    border:1px solid rgba(255,71,87,.3);border-radius:6px;padding:14px 18px;
-    margin-bottom:24px;display:flex;align-items:center;gap:12px}
-  .crisis-dot{width:10px;height:10px;background:var(--red);border-radius:50%;flex-shrink:0;
-    animation:cdot 1s ease-in-out infinite}
-  @keyframes cdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
-  .crisis-text{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
-  .crisis-text strong{color:var(--white)}
-  .code-section{margin-top:24px}
-  .code-label{font-family:var(--mono);font-size:10px;color:var(--cap-teal);
-    letter-spacing:.2em;text-transform:uppercase;margin-bottom:5px}
-  .code-sublabel{font-size:13px;color:var(--text-muted);margin-bottom:14px}
-  .code-input-row{display:flex;gap:10px;flex-wrap:wrap}
-  .code-input{background:var(--bg-card);border:2px solid var(--border-strong);border-radius:4px;
-    color:var(--white);font-family:var(--mono);font-size:24px;font-weight:700;
-    letter-spacing:.15em;padding:12px 18px;text-align:center;outline:none;transition:border-color .2s}
-  .code-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.15)}
-  .validate-btn{background:var(--cap-blue);border:none;color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-    padding:12px 24px;border-radius:4px;cursor:pointer;transition:all .2s}
-  .validate-btn:hover{background:var(--cap-teal);transform:translateY(-1px)}
-  .code-result{display:none;margin-top:12px;padding:12px 16px;border-radius:4px;
-    font-family:var(--mono);font-size:13px;letter-spacing:.05em}
-  .code-result.success{background:rgba(0,214,143,.1);border:1px solid var(--green);color:var(--green)}
-  .code-result.error{background:rgba(255,71,87,.08);border:1px solid var(--red);color:var(--red)}
-  .tip-toggle{background:rgba(255,184,0,.06);border:1px solid rgba(255,184,0,.2);color:var(--amber);
-    font-family:var(--sans);font-size:13px;padding:10px 16px;border-radius:4px;cursor:pointer;
-    transition:all .18s;margin-top:18px;display:block}
-  .tip-toggle:hover{background:rgba(255,184,0,.12)}
-  .tip-content{display:none;background:rgba(255,184,0,.05);border:1px solid rgba(255,184,0,.15);
-    border-radius:4px;padding:14px 18px;margin-top:8px;font-size:13px;
-    color:var(--text-muted);line-height:1.7}
-  .success-overlay{display:none;position:fixed;inset:0;background:rgba(0,8,20,.96);z-index:100;
-    align-items:center;justify-content:center;padding:28px;backdrop-filter:blur(6px);
-    flex-direction:column;text-align:center}
-  .success-overlay.show{display:flex;animation:fadeIn .4s ease-out}
-  @keyframes fadeIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
-  .success-icon{font-size:60px;margin-bottom:18px}
-  .success-title{font-size:clamp(20px,3vw,32px);font-weight:900;color:var(--white);margin-bottom:14px}
-  .success-divider{width:40px;height:2px;background:var(--cap-teal);margin:0 auto 18px}
-  .success-msg{font-size:15px;color:var(--text);line-height:1.75;max-width:540px;margin-bottom:28px}
-  .success-msg strong{color:var(--white)}
-  .next-btn{background:var(--cap-blue);color:var(--white);font-family:var(--sans);
-    font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-    padding:14px 32px;border-radius:4px;text-decoration:none;transition:all .2s;display:inline-block}
-  .next-btn:hover{background:var(--cap-teal);transform:translateY(-2px)}
-  .penalty-flash{display:none;position:fixed;inset:0;background:rgba(255,71,87,.18);z-index:200;
-    align-items:center;justify-content:center;pointer-events:none;backdrop-filter:blur(3px)}
-  .penalty-box{background:#1a0008;border:2px solid var(--red);border-radius:8px;
-    padding:24px 44px;text-align:center}
-  .penalty-num{font-family:var(--mono);font-size:22px;color:var(--red);font-weight:700;letter-spacing:.05em}
-  .penalty-sub{font-size:13px;color:var(--text-muted);margin-top:6px}
-</style>
-<style>
-/* ── BRIEFING SCREEN ── */
-.briefing-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;text-align:center;padding:32px 20px;position:relative;z-index:1}
-.brief-label{font-family:var(--mono);font-size:11px;color:var(--cap-teal);letter-spacing:.3em;
-  text-transform:uppercase;margin-bottom:20px;animation:fadeUp .6s ease-out}
-.brief-title{font-size:clamp(40px,10vw,80px);font-weight:900;color:var(--white);
-  line-height:.95;letter-spacing:-.02em;margin-bottom:8px;
-  animation:fadeUp .6s .1s ease-out both}
-.brief-sub{font-family:var(--mono);font-size:clamp(14px,3vw,20px);color:var(--cap-teal);
-  letter-spacing:.3em;text-transform:uppercase;margin-bottom:36px;
-  animation:fadeUp .6s .2s ease-out both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.brief-story{max-width:900px;background:rgba(0,36,64,.7);border:1px solid var(--border);
-  border-radius:8px;padding:28px 32px;margin-bottom:36px;text-align:left;
-  animation:fadeUp .6s .3s ease-out both}
-.brief-story .year{font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:.25em;
-  text-transform:uppercase;margin-bottom:14px}
-.brief-story p{font-size:15px;color:var(--text);line-height:1.75;margin-bottom:10px}
-.brief-story p:last-child{margin-bottom:0}
-.brief-story strong{color:var(--white)}
-.brief-story .highlight{color:var(--amber);font-weight:700}
-.mechanics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;
-  width:100%;margin-bottom:36px;animation:fadeUp .6s .4s ease-out both}
-@media(max-width:520px){.mechanics-row{grid-template-columns:1fr}}
-.mechanic{background:rgba(0,36,64,.6);border:1px solid var(--border);border-radius:6px;
-  padding:16px;text-align:center}
-.mechanic-icon{font-size:28px;margin-bottom:8px}
-.mechanic-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:4px}
-.mechanic-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
-.start-form{background:rgba(0,36,64,.8);border:1px solid var(--border);border-radius:8px;
-  padding:28px 32px;max-width:560px;width:100%;animation:fadeUp .6s .5s ease-out both}
-.form-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:20px;text-align:left}
-.form-group{margin-bottom:16px;text-align:left}
-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
-  margin-bottom:7px;letter-spacing:.03em}
-.text-input{width:100%;background:rgba(0,0,0,.35);border:1.5px solid var(--border);
-  border-radius:4px;color:var(--white);font-family:var(--sans);font-size:15px;
-  padding:13px 16px;outline:none;transition:border-color .2s}
-.text-input::placeholder{color:var(--text-dim)}
-.text-input:focus{border-color:var(--cap-teal);box-shadow:0 0 0 3px rgba(18,171,219,.12)}
-.start-btn{width:100%;background:var(--cap-blue);border:none;color:var(--white);
-  font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.08em;
-  text-transform:uppercase;padding:18px;border-radius:4px;cursor:pointer;
-  transition:all .2s;margin-top:8px}
-.start-btn:hover{background:var(--cap-teal);transform:translateY(-2px);
-  box-shadow:0 6px 24px rgba(18,171,219,.35)}
-.error-msg{color:var(--red);font-size:13px;margin-top:8px;display:none;
-  padding:9px 14px;background:rgba(255,71,87,.08);border:1px solid rgba(255,71,87,.2);
-  border-radius:4px}
-/* ── HUB SCREEN ── */
-.hub-screen{display:none}
-.hub-screen.active{display:block}
-.hub-topbar{display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border);
-  flex-wrap:wrap;gap:10px}
-.brand-mark{display:flex;align-items:center;gap:10px}
-.brand-dot{width:8px;height:8px;background:var(--cap-teal);border-radius:50%}
-.brand-text{font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-muted)}
-.brand-text span{color:var(--cap-teal)}
-.timer-badge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);
-  background:var(--bg-card);border:1px solid var(--border);padding:8px 18px;border-radius:4px}
-.timer-badge.warning{color:var(--amber);border-color:rgba(255,184,0,.4)}
-.timer-badge.danger{color:var(--red);border-color:rgba(255,71,87,.4);animation:tpulse 1s infinite}
-@keyframes tpulse{0%,100%{opacity:1}50%{opacity:.6}}
-.team-chip{font-family:var(--mono);font-size:11px;color:var(--text-muted);
-  background:var(--surface);border:1px solid var(--border);padding:6px 12px;
-  border-radius:3px;letter-spacing:.05em}
-/* Global progress bar */
-.global-progress{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
-  padding:16px 22px;margin-bottom:20px}
-.gp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.gp-label{font-family:var(--mono);font-size:10px;color:var(--text-dim);letter-spacing:.15em;
-  text-transform:uppercase}
-.gp-count{font-family:var(--mono);font-size:13px;color:var(--cap-teal);font-weight:700}
-.gp-bar{height:8px;background:rgba(0,0,0,.3);border-radius:4px;overflow:hidden}
-.gp-fill{height:100%;background:linear-gradient(90deg,var(--cap-blue),var(--cap-teal));
-  border-radius:4px;transition:width .6s ease;width:0%}
-.gp-salas{display:flex;gap:6px;margin-top:10px}
-.gp-dot{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.1);
-  transition:background .4s}
-.gp-dot.done{background:var(--green)}
-.gp-dot.active{background:var(--cap-teal);animation:dotPulse 1.5s ease-in-out infinite}
-@keyframes dotPulse{0%,100%{opacity:1}50%{opacity:.5}}
-/* Sala cards */
-.salas-grid{display:grid;grid-template-columns:repeat(2,1fr);
-  gap:14px;margin-bottom:28px}
-.sala-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
-  padding:22px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
-  text-decoration:none;display:block}
-.sala-card:hover{border-color:var(--cap-teal);transform:translateY(-3px);
-  box-shadow:0 8px 28px rgba(0,0,0,.3)}
-.sala-card.completed{border-color:var(--green)}
-.sala-card.completed::before{content:'✓ COMPLETADA';position:absolute;top:0;right:0;
-  background:var(--green);color:#001828;font-family:var(--mono);font-size:8px;font-weight:700;
-  padding:4px 10px;border-radius:0 0 0 6px;letter-spacing:.1em}
-.sala-card::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(18,171,219,.05),transparent);
-  opacity:0;transition:opacity .2s;pointer-events:none}
-.sala-card:hover::after{opacity:1}
-.sala-icon{font-size:30px;margin-bottom:12px}
-.sala-area{font-family:var(--mono);font-size:9px;color:var(--cap-teal);letter-spacing:.15em;
-  text-transform:uppercase;margin-bottom:7px}
-.sala-name{font-size:17px;font-weight:800;color:var(--white);margin-bottom:7px;line-height:1.2}
-.sala-desc{font-size:12px;color:var(--text-muted);line-height:1.5}
-.sala-mechanic{font-family:var(--mono);font-size:10px;color:var(--text-dim);
-  margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
-/* Penalty counter in hub */
 
-/* Final CTA */
-.final-cta{background:linear-gradient(135deg,rgba(0,214,143,.08),rgba(18,171,219,.06));
-  border:1px solid rgba(0,214,143,.25);border-radius:8px;padding:24px;
-  text-align:center;margin-bottom:28px;transition:all .3s}
-.final-cta.locked{opacity:.4;filter:grayscale(.5)}
-.final-cta-title{font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px}
-.final-cta-desc{font-size:13px;color:var(--text-muted);margin-bottom:16px}
-.final-btn{background:var(--green);border:none;color:#001828;font-family:var(--sans);
-  font-size:14px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-  padding:16px 36px;border-radius:4px;cursor:pointer;transition:all .2s;
-  text-decoration:none;display:inline-block}
-.final-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,214,143,.3)}
-.final-btn.disabled{background:var(--bg-card);color:var(--text-dim);
-  cursor:not-allowed;pointer-events:none}
-.footer-note{text-align:center;padding-top:28px;border-top:1px solid var(--border);
-  font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.08em}
+  :root {
+    --blue:#0070AD; --teal:#12ABDB; --bg:#000B14; --card:#001E30; --card2:#002440;
+    --white:#FFFFFF; --text:#D8EEF8; --muted:#7AAEC8; --dim:#4A7A96;
+    --green:#00C97A; --amber:#FFB800; --red:#FF4455;
+    --border:rgba(18,171,219,.18); --border2:rgba(18,171,219,.32);
+    --mono:'Share Tech Mono',monospace; --sans:'Inter',sans-serif;
+    --r8:8px; --r12:12px; --r16:16px; --r24:24px;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+  body { background:var(--bg); color:var(--text); font-family:var(--sans); min-height:100vh; line-height:1.6; overflow-x:hidden }
+
+  /* ── BACKGROUND ── */
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(0,112,173,.28) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 50% 100%, rgba(18,171,219,.1) 0%, transparent 60%),
+      linear-gradient(rgba(18,171,219,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(18,171,219,.04) 1px, transparent 1px);
+    background-size:auto, auto, 48px 48px, 48px 48px;
+  }
+  body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,11,20,.6) 100%);
+  }
+
+  /* ════════════════════════════════════════════════════════
+     BRIEFING SCREEN
+     ════════════════════════════════════════════════════════ */
+  .briefing-screen {
+    position:relative; z-index:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:100vh; text-align:center; padding:48px 24px;
+  }
+
+  /* Hero block */
+  .brief-eyebrow {
+    font-family:var(--mono); font-size:11px; color:var(--teal);
+    letter-spacing:.35em; text-transform:uppercase; margin-bottom:24px;
+    animation:fadeUp .6s ease-out both;
+    display:flex; align-items:center; gap:14px;
+  }
+  .brief-eyebrow::before, .brief-eyebrow::after {
+    content:''; width:32px; height:1px; background:linear-gradient(90deg,transparent,var(--teal));
+  }
+  .brief-eyebrow::after { background:linear-gradient(90deg,var(--teal),transparent) }
+
+  .brief-title {
+    font-size:clamp(48px,11vw,96px); font-weight:900; color:var(--white);
+    line-height:.92; letter-spacing:-.03em; margin-bottom:14px;
+    animation:fadeUp .7s .08s ease-out both;
+    text-shadow:0 0 60px rgba(18,171,219,.25);
+  }
+  .brief-title .accent { color:var(--teal) }
+
+  .brief-sub {
+    font-family:var(--mono); font-size:clamp(13px,2.4vw,17px); color:var(--muted);
+    letter-spacing:.28em; text-transform:uppercase; margin-bottom:44px;
+    animation:fadeUp .6s .16s ease-out both;
+  }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+
+  /* Story card */
+  .brief-story {
+    max-width:780px; width:100%;
+    background:linear-gradient(180deg, rgba(0,30,48,.85), rgba(0,20,34,.85));
+    border:1px solid var(--border2); border-radius:var(--r16);
+    padding:32px 36px; margin-bottom:32px; text-align:left;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+    animation:fadeUp .6s .24s ease-out both;
+    position:relative; overflow:hidden;
+  }
+  .brief-story::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--teal), transparent);
+  }
+  .brief-story .year {
+    font-family:var(--mono); font-size:11px; color:var(--red); letter-spacing:.25em;
+    text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px;
+  }
+  .brief-story .year::before {
+    content:''; width:7px; height:7px; background:var(--red); border-radius:50%;
+    animation:pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  .brief-story p { font-size:15px; color:var(--text); line-height:1.8; margin-bottom:14px }
+  .brief-story p:last-child { margin-bottom:0 }
+  .brief-story strong { color:var(--white) }
+  .brief-story .highlight { color:var(--amber); font-weight:700 }
+
+  /* Mechanics row — symmetric 3-col */
+  .mechanics-row {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+    max-width:780px; width:100%; margin-bottom:32px;
+    animation:fadeUp .6s .32s ease-out both;
+  }
+  @media(max-width:640px) { .mechanics-row { grid-template-columns:1fr } }
+  .mechanic {
+    background:rgba(0,30,48,.7); border:1px solid var(--border);
+    border-radius:var(--r12); padding:22px 16px; text-align:center;
+    transition:border-color .2s, transform .2s;
+  }
+  .mechanic:hover { border-color:var(--border2); transform:translateY(-2px) }
+  .mechanic-icon { font-size:30px; margin-bottom:10px }
+  .mechanic-title { font-size:14px; font-weight:800; color:var(--white); margin-bottom:6px }
+  .mechanic-desc { font-size:12px; color:var(--muted); line-height:1.5 }
+
+  /* Start form */
+  .start-form {
+    background:linear-gradient(180deg, rgba(0,30,48,.92), rgba(0,20,34,.92));
+    border:1px solid var(--border2); border-radius:var(--r16);
+    padding:32px 36px; max-width:480px; width:100%;
+    box-shadow:0 24px 60px rgba(0,0,0,.45);
+    animation:fadeUp .6s .4s ease-out both;
+  }
+  .form-title {
+    font-size:16px; font-weight:800; color:var(--white);
+    margin-bottom:6px; text-align:center;
+  }
+  .form-subtitle {
+    font-size:13px; color:var(--muted); margin-bottom:24px; text-align:center;
+  }
+  .form-group { margin-bottom:20px; text-align:left }
+  label {
+    display:block; font-size:12px; font-weight:600; color:var(--muted);
+    margin-bottom:8px; letter-spacing:.03em;
+  }
+  .text-input {
+    width:100%; background:rgba(0,0,0,.4); border:1.5px solid var(--border2);
+    border-radius:var(--r8); color:var(--white); font-family:var(--sans);
+    font-size:15px; padding:14px 16px; outline:none; transition:border-color .2s, box-shadow .2s;
+  }
+  .text-input::placeholder { color:var(--dim) }
+  .text-input:focus { border-color:var(--teal); box-shadow:0 0 0 4px rgba(18,171,219,.12) }
+  .error-msg {
+    color:var(--red); font-size:13px; margin-top:-8px; margin-bottom:16px; display:none;
+    padding:10px 14px; background:rgba(255,68,85,.08); border:1px solid rgba(255,68,85,.2);
+    border-radius:var(--r8);
+  }
+  .start-btn {
+    width:100%; background:linear-gradient(135deg, var(--blue), var(--teal));
+    border:none; color:var(--white); font-family:var(--sans); font-size:16px; font-weight:800;
+    letter-spacing:.06em; text-transform:uppercase; padding:18px;
+    border-radius:var(--r8); cursor:pointer; transition:all .25s;
+    box-shadow:0 12px 32px rgba(18,171,219,.25);
+  }
+  .start-btn:hover { transform:translateY(-2px); box-shadow:0 16px 40px rgba(18,171,219,.4) }
+  .start-btn:active { transform:translateY(0) }
+
+  /* ════════════════════════════════════════════════════════
+     HUB SCREEN
+     ════════════════════════════════════════════════════════ */
+  .hub-screen { display:none; position:relative; z-index:1 }
+  .hub-screen.active { display:block; animation:fadeIn .4s ease-out }
+  .container { max-width:1200px; margin:0 auto; padding:28px 40px 72px }
+
+  .hub-topbar {
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding:16px 24px; margin-bottom:32px;
+    background:rgba(0,30,48,.9); border:1px solid var(--border2);
+    border-radius:var(--r16); flex-wrap:wrap;
+  }
+  .brand-mark { display:flex; align-items:center; gap:10px }
+  .brand-dot { width:9px; height:9px; background:var(--teal); border-radius:50%; box-shadow:0 0 10px var(--teal) }
+  .brand-text { font-size:12px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.15em }
+  .brand-text span { color:var(--teal) }
+  .timer-badge {
+    font-family:var(--mono); font-size:26px; font-weight:800; color:var(--white);
+    background:var(--card2); border:1px solid var(--border2);
+    padding:10px 22px; border-radius:var(--r8); letter-spacing:.04em;
+  }
+  .timer-badge.warning { color:var(--amber); border-color:rgba(255,184,0,.4) }
+  .timer-badge.danger { color:var(--red); border-color:rgba(255,68,85,.45); animation:tpulse 1.4s infinite }
+  @keyframes tpulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+  .team-chip {
+    font-family:var(--mono); font-size:12px; color:var(--teal);
+    background:rgba(18,171,219,.1); border:1px solid rgba(18,171,219,.28);
+    padding:8px 16px; border-radius:999px; letter-spacing:.08em;
+  }
+
+  /* Global progress */
+  .global-progress {
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:var(--r16); padding:20px 26px; margin-bottom:28px;
+  }
+  .gp-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px }
+  .gp-label { font-family:var(--mono); font-size:10px; color:var(--dim); letter-spacing:.18em; text-transform:uppercase }
+  .gp-count { font-family:var(--mono); font-size:14px; color:var(--teal); font-weight:700 }
+  .gp-bar { height:8px; background:rgba(0,0,0,.35); border-radius:999px; overflow:hidden }
+  .gp-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--teal)); border-radius:999px; transition:width .6s ease; width:0% }
+  .gp-salas { display:flex; gap:8px; margin-top:12px }
+  .gp-dot { flex:1; height:4px; border-radius:2px; background:rgba(255,255,255,.1); transition:background .4s }
+  .gp-dot.done { background:var(--green) }
+  .gp-dot.active { background:var(--teal); animation:dotPulse 1.5s ease-in-out infinite }
+  @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* Sala cards — symmetric 2x2 grid */
+  .salas-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:28px }
+  @media(max-width:760px) { .salas-grid { grid-template-columns:1fr } }
+
+  .sala-card {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--r16); padding:26px; cursor:pointer;
+    transition:all .25s; position:relative; overflow:hidden;
+    text-decoration:none; display:flex; flex-direction:column;
+    border-top:3px solid var(--border2);
+  }
+  .sala-card:hover {
+    border-color:var(--teal); transform:translateY(-4px);
+    box-shadow:0 16px 40px rgba(0,0,0,.35);
+  }
+  .sala-card.completed { border-top-color:var(--green) }
+  .sala-card.completed::before {
+    content:'✓ COMPLETADA'; position:absolute; top:0; right:0;
+    background:var(--green); color:#001828; font-family:var(--mono); font-size:9px; font-weight:700;
+    padding:5px 12px; border-radius:0 0 0 10px; letter-spacing:.1em;
+  }
+  .sala-card-top { display:flex; align-items:center; gap:14px; margin-bottom:16px }
+  .sala-icon {
+    font-size:28px; width:52px; height:52px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(18,171,219,.08); border:1px solid rgba(18,171,219,.18);
+    border-radius:var(--r12);
+  }
+  .sala-card.completed .sala-icon { background:rgba(0,201,122,.08); border-color:rgba(0,201,122,.2) }
+  .sala-num { font-family:var(--mono); font-size:10px; color:var(--dim); letter-spacing:.15em; margin-bottom:3px }
+  .sala-area { font-size:14px; font-weight:800; color:var(--teal); letter-spacing:.01em }
+  .sala-name { font-size:18px; font-weight:800; color:var(--white); margin-bottom:10px; line-height:1.25 }
+  .sala-desc { font-size:13px; color:var(--muted); line-height:1.6; flex:1; margin-bottom:14px }
+  .sala-mechanic {
+    font-family:var(--mono); font-size:10px; color:var(--dim);
+    padding-top:14px; border-top:1px solid var(--border);
+    display:flex; align-items:center; gap:6px;
+  }
+
+  /* Final CTA */
+  .final-cta {
+    background:linear-gradient(135deg, rgba(0,201,122,.1), rgba(18,171,219,.06));
+    border:1px solid rgba(0,201,122,.28); border-radius:var(--r16);
+    padding:32px; text-align:center; margin-bottom:32px; transition:all .4s;
+  }
+  .final-cta.locked { opacity:.45; filter:grayscale(.6) }
+  .final-cta-icon { font-size:32px; margin-bottom:10px }
+  .final-cta-title { font-size:17px; font-weight:800; color:var(--white); margin-bottom:6px }
+  .final-cta-desc { font-size:13px; color:var(--muted); margin-bottom:20px }
+  .final-btn {
+    background:var(--green); border:none; color:#001828;
+    font-family:var(--sans); font-size:14px; font-weight:800; letter-spacing:.06em;
+    text-transform:uppercase; padding:16px 40px; border-radius:var(--r8);
+    cursor:pointer; transition:all .25s; text-decoration:none; display:inline-block;
+  }
+  .final-btn:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,201,122,.35) }
+  .final-btn.disabled { background:var(--card2); color:var(--dim); cursor:not-allowed; pointer-events:none }
+
+  .footer-note {
+    text-align:center; padding-top:28px; border-top:1px solid var(--border);
+    font-family:var(--mono); font-size:11px; color:var(--dim); letter-spacing:.1em;
+  }
 </style>
 </head>
 <body>
 
 <!-- ════════════ BRIEFING SCREEN ════════════ -->
 <div class="briefing-screen" id="briefingScreen">
-  <div class="brief-label">ET CONNECT 2026 · Capgemini Invent España</div>
-  <div class="brief-title">OPERATION<br>REWIND</div>
+
+  <div class="brief-eyebrow">ET CONNECT 2026 · Capgemini Invent España</div>
+  <div class="brief-title">OPERATION<br><span class="accent">REWIND</span></div>
   <div class="brief-sub">Enterprise Transformation Challenge</div>
 
   <div class="brief-story">
-    <div class="year">// Año 2031 — Log del sistema REWIND</div>
+    <div class="year">Año 2031 — Log del sistema REWIND</div>
     <p><strong>NexaCorp ha colapsado.</strong> Una transformación de Finance ejecutada entre 2024 y 2026 falló en las 4 dimensiones clave de Enterprise Transformation: el modelo operativo, la tecnología, los datos y las personas.</p>
-    <p>El sistema REWIND te da <span class="highlight">una única oportunidad de volver atrás.</span> Tienes que entrar en cada área, diagnosticar el error real y corregirlo antes de que el colapso sea irreversible.</p>
+    <p>El sistema REWIND te da <span class="highlight">una única oportunidad de volver atrás.</span> Entra en cada área, diagnostica el error real y corrígelo antes de que el colapso sea irreversible.</p>
     <p><strong>4 salas. 4 decisiones críticas. 30 minutos.</strong> El tiempo empieza cuando registres tu equipo.</p>
   </div>
 
@@ -260,20 +293,24 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
     <div class="mechanic">
       <div class="mechanic-icon">🔀</div>
       <div class="mechanic-title">Cualquier orden</div>
-      <div class="mechanic-desc">Las 4 salas son independientes. Puedes saltar y volver</div>
+      <div class="mechanic-desc">Las 4 salas son independientes. Salta y vuelve cuando quieras</div>
     </div>
-
+    <div class="mechanic">
+      <div class="mechanic-icon">🧠</div>
+      <div class="mechanic-title">4 dimensiones</div>
+      <div class="mechanic-desc">CEx · BT · EDA · W&O — cada sala, un área real</div>
+    </div>
   </div>
 
   <div class="start-form">
     <div class="form-title">Registra tu equipo para comenzar</div>
+    <div class="form-subtitle">El cronómetro arranca al pulsar iniciar</div>
     <div class="form-group">
       <label for="teamName">Nombre del equipo</label>
       <input type="text" class="text-input" id="teamName"
         placeholder="Ej: Transformers_BCN_01" maxlength="40"
         onkeydown="if(event.key==='Enter')startGame()">
     </div>
-
     <div class="error-msg" id="errorMsg">⚠ Introduce el nombre del equipo para continuar.</div>
     <button class="start-btn" onclick="startGame()">▶ Iniciar misión REWIND</button>
   </div>
@@ -306,40 +343,61 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
       </div>
     </div>
 
-    <!-- Sala cards -->
+    <!-- Sala cards — symmetric 2x2 -->
     <div class="salas-grid">
       <a href="sala-1.html" class="sala-card" id="card1">
-        <div class="sala-icon">🎯</div>
-        <div class="sala-area">Corporate Experience</div>
+        <div class="sala-card-top">
+          <div class="sala-icon">🎯</div>
+          <div>
+            <div class="sala-num">SALA 01</div>
+            <div class="sala-area">Corporate Experience</div>
+          </div>
+        </div>
         <div class="sala-name">El Modelo Operativo Fallido</div>
         <div class="sala-desc">La transformación de Finance no capturó valor. Reconstruye los fundamentos encontrando las palabras clave.</div>
-        <div class="sala-mechanic">🔤 Sopa de letras </div>
+        <div class="sala-mechanic">🔤 Sopa de letras · 11 palabras</div>
       </a>
       <a href="sala-2.html" class="sala-card" id="card2">
-        <div class="sala-icon">🔐</div>
-        <div class="sala-area">Business Technology</div>
-        <div class="sala-name">La Arquitectura que Falló</div>
+        <div class="sala-card-top">
+          <div class="sala-icon">🔐</div>
+          <div>
+            <div class="sala-num">SALA 02</div>
+            <div class="sala-area">Business Technology</div>
+          </div>
+        </div>
+        <div class="sala-name">Decisiones Fallidas en Tecnología</div>
         <div class="sala-desc">5 retos de tecnología, seguridad y gobierno IT para reconstruir la base tecnológica de NexaCorp.</div>
-        <div class="sala-mechanic">🧩 5 retos </div>
+        <div class="sala-mechanic">🧩 5 retos secuenciales</div>
       </a>
       <a href="sala-3.html" class="sala-card" id="card3">
-        <div class="sala-icon">📊</div>
-        <div class="sala-area">Enterprise Data &amp; Analytics</div>
-        <div class="sala-name">El Dashboard que Mentía</div>
+        <div class="sala-card-top">
+          <div class="sala-icon">📊</div>
+          <div>
+            <div class="sala-num">SALA 03</div>
+            <div class="sala-area">Enterprise Data &amp; Analytics</div>
+          </div>
+        </div>
+        <div class="sala-name">El Dashboard que no Cuadra</div>
         <div class="sala-desc">Un dashboard dice que todo va bien. Hay una inconsistencia. Investiga las 3 áreas y encuentra la causa raíz.</div>
-        <div class="sala-mechanic">🔍 Investigación </div>
+        <div class="sala-mechanic">🔍 Investigación libre</div>
       </a>
       <a href="sala-4.html" class="sala-card" id="card4">
-        <div class="sala-icon">👥</div>
-        <div class="sala-area">Workforce &amp; Organisation</div>
-        <div class="sala-name">La Adopción que no Llegó</div>
+        <div class="sala-card-top">
+          <div class="sala-icon">👥</div>
+          <div>
+            <div class="sala-num">SALA 04</div>
+            <div class="sala-area">Workforce &amp; Organisation</div>
+          </div>
+        </div>
+        <div class="sala-name">La Adopción Imposible</div>
         <div class="sala-desc">La transformación no fue adoptada. Descifra qué área, método y barrera explican el único éxito real.</div>
-        <div class="sala-mechanic">🧠 Puzzle </div>
+        <div class="sala-mechanic">🧠 Puzzle lógico</div>
       </a>
     </div>
 
     <div class="final-cta locked" id="finalCta">
-      <div class="final-cta-title" id="finalCtaTitle">🔒 Activación REWIND bloqueada</div>
+      <div class="final-cta-icon">🔒</div>
+      <div class="final-cta-title" id="finalCtaTitle">Activación REWIND bloqueada</div>
       <div class="final-cta-desc" id="finalCtaDesc">Completa las 4 salas para activar el sistema REWIND y registrar tu tiempo</div>
       <a href="final.html" class="final-btn disabled" id="finalBtn">⏮ Activar REWIND</a>
     </div>
@@ -354,7 +412,6 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
     if (!name) { document.getElementById('errorMsg').style.display='block'; return; }
     if (!sessionStorage.getItem('startTime')) sessionStorage.setItem('startTime', String(Date.now()));
     sessionStorage.setItem('teamName', name);
-    
     showHub();
   }
 
@@ -380,8 +437,6 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
     document.getElementById('completedCount').textContent = done;
     document.getElementById('gpFill').style.width = (done/4*100)+'%';
 
-    // Penalty counter
-    const pen = parseInt(sessionStorage.getItem('penalty')||'0');
     if (done === 4) {
       document.getElementById('finalCta').classList.remove('locked');
       document.getElementById('finalCtaTitle').textContent = '✅ Las 4 salas completadas — ¡REWIND listo!';
@@ -401,7 +456,6 @@ label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);
       const m = Math.floor(r/60000), s = Math.floor((r%60000)/1000);
       el.textContent = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
       el.className = 'timer-badge'+(r<5*60000?' danger':r<12*60000?' warning':'');
-  
     }
     if(_interval) clearInterval(_interval);
     _interval = setInterval(upd,1000); upd();
